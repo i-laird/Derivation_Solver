@@ -26,15 +26,16 @@ public class QuotientRule extends DerivationRule {
 
         quotient.add(
                 new ChainRule(new LinkedList<Term>(Arrays.asList(
-                    original.get(1),
                     new PowerRule(new LinkedList<Term>(Arrays.asList(
+                            original.get(1),
                             new Term(2)
-                    )))
+                    ))),
+                    original.get(1)
                 )))
         );
 
         return new QuotientRule(quotient);
-        }
+    }
 
     public QuotientRule(LinkedList<Term> l) {
         super(l);

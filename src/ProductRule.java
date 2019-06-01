@@ -21,7 +21,8 @@ public class ProductRule extends DerivationRule {
         result.add(new ProductRule(p2));
 
         return new AdditionRule(result);
-        }
+
+    }
 
     public ProductRule(LinkedList<Term> l) {
         super(l);

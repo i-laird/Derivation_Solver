@@ -3,7 +3,7 @@ import java.util.List;
 
 public abstract class DerivationRule extends Term {
     protected LinkedList<Term> terms;
-
+    protected static final RuleFactory rf = RuleFactory.getFactory();
     public DerivationRule(LinkedList<Term> l) {
         this.terms = l;
     }

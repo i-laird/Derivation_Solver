@@ -3,11 +3,12 @@ public class Term {
     protected boolean negative = false;
 
     public int getNum() {
-        return num;
+        return num * (negative ? -1 : 1);
     }
 
     public void setNum(int num) {
         this.num = num;
+        this.negative = false;
     }
 
     public Term(int num) {
