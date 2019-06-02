@@ -28,6 +28,13 @@ public class RuleFactory {
         return new PowerRule(new LinkedList<>(Arrays.asList(inside, power)));
     }
 
+    public Term makePowerFracRule(Term inside, Term topPow, Term bottomPow){
+        if (topPow.getClass() == Term.class && topPow.getNum() == 0){
+            return new Term(0);
+        }
+        return new PowerFracRule(new LinkedList<>(Arrays.asList(inside, topPow, bottomPow)));
+    }
+
     public AdditionRule makeAdditionRule(Term ... t){
         LinkedList<Term> ts = new LinkedList<Term>();
         for (Term term : t){

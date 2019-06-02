@@ -13,7 +13,12 @@ public class ArcCosRule extends DerivationRule {
 
     @Override
     public Term getDerivative() {
-        // d/dx tan(x) = sec(x)^2
-        return DerivationRule.rf.makePowerRule(DerivationRule.rf.makeSecRule(this.terms.get(0)), new Term(2));
+        return rf.makeFracRule(new Term(-1),
+                rf.makePowerFracRule(
+                        rf.makeAdditionRule(new Term(1),
+                                rf.makePowerRule(this.terms.get(0), new Term(2)).flipSign()),
+                        new Term(1),
+                        new Term(2)
+                ));
     }
 }
