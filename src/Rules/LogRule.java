@@ -1,4 +1,8 @@
+package Rules;
+
 import java.util.LinkedList;
+import Terms.Term;
+
 
 public class LogRule extends DerivationRule {
     public LogRule(LinkedList<Term> l) {

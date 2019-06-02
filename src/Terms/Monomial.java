@@ -1,5 +1,6 @@
-import java.util.LinkedList;
-import java.util.List;
+package Terms;
+
+import Rules.DerivationRule;
 
 public class Monomial extends DerivationRule {
     Term coefficient;

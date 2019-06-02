@@ -1,5 +1,8 @@
+package Rules;
+
 import java.util.LinkedList;
-import java.util.List;
+import Terms.Term;
+
 
 public abstract class DerivationRule extends Term {
     protected LinkedList<Term> terms;

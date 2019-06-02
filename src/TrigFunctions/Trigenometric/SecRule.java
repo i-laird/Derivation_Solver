@@ -1,4 +1,8 @@
+package TrigFunctions.Trigenometric;
+
 import java.util.LinkedList;
+import Rules.DerivationRule;
+import Terms.Term;
 
 public class SecRule extends DerivationRule {
 
@@ -9,6 +13,6 @@ public class SecRule extends DerivationRule {
     @Override
     public Term getDerivative() {
         // d/dx sec(x) = sec(x) * tan(x)
-        return rf.makeProductRule(rf.makeTanRule(this.terms.get(0)), rf.makeSecRule(this.terms.get(0)));
+        return DerivationRule.rf.makeProductRule(DerivationRule.rf.makeTanRule(this.terms.get(0)), DerivationRule.rf.makeSecRule(this.terms.get(0)));
     }
 }

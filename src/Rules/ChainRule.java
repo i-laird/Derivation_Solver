@@ -1,3 +1,7 @@
+package Rules;
+
+import Terms.Term;
+
 import java.util.LinkedList;
 
 public class ChainRule extends DerivationRule {

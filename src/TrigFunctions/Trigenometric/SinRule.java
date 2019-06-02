@@ -1,4 +1,9 @@
+package TrigFunctions.Trigenometric;
+
 import java.util.LinkedList;
+
+import Rules.DerivationRule;
+import Terms.Term;
 
 public class SinRule extends DerivationRule {
 
@@ -8,6 +13,6 @@ public class SinRule extends DerivationRule {
 
     @Override
     public Term getDerivative() {
-        return rf.makeCosRule(this.terms.get(0));
+        return DerivationRule.rf.makeCosRule(this.terms.get(0));
     }
 }

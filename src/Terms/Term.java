@@ -1,3 +1,5 @@
+package Terms;
+
 public class Term {
     private int num;
     protected boolean negative = false;

@@ -1,5 +1,8 @@
+package Rules;
+
 import java.util.LinkedList;
-import java.util.List;
+import Terms.Term;
+
 
 public class ProductRule extends DerivationRule {
 

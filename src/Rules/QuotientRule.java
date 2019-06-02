@@ -1,6 +1,9 @@
-import java.lang.reflect.Array;
+package Rules;
+
 import java.util.Arrays;
 import java.util.LinkedList;
+import Terms.Term;
+
 
 public class QuotientRule extends DerivationRule {
     @Override

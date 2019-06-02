@@ -1,4 +1,10 @@
+package TrigFunctions.Trigenometric;
+
 import java.util.LinkedList;
+
+import Rules.DerivationRule;
+import Terms.Term;
+
 
 public class CosRule extends DerivationRule {
 
@@ -9,6 +15,6 @@ public class CosRule extends DerivationRule {
     @Override
     public Term getDerivative() {
         // d/dx cos(x) = -sin(x)
-        return rf.makeSinRule(this.terms.get(0)).flipSign();
+        return DerivationRule.rf.makeSinRule(this.terms.get(0)).flipSign();
     }
 }

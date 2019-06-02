@@ -1,5 +1,8 @@
+package Rules;
 
 import java.util.LinkedList;
+import Terms.Term;
+
 
 public class PowerRule extends DerivationRule {
     public PowerRule(LinkedList<Term> l) {
