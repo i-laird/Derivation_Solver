@@ -10,4 +10,8 @@ public class Num implements AbstractMath {
     public Term getTermFromOp(Term one, Term two){
         return new Term(this.num);
     }
+
+    public int getNum() {
+        return num;
+    }
 }

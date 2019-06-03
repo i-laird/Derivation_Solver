@@ -4,11 +4,16 @@ import Rules.RuleFactory;
 import Terms.Term;
 
 public enum Operator implements AbstractMath{
-    ADD(1), SUBTRACT(1), MULTIPLY(2), DIVIDE(2), EXPONENT(3), LOG(3), NAT_LOG(3);
+    ADD(1, Associativity.LEFT), SUBTRACT(1, Associativity.LEFT), MULTIPLY(2, Associativity.LEFT), DIVIDE(2, Associativity.LEFT), EXPONENT(3, Associativity.RIGHT), LOG(3, Associativity.RIGHT), NAT_LOG(3, Associativity.RIGHT);
+    public static enum Associativity{
+        RIGHT, LEFT
+    }
     public int precedence;
+    public Associativity associativity;
 
-    Operator(int p){
+    Operator(int p, Associativity a){
         precedence = p;
+        associativity = a;
     }
 
     public static Operator getOp(String s){
