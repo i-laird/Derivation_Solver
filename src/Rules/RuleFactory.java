@@ -24,6 +24,10 @@ public class RuleFactory {
         return new NaturalLogRule(new LinkedList<>(Arrays.asList(inside)));
     }
 
+    public LogRule makeLogRule(Term base, Term inside){
+        return new LogRule(new LinkedList<>(Arrays.asList(base, inside)));
+    }
+
     public PowerRule makePowerRule(Term inside, Term power){
         return new PowerRule(new LinkedList<>(Arrays.asList(inside, power)));
     }
