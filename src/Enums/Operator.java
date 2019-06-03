@@ -1,9 +1,9 @@
+package Enums;
+
 import Rules.RuleFactory;
 import Terms.Term;
 
-import java.util.List;
-
-public enum Operator {
+public enum Operator implements AbstractMath{
     ADD(1), SUBTRACT(1), MULTIPLY(2), DIVIDE(2), EXPONENT(3), LOG(3), NAT_LOG(3);
     public int precedence;
 
@@ -11,7 +11,7 @@ public enum Operator {
         precedence = p;
     }
 
-    Operator getOp(String s){
+    public static Operator getOp(String s){
         switch(s){
             case "ln":
                 return NAT_LOG;
@@ -31,10 +31,8 @@ public enum Operator {
         return null;
     }
 
-    Term getTermFromOp(Term one, Term two, Operator operator){
-        RuleFactory rf = RuleFactory.getFactory();
-
-        switch(operator){
+    public Term getTermFromOp(Term one, Term two){
+        switch(this){
             case NAT_LOG:
                 return rf.makeNaturalLogRule(one);
             case LOG:
@@ -50,6 +48,6 @@ public enum Operator {
             case EXPONENT:
                 return rf.makePowerRule(one, two);
         }
-        throw new RuntimeException("Invalid Operator");
+        throw new RuntimeException("Invalid Enums.Operator");
     }
 }

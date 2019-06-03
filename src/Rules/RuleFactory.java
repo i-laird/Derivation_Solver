@@ -2,6 +2,10 @@ package Rules;
 
 import Terms.Term;
 import TrigFunctions.Hyperbolic.*;
+import TrigFunctions.InverseTrigenometic.ArcCosRule;
+import TrigFunctions.InverseTrigenometic.ArcCotRule;
+import TrigFunctions.InverseTrigenometic.ArcSinRule;
+import TrigFunctions.InverseTrigenometic.ArcTanRule;
 import TrigFunctions.Trigenometric.*;
 
 import java.util.Arrays;
@@ -81,4 +85,16 @@ public class RuleFactory {
         return new CschRule(new LinkedList<>(Arrays.asList(inside)));
     }
     public CothRule makeCothRule(Term inside){ return new CothRule(new LinkedList<>(Arrays.asList(inside))); }
+
+    public ArcSinRule makeArcSinRule(Term inside){
+        return new ArcSinRule(new LinkedList<>(Arrays.asList(inside)));
+    }
+    public ArcCosRule makeArcCosRule(Term inside){
+        return new ArcCosRule(new LinkedList<>(Arrays.asList(inside)));
+    }
+    public ArcTanRule makeArcTanRule(Term inside){ return new ArcTanRule(new LinkedList<>(Arrays.asList(inside)));
+    }
+    public ArcCotRule makeArcCotRule(Term inside){
+        return new ArcCotRule(new LinkedList<>(Arrays.asList(inside)));
+    }
 }
