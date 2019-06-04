@@ -23,10 +23,10 @@ public class Parser {
             if(am.getClass() == Num.class || am.getClass() == Variable.class){
                 outputParts.add(am);
             }
-            if(am.getClass() == Function.class) {
+            else if(am.getClass() == Function.class) {
                 stack.push(am);
             }
-            if(am.getClass() == Paren.class){
+            else if(am.getClass() == Paren.class){
                 if(am == Paren.LEFT_PAREN){
                     stack.push(am);
                 }
@@ -35,21 +35,25 @@ public class Parser {
                         outputParts.add(stack.pop());
                     }
                 }
-                continue;
             }
-            //if not a functin or a number it must be an operator
-            while(!stack.empty() && ((((Operator)stack.peek()).precedence > ((Operator)am).precedence) || (((Operator)stack.peek()).precedence == ((Operator)am).precedence) && ((Operator)stack.peek()).associativity == Operator.Associativity.LEFT ) ){
-                // account for natural log being weird
-                // TODO check to see if this works
-                if((Operator)stack.peek() == Operator.NAT_LOG){
-                    outputParts.add(new Num(1));
+            else {
+                //if not a functin or a number it must be an operator
+                while (!stack.empty() && stack.peek().getClass() != Paren.class && ((((Operator) stack.peek()).precedence > ((Operator) am).precedence) || (((Operator) stack.peek()).precedence == ((Operator) am).precedence) && ((Operator) stack.peek()).associativity == Operator.Associativity.LEFT)) {
+                    // account for natural log being weird
+                    // TODO check to see if this works
+                    if ((Operator) stack.peek() == Operator.NAT_LOG) {
+                        outputParts.add(new Num(1));
+                    }
+                    outputParts.add(stack.pop());
                 }
-                outputParts.add(stack.pop());
+                stack.push(am);
             }
-            stack.push(am);
         }
         while(!stack.empty()){
-            outputParts.add(stack.pop());
+            AbstractMath part = stack.pop();
+            if(part.getClass() != Paren.class) {
+                outputParts.add(part);
+            }
         }
 
         // then analyze the expression now that it is in reverse polish notation
@@ -106,6 +110,7 @@ public class Parser {
         if(s.length() != 1){
             throw new RuntimeException("This part is invalid");
         }
+        Variable.declareVariable(s.charAt(0));
         return Variable.getVariable(s.charAt(0));
     }
 }

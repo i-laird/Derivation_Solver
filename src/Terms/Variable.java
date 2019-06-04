@@ -10,11 +10,13 @@ public class Variable extends Term implements AbstractMath {
         return vars.get(c);
     }
     public static void declareVariable(char c){
-        Variable v = new Variable(c);
-        if(primaryVariable == null){
-            primaryVariable = v;
+        if (!vars.containsKey(c)) {
+            Variable v = new Variable(c);
+            if (primaryVariable == null) {
+                primaryVariable = v;
+            }
+            vars.put(c, v);
         }
-        vars.put(c, v);
     }
 
     //static variables

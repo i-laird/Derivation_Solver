@@ -9,6 +9,7 @@ public class PowerRule extends DerivationRule {
         super(l);
     }
 
+    //TODO fix the ordering
     @Override
     public Term getDerivative() {
         int pow = this.terms.get(1).getNum();

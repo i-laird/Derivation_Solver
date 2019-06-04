@@ -40,39 +40,39 @@ public enum Operator implements AbstractMath{
     public Term getTermFromOp(Term one, Term two){
         Term toReturn = null;
         boolean specialCase = false;
-        switch(this){
+        switch(this) {
             case NAT_LOG:
-                toReturn =  rf.makeNaturalLogRule(one);
+                toReturn = rf.makeNaturalLogRule(one);
                 specialCase = true;
                 break;
             case LOG:
-                toReturn =  rf.makeLogRule(one, two);
+                toReturn = rf.makeLogRule(one, two);
                 specialCase = true;
                 break;
             case ADD:
-                toReturn =  rf.makeAdditionRule(one, two);
+                toReturn = rf.makeAdditionRule(one, two);
                 break;
             case SUBTRACT:
-                toReturn =  rf.makeAdditionRule(one, two.flipSign());
+                toReturn = rf.makeAdditionRule(one, two.flipSign());
                 break;
             case MULTIPLY:
-                toReturn =  rf.makeProductRule(one, two);
+                toReturn = rf.makeProductRule(one, two);
                 break;
             case DIVIDE:
-                toReturn =  rf.makeFracRule(one, two);
+                toReturn = rf.makeFracRule(one, two);
                 break;
             case EXPONENT:
-                toReturn =  rf.makePowerRule(one, two);
+                toReturn = rf.makePowerRule(one, two);
                 specialCase = true;
                 break;
             default:
                 throw new RuntimeException("Invalid Enums.Operator");
+        }
             // see if the rule needs to be wrapped in a chain rule
             // if it is just one variable inside there is no need for the chain rule because of the implied one
             if(specialCase && one.getClass() != Variable.class){
                 toReturn = rf.makeChainRule(toReturn, one);
             }
             return toReturn;
-        }
     }
 }
