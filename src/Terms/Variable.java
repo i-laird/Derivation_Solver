@@ -1,9 +1,11 @@
 package Terms;
 
+import Enums.AbstractMath;
+
 import java.util.HashMap;
 import java.util.Map;
 
-public class Variable extends Term {
+public class Variable extends Term implements AbstractMath {
     public static Variable getVariable(char c){
         return vars.get(c);
     }
@@ -42,5 +44,9 @@ public class Variable extends Term {
         }
         //in this case we are dealing with multivariable TODO
         return null;
+    }
+
+    public Term getTermFromOp(Term one, Term two){
+        return this;
     }
 }

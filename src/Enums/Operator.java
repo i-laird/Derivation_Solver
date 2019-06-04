@@ -2,6 +2,7 @@ package Enums;
 
 import Rules.RuleFactory;
 import Terms.Term;
+import Terms.Variable;
 
 public enum Operator implements AbstractMath{
     ADD(1, Associativity.LEFT), SUBTRACT(1, Associativity.LEFT), MULTIPLY(2, Associativity.LEFT), DIVIDE(2, Associativity.LEFT), EXPONENT(3, Associativity.RIGHT), LOG(3, Associativity.RIGHT), NAT_LOG(3, Associativity.RIGHT);
@@ -37,22 +38,41 @@ public enum Operator implements AbstractMath{
     }
 
     public Term getTermFromOp(Term one, Term two){
+        Term toReturn = null;
+        boolean specialCase = false;
         switch(this){
             case NAT_LOG:
-                return rf.makeNaturalLogRule(one);
+                toReturn =  rf.makeNaturalLogRule(one);
+                specialCase = true;
+                break;
             case LOG:
-                return rf.makeLogRule(one, two);
+                toReturn =  rf.makeLogRule(one, two);
+                specialCase = true;
+                break;
             case ADD:
-                return rf.makeAdditionRule(one, two);
+                toReturn =  rf.makeAdditionRule(one, two);
+                break;
             case SUBTRACT:
-                return rf.makeAdditionRule(one, two.flipSign());
+                toReturn =  rf.makeAdditionRule(one, two.flipSign());
+                break;
             case MULTIPLY:
-                return rf.makeProductRule(one, two);
+                toReturn =  rf.makeProductRule(one, two);
+                break;
             case DIVIDE:
-                return rf.makeFracRule(one, two);
+                toReturn =  rf.makeFracRule(one, two);
+                break;
             case EXPONENT:
-                return rf.makePowerRule(one, two);
+                toReturn =  rf.makePowerRule(one, two);
+                specialCase = true;
+                break;
+            default:
+                throw new RuntimeException("Invalid Enums.Operator");
+            // see if the rule needs to be wrapped in a chain rule
+            // if it is just one variable inside there is no need for the chain rule because of the implied one
+            if(specialCase && one.getClass() != Variable.class){
+                toReturn = rf.makeChainRule(toReturn, one);
+            }
+            return toReturn;
         }
-        throw new RuntimeException("Invalid Enums.Operator");
     }
 }

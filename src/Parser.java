@@ -1,5 +1,6 @@
 import Enums.*;
 import Terms.Term;
+import Terms.Variable;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
@@ -7,11 +8,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Parser {
+    Term root = null;
     public Parser(InputStream in){
         Scanner inputScan = new Scanner(new BufferedInputStream(in));
         String line = inputScan.nextLine();
         String [] parts = line.split("\\s+");
-        Term root = null;
 
         // first run the shunting yard algorithm
         List<AbstractMath> mappedParts = Arrays.stream(parts).map(Parser::getMappedPart).collect(Collectors.toList());
@@ -19,7 +20,7 @@ public class Parser {
         Stack<AbstractMath>  stack = new Stack<>();
         Stack<Term> derivativeStack = new Stack<>();
         for(AbstractMath am: mappedParts){
-            if(am.getClass() == Num.class){
+            if(am.getClass() == Num.class || am.getClass() == Variable.class){
                 outputParts.add(am);
             }
             if(am.getClass() == Function.class) {
@@ -55,8 +56,11 @@ public class Parser {
         for (AbstractMath part : outputParts){
             //see if it is just a number
             //if so just push it onto the stack
-            if(part.getClass() == Num.class){
+            if(part.getClass() == Num.class) {
                 derivativeStack.push(new Term(((Num)part).getNum()));
+            }
+            else if (part.getClass() == Variable.class){
+                derivativeStack.push((Variable)part);
             }
             else if(part.getClass() == Function.class){
                 Term operand = derivativeStack.pop();
@@ -75,6 +79,10 @@ public class Parser {
         }
     }
 
+    public Term getRoot(){
+        return this.root;
+    }
+
     public static AbstractMath getMappedPart(String s){
         if(s.matches("\\(")){
             return Paren.LEFT_PAREN;
@@ -91,6 +99,13 @@ public class Parser {
         if(returnThing != null){
             return returnThing;
         }
-        return Function.getFunc(s);
+        returnThing = Function.getFunc(s);
+        if(returnThing != null){
+            return returnThing;
+        }
+        if(s.length() != 1){
+            throw new RuntimeException("This part is invalid");
+        }
+        return Variable.getVariable(s.charAt(0));
     }
 }

@@ -1,6 +1,7 @@
 package Enums;
 
 import Terms.Term;
+import Terms.Variable;
 
 import static Enums.AbstractMath.rf;
 
@@ -48,45 +49,69 @@ public enum Function implements AbstractMath {
         return null;
     }
     public Term getTermFromOp(Term one, Term two){
+        Term toReturn = null;
         switch(this){
             case SIN:
-                return rf.makeSinRule(one);
+                toReturn =  rf.makeSinRule(one);
+                break;
             case COSINE:
-                return rf.makeCosRule(one);
+                toReturn =  rf.makeCosRule(one);
+                break;
             case TAN:
-                return rf.makeTanRule(one);
+                toReturn =  rf.makeTanRule(one);
+                break;
             case SEC:
-                return rf.makeSecRule(one);
+                toReturn =  rf.makeSecRule(one);
+                break;
             case CSC:
-                return rf.makeCscRule(one);
+                toReturn =  rf.makeCscRule(one);
+                break;
             case COT:
-                return rf.makeCotRule(one);
+                toReturn =  rf.makeCotRule(one);
+                break;
             case SINH:
-                return rf.makeSinhRule(one);
+                toReturn =  rf.makeSinhRule(one);
+                break;
             case COSH:
-                return rf.makeCoshRule(one);
+                toReturn =  rf.makeCoshRule(one);
+                break;
             case TANH:
-                return rf.makeTanhRule(one);
+                toReturn =  rf.makeTanhRule(one);
+                break;
             case SECH:
-                return rf.makeSechRule(one);
+                toReturn =  rf.makeSechRule(one);
+                break;
             case CSCH:
-                return rf.makeCschRule(one);
+                toReturn =  rf.makeCschRule(one);
+                break;
             case COTH:
-                return rf.makeCothRule(one);
+                toReturn =  rf.makeCothRule(one);
+                break;
             case ARCCOS:
-                return rf.makeArcCosRule(one);
+                toReturn =  rf.makeArcCosRule(one);
+                break;
             case ARCSIN:
-                return rf.makeArcSinRule(one);
+                toReturn =  rf.makeArcSinRule(one);
+                break;
             case ARCTAN:
-                return rf.makeArcTanRule(one);
+                toReturn =  rf.makeArcTanRule(one);
+                break;
             case ARCSEC:
-                return null; //TODO
+                toReturn =  null; //TODO
+                break;
             case ARCCSC:
-                return null; //TODO
+                toReturn =  null; //TODO
+                break;
             case ARCCOT:
-                return rf.makeArcCotRule(one);
+                toReturn =  rf.makeArcCotRule(one);
+                break;
+            default:
+                throw new RuntimeException("Invalid Enums function");
         }
-        throw new RuntimeException("Invalid Enums function");
+        if(one.getClass() != Variable.class) {
+            toReturn = rf.makeChainRule(toReturn, one);
+        }
+        return toReturn;
     }
 
 }

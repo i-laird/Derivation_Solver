@@ -43,6 +43,10 @@ public class RuleFactory {
         return new PowerFracRule(new LinkedList<>(Arrays.asList(inside, topPow, bottomPow)));
     }
 
+    public ChainRule makeChainRule(Term outside, Term inside){
+        return new ChainRule(new LinkedList<>(Arrays.asList(outside, inside)));
+    }
+
     public AdditionRule makeAdditionRule(Term ... t){
         LinkedList<Term> ts = new LinkedList<Term>();
         for (Term term : t){
