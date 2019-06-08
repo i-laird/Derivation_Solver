@@ -1,6 +1,8 @@
 package Rules;
 
 import java.util.LinkedList;
+import java.util.List;
+
 import Terms.Term;
 
 
@@ -17,5 +19,9 @@ public class AdditionRule extends DerivationRule {
     public AdditionRule addTerm(Term t){
         this.terms.add(t);
         return this;
+    }
+
+    public int evaluate(List<Integer> dims){
+        return this.terms.stream().map(x -> x.evaluate(dims)).reduce(0, Integer::sum);
     }
 }

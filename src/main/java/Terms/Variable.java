@@ -5,47 +5,28 @@ import Enums.AbstractMath;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Variable extends Term implements AbstractMath {
+public class Variable extends Term implements AbstractMath{
+
     public static Variable getVariable(char c){
-        return vars.get(c);
-    }
-    public static void declareVariable(char c){
-        if (!vars.containsKey(c)) {
-            Variable v = new Variable(c);
-            if (primaryVariable == null) {
-                primaryVariable = v;
-            }
-            vars.put(c, v);
-        }
+        return new Variable(Var.getVariable(c));
     }
 
-    //static variables
-    static Map<Character, Variable> vars = new HashMap<>();
-    static Variable primaryVariable = null;
 
     //local variables
-    char c;
+    Var v = null;
 
-    public Variable(char c) {
-        this.c = c;
+    public Variable(Var v) {
+        this.v = v;
     }
 
-    public char getC() {
-        return c;
-    }
-
-    public void setC(char c) {
-        this.c = c;
+    public Variable (char c){
+        this.v = Var.getVariable(c);
     }
 
     @Override
     public Term getDerivative(){
-        if(this.c == primaryVariable.c){
-            //the derivative of x with respect to x is simply 1
-            return (!this.negative ? new Term(1) : new Term(-1));
-        }
-        //in this case we are dealing with multivariable TODO
-        return null;
+        //the derivative of x with respect to x is simply 1
+        return (!this.negative ? new Term(1) : new Term(-1));
     }
 
     public Term getTermFromOp(Term one, Term two){

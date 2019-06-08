@@ -1,5 +1,6 @@
 import Enums.*;
 import Terms.Term;
+import Terms.Var;
 import Terms.Variable;
 
 import java.io.BufferedInputStream;
@@ -11,6 +12,8 @@ public class Parser {
     private boolean operatorOrFunctionSeen = true;
     Term root = null;
     public Parser(InputStream in){
+        //reset the variables
+        Var.reset();
         Scanner inputScan = new Scanner(new BufferedInputStream(in));
         String line = inputScan.nextLine();
         String [] parts = line.split("\\s+");
@@ -145,7 +148,6 @@ public class Parser {
             throw new RuntimeException("This part is invalid");
         }
         operatorOrFunctionSeen = false;
-        Variable.declareVariable(s.charAt(0));
         return Variable.getVariable(s.charAt(0));
     }
 }
