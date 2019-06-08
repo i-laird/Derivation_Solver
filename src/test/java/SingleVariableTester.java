@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 public class SingleVariableTester {
 
     private static int DOES_NOT_MATTER = 3;
+
     @DisplayName("Single Derivatives")
     @ParameterizedTest(name = "{0}")
     @MethodSource("singleVariable")

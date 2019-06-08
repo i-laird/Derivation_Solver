@@ -31,6 +31,6 @@ public class Term {
     }
 
     public int evaluate(List<Integer> dims){
-        return 0;
+        return this.getNum();
     }
 }

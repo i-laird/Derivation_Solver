@@ -13,4 +13,9 @@ public class AdditionRule extends DerivationRule {
     public AdditionRule(LinkedList<Term> l) {
         super(l);
     }
+
+    public AdditionRule addTerm(Term t){
+        this.terms.add(t);
+        return this;
+    }
 }

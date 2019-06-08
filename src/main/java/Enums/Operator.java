@@ -1,5 +1,6 @@
 package Enums;
 
+import Rules.AdditionRule;
 import Rules.RuleFactory;
 import Terms.Term;
 import Terms.Variable;
@@ -49,11 +50,21 @@ public enum Operator implements AbstractMath{
                 toReturn = rf.makeLogRule(one, two);
                 specialCase = true;
                 break;
-            case ADD:
-                toReturn = rf.makeAdditionRule(one, two);
-                break;
             case SUBTRACT:
-                toReturn = rf.makeAdditionRule(one, two.flipSign());
+                two.flipSign();
+            case ADD:
+                // see if an addition is being made to an existing addtion
+                if(one.getClass() == AdditionRule.class){
+                    toReturn = ((AdditionRule)one).addTerm(two);
+                }
+                else if (two.getClass() == AdditionRule.class){
+                    toReturn = ((AdditionRule)two).addTerm(one);
+                }
+
+                // if not create a new addition
+                else {
+                    toReturn = rf.makeAdditionRule(one, two);
+                }
                 break;
             case MULTIPLY:
                 toReturn = rf.makeProductRule(one, two);

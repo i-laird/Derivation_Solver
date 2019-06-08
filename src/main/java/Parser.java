@@ -8,58 +8,82 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Parser {
+    private boolean operatorOrFunctionSeen = true;
     Term root = null;
     public Parser(InputStream in){
         Scanner inputScan = new Scanner(new BufferedInputStream(in));
         String line = inputScan.nextLine();
         String [] parts = line.split("\\s+");
+        Negative negative = null;
 
         // first run the shunting yard algorithm
-        List<AbstractMath> mappedParts = Arrays.stream(parts).map(Parser::getMappedPart).collect(Collectors.toList());
-        Queue<AbstractMath>  outputParts = new LinkedList<>(); //these are those that would be written to console
-        Stack<AbstractMath>  stack = new Stack<>();
+        List<AbstractMath> mappedParts = Arrays.stream(parts).map(this::getMappedPart).collect(Collectors.toList());
+        Queue<Wrapper>  outputParts = new LinkedList<>(); //these are those that would be written to console
+        Stack<Wrapper>  stack = new Stack<>();
         Stack<Term> derivativeStack = new Stack<>();
         for(AbstractMath am: mappedParts){
+            if(am.getClass() == Negative.class){
+                negative = (Negative)am;
+                continue;
+            }
             if(am.getClass() == Num.class || am.getClass() == Variable.class){
-                outputParts.add(am);
+                if(negative != null){
+                    outputParts.add(new Wrapper(am, negative));
+                    negative = null;
+                }
+                else {
+                    outputParts.add(new Wrapper(am));
+                }
             }
             else if(am.getClass() == Function.class) {
-                stack.push(am);
+                stack.push(new Wrapper(am));
             }
             else if(am.getClass() == Paren.class){
                 if(am == Paren.LEFT_PAREN){
-                    stack.push(am);
+                    stack.push(new Wrapper(am));
                 }
                 else{
-                    while(stack.peek() != Paren.LEFT_PAREN){
+                    while((stack.peek()).getAm() != Paren.LEFT_PAREN){
                         outputParts.add(stack.pop());
                     }
                 }
             }
             else {
                 //if not a functin or a number it must be an operator
-                while (!stack.empty() && stack.peek().getClass() != Paren.class && ((((Operator) stack.peek()).precedence > ((Operator) am).precedence) || (((Operator) stack.peek()).precedence == ((Operator) am).precedence) && ((Operator) stack.peek()).associativity == Operator.Associativity.LEFT)) {
+                while(true){
+                    if (stack.empty()){
+                        break;
+                    }
+                    if((stack.peek()).getAm().getClass() != Paren.class && ((((Operator) (stack.peek()).getAm())).precedence > ((Operator) am).precedence) || (((Operator) (stack.peek()).getAm()).precedence == ((Operator) am).precedence) && ((Operator) (stack.peek()).getAm()).associativity == Operator.Associativity.LEFT) {
+                        break;
+                    }
                     // account for natural log being weird
                     // TODO check to see if this works
-                    if ((Operator) stack.peek() == Operator.NAT_LOG) {
-                        outputParts.add(new Num(1));
+                    if ((Operator) (stack.peek()).getAm() == Operator.NAT_LOG) {
+                        outputParts.add(new Wrapper(new Num(1)));
                     }
                     outputParts.add(stack.pop());
                 }
-                stack.push(am);
+                stack.push(new Wrapper(am));
+            }
+            if(negative != null){
+                Wrapper popped = stack.pop();
+                popped.setN(negative);
+                negative = null;
+                stack.push(popped);
             }
         }
         while(!stack.empty()){
-            AbstractMath part = stack.pop();
-            if(part.getClass() != Paren.class) {
+            Wrapper part = stack.pop();
+            if(part.getAm().getClass() != Paren.class) {
                 outputParts.add(part);
             }
         }
-
         // then analyze the expression now that it is in reverse polish notation
-        for (AbstractMath part : outputParts){
+        for (Wrapper w : outputParts){
             //see if it is just a number
             //if so just push it onto the stack
+            AbstractMath part = w.getAm();
             if(part.getClass() == Num.class) {
                 derivativeStack.push(new Term(((Num)part).getNum()));
             }
@@ -76,6 +100,9 @@ public class Parser {
                         operandTwo = derivativeStack.pop();
                 derivativeStack.push(part.getTermFromOp(operandOne, operandTwo));
             }
+            if(w.getN() != null){
+                derivativeStack.push(derivativeStack.pop().flipSign());
+            }
         }
         root = derivativeStack.pop();
         if(!derivativeStack.empty()){
@@ -87,8 +114,9 @@ public class Parser {
         return this.root;
     }
 
-    public static AbstractMath getMappedPart(String s){
+    public AbstractMath getMappedPart(String s){
         if(s.matches("\\(")){
+            operatorOrFunctionSeen = true;
             return Paren.LEFT_PAREN;
         }
         if(s.matches("\\)")){
@@ -97,19 +125,26 @@ public class Parser {
         AbstractMath returnThing = null;
         //see if it is an integeer
         if (s.matches("[+-]?\\d+")){
+            operatorOrFunctionSeen = false;
             return new Num(Integer.parseInt(s));
         }
-        returnThing = Operator.getOp(s);
-        if(returnThing != null){
-            return returnThing;
+        //see if it is a negative sign
+        if (operatorOrFunctionSeen && s.equals("-")){
+            operatorOrFunctionSeen = false;
+            return new Negative();
         }
-        returnThing = Function.getFunc(s);
+        returnThing = Operator.getOp(s);
+        if(returnThing == null){
+            returnThing = Function.getFunc(s);
+        }
         if(returnThing != null){
+            operatorOrFunctionSeen = true;
             return returnThing;
         }
         if(s.length() != 1){
             throw new RuntimeException("This part is invalid");
         }
+        operatorOrFunctionSeen = false;
         Variable.declareVariable(s.charAt(0));
         return Variable.getVariable(s.charAt(0));
     }

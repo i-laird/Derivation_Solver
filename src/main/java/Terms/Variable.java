@@ -42,7 +42,7 @@ public class Variable extends Term implements AbstractMath {
     public Term getDerivative(){
         if(this.c == primaryVariable.c){
             //the derivative of x with respect to x is simply 1
-            return new Term(1);
+            return (!this.negative ? new Term(1) : new Term(-1));
         }
         //in this case we are dealing with multivariable TODO
         return null;
