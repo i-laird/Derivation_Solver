@@ -37,7 +37,11 @@ public class SingleVariableTester {
                 Arguments.of("0",                    createSingleList(DOES_NOT_MATTER), 0),
                 Arguments.of("x",                    createSingleList(DOES_NOT_MATTER), 1),
                 Arguments.of("- x",                  createSingleList(DOES_NOT_MATTER), -1),
-                Arguments.of("- x + x",                  createSingleList(DOES_NOT_MATTER), 0),
+                Arguments.of("- x + x",              createSingleList(DOES_NOT_MATTER), 0),
+                Arguments.of("2x",                   createSingleList(DOES_NOT_MATTER), 2),
+                Arguments.of("2 * x",                   createSingleList(DOES_NOT_MATTER), 2),
+
+
                 Arguments.of("x ^ 2",                createSingleList(1),          2 ),
                 Arguments.of("x ^ 2",                createSingleList(-1),         -2 ),
                 Arguments.of("x ^ 3",                createSingleList(5),          15 ),

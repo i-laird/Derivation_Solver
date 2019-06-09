@@ -1,6 +1,8 @@
 package Rules;
 
 import java.util.LinkedList;
+import java.util.List;
+
 import Terms.Term;
 
 
@@ -29,5 +31,9 @@ public class ProductRule extends DerivationRule {
 
     public ProductRule(LinkedList<Term> l) {
         super(l);
+    }
+
+    public int evaluate(List<Integer> dims){
+        return this.terms.get(0).evaluate(dims) * this.terms.get(1).evaluate(dims);
     }
 }

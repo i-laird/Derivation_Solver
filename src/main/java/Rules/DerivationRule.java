@@ -15,7 +15,7 @@ public abstract class DerivationRule extends Term {
     @Override
     public Term getDerivative() {
         LinkedList<Term> derived = new LinkedList<>();
-        terms.forEach(x -> derived.push(x.getDerivative()));
+        terms.forEach(x -> derived.add(x.getDerivative()));
         return putTogether(terms, derived);
     }
 

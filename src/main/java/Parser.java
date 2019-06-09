@@ -19,8 +19,11 @@ public class Parser {
         String [] parts = line.split("\\s+");
         Negative negative = null;
 
+        //clean the input a little
+        List<String> cleanedInput = cleanInput(parts);
+
         // first run the shunting yard algorithm
-        List<AbstractMath> mappedParts = Arrays.stream(parts).map(this::getMappedPart).collect(Collectors.toList());
+        List<AbstractMath> mappedParts = cleanedInput.stream().map(this::getMappedPart).collect(Collectors.toList());
         Queue<Wrapper>  outputParts = new LinkedList<>(); //these are those that would be written to console
         Stack<Wrapper>  stack = new Stack<>();
         Stack<Term> derivativeStack = new Stack<>();
@@ -149,5 +152,23 @@ public class Parser {
         }
         operatorOrFunctionSeen = false;
         return Variable.getVariable(s.charAt(0));
+    }
+
+    public List<String> cleanInput(String [] list){
+        //turn something like 3x into 3 * x
+        //this makes it easier later
+        List<String> returnList = new LinkedList<>();
+        for (String s : list){
+            if(s.matches(".*[0-9][a-z].*")){
+                String [] parsedParts = s.split("(?=[a-z])", 2);
+                returnList.add(parsedParts[0]);
+                returnList.add("*");
+                returnList.add(parsedParts[1]);
+            }
+            else{
+                returnList.add(s);
+            }
+        }
+        return returnList;
     }
 }
