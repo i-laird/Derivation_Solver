@@ -12,7 +12,11 @@ public class ChainRule extends DerivationRule {
             return null;
         }
 
-        return rf.makeProductRule(derived.get(0), derived.get(1));
+        ProductRule toReturn = rf.makeProductRule(derived.get(0), derived.get(1));
+        if(this.negative){
+            toReturn.flipSign();
+        }
+        return toReturn;
     }
 
     public ChainRule(LinkedList<Term> l) {

@@ -52,7 +52,7 @@ public enum Operator implements AbstractMath{
                 specialCase = true;
                 break;
             case SUBTRACT:
-                two.flipSign();
+                one.flipSign();
             case ADD:
                 // see if an addition is being made to an existing addtion
                 if(one.getClass() == AdditionRule.class){

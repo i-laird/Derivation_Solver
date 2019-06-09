@@ -49,13 +49,16 @@ public class SingleVariableTester {
 
 
                 Arguments.of("2x + 3x * 5x",         createSingleList(1),          32),
+                Arguments.of("2x * 3x * 5x",         createSingleList(2),          360),
+                Arguments.of("2x * 3x * 5x + x ^ 4", createSingleList(2),          392),
+                Arguments.of("2x * 3x * 5x - x ^ 4", createSingleList(2),          328),
                 Arguments.of("x ^ 2",                createSingleList(1),          2 ),
                 Arguments.of("x ^ 2",                createSingleList(-1),         -2 ),
                 Arguments.of("x ^ 3",                createSingleList(5),          75 ),
                 Arguments.of("x ^ 3 + x ^ 2 - 5",    createSingleList(2),          16 ),
-                Arguments.of("- x ^ 3 + x ^ 2 - 5",  createSingleList(2),          -8 ),
+                Arguments.of("- x ^ 3 + x ^ 2 - 5",  createSingleList(2),          -8 )
 
-                Arguments.of("ln x",                 createSingleList(1),          1 )
+                //Arguments.of("ln x",                 createSingleList(1),          1 )
                 );
     }
 

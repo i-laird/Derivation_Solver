@@ -19,7 +19,7 @@ public class PowerRule extends DerivationRule {
 
         //if it is not zero we just do a simple multiplication
         if (pow != 0){
-            return rf.makeProductRule(new Term(pow), rf.makePowerRule(base, new Term(pow - 1)));
+            return rf.makeProductRule(this.negative ? new Term(pow * -1) : new Term(pow), rf.makePowerRule(base, new Term(pow - 1)));
         }
 
         return new Term(1);
