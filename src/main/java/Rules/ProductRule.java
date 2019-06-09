@@ -27,8 +27,11 @@ public class ProductRule extends DerivationRule {
             }
             addTerms.add(new ProductRule(multTerms));
         }
-        return new AdditionRule(addTerms);
-
+        AdditionRule toReturn = new AdditionRule(addTerms);
+        if(this.negative){
+            toReturn.flipSign();
+        }
+        return toReturn;
     }
 
     public ProductRule addTerm(Term t){

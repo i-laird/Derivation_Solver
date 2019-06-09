@@ -22,6 +22,10 @@ public class AdditionRule extends DerivationRule {
     }
 
     public int evaluate(List<Integer> dims){
-        return this.terms.stream().map(x -> x.evaluate(dims)).reduce(0, Integer::sum);
+        int toReturn = this.terms.stream().map(x -> x.evaluate(dims)).reduce(0, Integer::sum);
+        if(this.negative){
+            toReturn = toReturn * -1;
+        }
+        return toReturn;
     }
 }
