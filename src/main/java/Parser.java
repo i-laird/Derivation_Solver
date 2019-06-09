@@ -23,7 +23,7 @@ public class Parser {
         List<String> cleanedInput = cleanInput(parts);
 
         // first run the shunting yard algorithm
-        List<AbstractMath> mappedParts = cleanedInput.stream().map(this::getMappedPart).collect(Collectors.toList());
+        List<AbstractMath> mappedParts = cleanedInput.stream().map(this::getMappedPart).filter(Objects::nonNull).collect(Collectors.toList());
         List<AbstractMath> negFixed = removeMultipleNegatives(mappedParts);
         Queue<Wrapper>  outputParts = new LinkedList<>(); //these are those that would be written to console
         Stack<Wrapper>  stack = new Stack<>();
@@ -122,6 +122,10 @@ public class Parser {
     }
 
     public AbstractMath getMappedPart(String s){
+        //get rid of anything that is just white space
+        if(s.matches("\\s+") || s.isEmpty()){
+            return null;
+        }
         if(s.matches("\\(")){
             operatorOrFunctionSeen = true;
             return Paren.LEFT_PAREN;
@@ -194,7 +198,7 @@ public class Parser {
                             returnList.add(topElem);
                         }
                     }
-                }\
+                }
                 returnList.add(am);
             }
             else{
