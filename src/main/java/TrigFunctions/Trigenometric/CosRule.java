@@ -21,6 +21,6 @@ public class CosRule extends DerivationRule {
 
     @Override
     public double getResult(List<Integer> dims) {
-        return 0;
+        return Math.cos(this.terms.get(0).evaluate(dims));
     }
 }

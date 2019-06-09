@@ -21,6 +21,6 @@ public class CscRule extends DerivationRule {
 
     @Override
     public double getResult(List<Integer> dims) {
-        return 0;
+        return 1.0 / Math.cos(this.terms.get(0).evaluate(dims));
     }
 }
