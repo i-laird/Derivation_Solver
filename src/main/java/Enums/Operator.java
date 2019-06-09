@@ -1,6 +1,7 @@
 package Enums;
 
 import Rules.AdditionRule;
+import Rules.ProductRule;
 import Rules.RuleFactory;
 import Terms.Term;
 import Terms.Variable;
@@ -67,7 +68,18 @@ public enum Operator implements AbstractMath{
                 }
                 break;
             case MULTIPLY:
-                toReturn = rf.makeProductRule(one, two);
+                // see if an mult is being made to an existing mult
+                if(one.getClass() == ProductRule.class){
+                    toReturn = ((ProductRule)one).addTerm(two);
+                }
+                else if (two.getClass() == ProductRule.class){
+                    toReturn = ((ProductRule)two).addTerm(one);
+                }
+
+                // if not create a new mult
+                else {
+                    toReturn = rf.makeProductRule(one, two);
+                }
                 break;
             case DIVIDE:
                 toReturn = rf.makeFracRule(one, two);

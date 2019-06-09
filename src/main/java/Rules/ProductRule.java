@@ -10,23 +10,30 @@ public class ProductRule extends DerivationRule {
 
     @Override
     protected Term putTogether(LinkedList<Term> original, LinkedList<Term> derived){
-        if (original.size() != 2 || derived.size() != 2){
-            return null;
+        //need to account for a variable number of terms that are being multipled
+        if(original.size() != derived.size()){
+            throw new RuntimeException("The sizes do not match");
         }
-        LinkedList<Term> p1 = new LinkedList<>(),
-                         p2 = new LinkedList<>(),
-                         result = new LinkedList<>();
-        p1.add(original.get(0));
-        p1.add(derived.get(1));
+        LinkedList<Term> addTerms = new LinkedList<>();
+        for(int i = 0; i < original.size(); i++){
+            LinkedList<Term> multTerms = new LinkedList<>();
+            for(int j = 0; j < original.size(); j++){
+                if(i != j){
+                    multTerms.add(original.get(j));
+                }
+                else{
+                    multTerms.add(derived.get(j));
+                }
+            }
+            addTerms.add(new ProductRule(multTerms));
+        }
+        return new AdditionRule(addTerms);
 
-        p2.add(original.get(1));
-        p2.add(derived.get(0));
+    }
 
-        result.add(new ProductRule(p1));
-        result.add(new ProductRule(p2));
-
-        return new AdditionRule(result);
-
+    public ProductRule addTerm(Term t){
+        this.terms.add(t);
+        return this;
     }
 
     public ProductRule(LinkedList<Term> l) {
@@ -34,6 +41,6 @@ public class ProductRule extends DerivationRule {
     }
 
     public int evaluate(List<Integer> dims){
-        return this.terms.get(0).evaluate(dims) * this.terms.get(1).evaluate(dims);
+        return this.terms.stream().map(x -> x.evaluate(dims)).reduce(1, Math::multiplyExact);
     }
 }
