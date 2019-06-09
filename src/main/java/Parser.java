@@ -8,9 +8,31 @@ import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * @author Laird
+ *
+ * Parsers an input line to create the operation/function tree.
+ *
+ * Uses the shunting yard algorithm so that the expression can be converted to
+ * reverse polish notation. The tree is then constructed.
+ *
+ * The ouput of the parser is a root that can then be grabbed with getRoot.
+ * This can then have its derivative taken, or it can be directly evaluated as it.
+ *
+ * @see Term
+ */
 public class Parser {
     private boolean operatorOrFunctionSeen = true;
     Term root = null;
+
+    /**
+     * @author Laird
+     * @param in the inputstream from which the mathematical expression to be parsed
+     *           is contained
+     * return: none
+     *
+     * created the tree and stores it in root
+     */
     public Parser(InputStream in){
         //reset the variables
         Var.reset();
@@ -117,10 +139,20 @@ public class Parser {
         }
     }
 
+    /**
+     * @return the root of the mathematical expression tree
+     */
     public Term getRoot(){
         return this.root;
     }
 
+    /**
+     * @author laird
+     * @param s the string to be evaluated
+     * @return the abstract math part corresponding to the string
+     *
+     * caution: if s is only white space or empty null is returned
+     */
     public AbstractMath getMappedPart(String s){
         //get rid of anything that is just white space
         if(s.matches("\\s+") || s.isEmpty()){
@@ -159,6 +191,12 @@ public class Parser {
         return Variable.getVariable(s.charAt(0));
     }
 
+    /**
+     * @param list an array of strings to be cleaned
+     * @return splits monomials
+     *
+     * example: 3x into 3 * x
+     */
     public List<String> cleanInput(String [] list){
         //turn something like 3x into 3 * x
         //this makes it easier later
@@ -177,6 +215,11 @@ public class Parser {
         return returnList;
     }
 
+    /**
+     * @param l the list of math terms in order
+     * @return double negatives are removed, and negated subtraction
+     *  becomes addition
+     */
     public List<AbstractMath> removeMultipleNegatives(List<AbstractMath> l){
         List<AbstractMath> returnList = new LinkedList<>();
         Queue<AbstractMath> suspicious = new LinkedList<>();
