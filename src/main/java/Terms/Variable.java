@@ -34,7 +34,7 @@ public class Variable extends Term implements AbstractMath{
         return this;
     }
 
-    public int evaluate(List<Integer> dims){
+    public double evaluate(List<Integer> dims){
         return (this.negative ? dims.get(0) * -1 : dims.get(0));
     }
 }

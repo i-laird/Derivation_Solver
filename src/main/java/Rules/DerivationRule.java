@@ -25,13 +25,13 @@ public abstract class DerivationRule extends Term {
         return null;
     }
 
-    public int evaluate(List<Integer> dims){
-        int toReturn = this.getResult(dims);
+    public double evaluate(List<Integer> dims){
+        double toReturn = this.getResult(dims);
         if(this.negative){
             toReturn = toReturn * -1;
         }
         return toReturn;
     }
 
-    public abstract int getResult(List<Integer> dims);
+    public abstract double getResult(List<Integer> dims);
 }

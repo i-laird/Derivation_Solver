@@ -30,7 +30,7 @@ public class Term {
         return this;
     }
 
-    public int evaluate(List<Integer> dims){
-        return this.getNum();
+    public double evaluate(List<Integer> dims){
+        return (double)this.getNum();
     }
 }

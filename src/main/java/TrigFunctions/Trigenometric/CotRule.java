@@ -20,7 +20,7 @@ public class CotRule extends DerivationRule {
     }
 
     @Override
-    public int getResult(List<Integer> dims) {
+    public double getResult(List<Integer> dims) {
         return 0;
     }
 }

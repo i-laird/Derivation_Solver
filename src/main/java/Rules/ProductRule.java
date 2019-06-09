@@ -44,8 +44,8 @@ public class ProductRule extends DerivationRule {
     }
 
     @Override
-    public int getResult(List<Integer> dims) {
-        return this.terms.stream().map(x -> x.evaluate(dims)).reduce(1, Math::multiplyExact);
+    public double getResult(List<Integer> dims) {
+        return this.terms.stream().map(x -> x.evaluate(dims)).reduce((x,y) -> x*y).get();
     }
 
 }

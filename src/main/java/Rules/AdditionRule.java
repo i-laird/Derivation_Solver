@@ -21,8 +21,8 @@ public class AdditionRule extends DerivationRule {
         return this;
     }
 
-    public int getResult(List<Integer> dims){
-        return this.terms.stream().map(x -> x.evaluate(dims)).reduce(0, Integer::sum);
+    public double getResult(List<Integer> dims){
+        return this.terms.stream().map(x -> x.evaluate(dims)).reduce(0.0, Double::sum);
     }
 
 }

@@ -25,7 +25,7 @@ public class ChainRule extends DerivationRule {
     }
 
     @Override
-    public int getResult(List<Integer> dims) {
-        return 0;
+    public double getResult(List<Integer> dims) {
+        return this.terms.get(0).evaluate(dims);
     }
 }

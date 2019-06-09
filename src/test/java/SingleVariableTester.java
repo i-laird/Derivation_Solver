@@ -18,46 +18,46 @@ public class SingleVariableTester {
     @DisplayName("Single Derivatives")
     @ParameterizedTest(name = "{0}")
     @MethodSource("singleVariable")
-    public void test1(String inputString, List<Integer> evaluationPoints,  int result ){
+    public void test1(String inputString, List<Integer> evaluationPoints,  double result ){
         InputStream stream = new ByteArrayInputStream(inputString.getBytes(StandardCharsets.UTF_8));
         Parser p = new Parser(stream);
         Term root = p.getRoot();
         Term deriv = root.getDerivative();
-        int evaluatedNum = deriv.evaluate(evaluationPoints);
+        double evaluatedNum = deriv.evaluate(evaluationPoints);
         assertEquals(evaluatedNum, result);
     }
 
     private static Stream<Arguments> singleVariable(){
         return Stream.of(
                 //first test the polynomials
-                Arguments.of("     1     ",          createSingleList(DOES_NOT_MATTER), 0),
-                Arguments.of("1",                    createSingleList(DOES_NOT_MATTER), 0),
-                Arguments.of("10",                   createSingleList(DOES_NOT_MATTER), 0),
-                Arguments.of("-100",                 createSingleList(DOES_NOT_MATTER), 0),
-                Arguments.of("1000 + 10000 - 1 + 0", createSingleList(DOES_NOT_MATTER), 0),
-                Arguments.of("0",                    createSingleList(DOES_NOT_MATTER), 0),
-                Arguments.of("x",                    createSingleList(DOES_NOT_MATTER), 1),
-                Arguments.of("- x",                  createSingleList(DOES_NOT_MATTER), -1),
-                Arguments.of("- x + x",              createSingleList(DOES_NOT_MATTER), 0),
-                Arguments.of("0x",                   createSingleList(DOES_NOT_MATTER), 0),
-                Arguments.of("1x",                   createSingleList(DOES_NOT_MATTER), 1),
-                Arguments.of("2x",                   createSingleList(DOES_NOT_MATTER), 2),
-                Arguments.of("2 * x",                createSingleList(DOES_NOT_MATTER), 2),
-                Arguments.of("2x - 3x",              createSingleList(DOES_NOT_MATTER), -1),
-                Arguments.of("2x + 3x - 16",         createSingleList(DOES_NOT_MATTER), 5),
-                Arguments.of("- 2x + 3x - 16",       createSingleList(DOES_NOT_MATTER), 1),
-                Arguments.of("- 2x - - 3x",          createSingleList(DOES_NOT_MATTER), 1),
+                Arguments.of("     1     ",          createSingleList(DOES_NOT_MATTER), 0.0),
+                Arguments.of("1",                    createSingleList(DOES_NOT_MATTER), 0.0),
+                Arguments.of("10",                   createSingleList(DOES_NOT_MATTER), 0.0),
+                Arguments.of("-100",                 createSingleList(DOES_NOT_MATTER), 0.0),
+                Arguments.of("1000 + 10000 - 1 + 0", createSingleList(DOES_NOT_MATTER), 0.0),
+                Arguments.of("0",                    createSingleList(DOES_NOT_MATTER), 0.0),
+                Arguments.of("x",                    createSingleList(DOES_NOT_MATTER), 1.0),
+                Arguments.of("- x",                  createSingleList(DOES_NOT_MATTER), -1.0),
+                Arguments.of("- x + x",              createSingleList(DOES_NOT_MATTER), 0.0),
+                Arguments.of("0x",                   createSingleList(DOES_NOT_MATTER), 0.0),
+                Arguments.of("1x",                   createSingleList(DOES_NOT_MATTER), 1.0),
+                Arguments.of("2x",                   createSingleList(DOES_NOT_MATTER), 2.0),
+                Arguments.of("2 * x",                createSingleList(DOES_NOT_MATTER), 2.0),
+                Arguments.of("2x - 3x",              createSingleList(DOES_NOT_MATTER), -1.0),
+                Arguments.of("2x + 3x - 16",         createSingleList(DOES_NOT_MATTER), 5.0),
+                Arguments.of("- 2x + 3x - 16",       createSingleList(DOES_NOT_MATTER), 1.0),
+                Arguments.of("- 2x - - 3x",          createSingleList(DOES_NOT_MATTER), 1.0),
 
 
-                Arguments.of("2x + 3x * 5x",         createSingleList(1),          32),
-                Arguments.of("2x * 3x * 5x",         createSingleList(2),          360),
-                Arguments.of("2x * 3x * 5x + x ^ 4", createSingleList(2),          392),
-                Arguments.of("2x * 3x * 5x - x ^ 4", createSingleList(2),          328),
-                Arguments.of("x ^ 2",                createSingleList(1),          2 ),
-                Arguments.of("x ^ 2",                createSingleList(-1),         -2 ),
-                Arguments.of("x ^ 3",                createSingleList(5),          75 ),
-                Arguments.of("x ^ 3 + x ^ 2 - 5",    createSingleList(2),          16 ),
-                Arguments.of("- x ^ 3 + x ^ 2 - 5",  createSingleList(2),          -8 )
+                Arguments.of("2x + 3x * 5x",         createSingleList(1),          32.0),
+                Arguments.of("2x * 3x * 5x",         createSingleList(2),          360.0),
+                Arguments.of("2x * 3x * 5x + x ^ 4", createSingleList(2),          392.0),
+                Arguments.of("2x * 3x * 5x - x ^ 4", createSingleList(2),          328.0),
+                Arguments.of("x ^ 2",                createSingleList(1),          2.0),
+                Arguments.of("x ^ 2",                createSingleList(-1),         -2.0),
+                Arguments.of("x ^ 3",                createSingleList(5),          75.0),
+                Arguments.of("x ^ 3 + x ^ 2 - 5",    createSingleList(2),          16.0),
+                Arguments.of("- x ^ 3 + x ^ 2 - 5",  createSingleList(2),          -8.0)
 
                 //Arguments.of("ln x",                 createSingleList(1),          1 )
                 );
