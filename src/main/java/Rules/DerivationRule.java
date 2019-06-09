@@ -1,6 +1,8 @@
 package Rules;
 
 import java.util.LinkedList;
+import java.util.List;
+
 import Terms.Term;
 
 
@@ -22,4 +24,14 @@ public abstract class DerivationRule extends Term {
     protected Term putTogether(LinkedList<Term> original, LinkedList<Term> derived){
         return null;
     }
+
+    public int evaluate(List<Integer> dims){
+        int toReturn = this.getResult(dims);
+        if(this.negative){
+            toReturn = toReturn * -1;
+        }
+        return toReturn;
+    }
+
+    public abstract int getResult(List<Integer> dims);
 }

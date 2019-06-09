@@ -3,6 +3,7 @@ package Rules;
 import Terms.Term;
 
 import java.util.LinkedList;
+import java.util.List;
 
 public class ChainRule extends DerivationRule {
 
@@ -21,5 +22,10 @@ public class ChainRule extends DerivationRule {
 
     public ChainRule(LinkedList<Term> l) {
         super(l);
+    }
+
+    @Override
+    public int getResult(List<Integer> dims) {
+        return 0;
     }
 }

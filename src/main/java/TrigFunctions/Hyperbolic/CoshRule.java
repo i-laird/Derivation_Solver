@@ -4,6 +4,7 @@ import Rules.DerivationRule;
 import Terms.Term;
 
 import java.util.LinkedList;
+import java.util.List;
 
 public class CoshRule  extends DerivationRule {
 
@@ -14,5 +15,10 @@ public class CoshRule  extends DerivationRule {
     @Override
     public Term getDerivative() {
         return rf.makeSinhRule(this.terms.get(0));
+    }
+
+    @Override
+    public int getResult(List<Integer> dims) {
+        return 0;
     }
 }

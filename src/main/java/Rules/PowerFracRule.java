@@ -3,6 +3,7 @@ package Rules;
 import Terms.Term;
 
 import java.util.LinkedList;
+import java.util.List;
 
 public class PowerFracRule extends DerivationRule {
 
@@ -22,6 +23,11 @@ public class PowerFracRule extends DerivationRule {
         }
 
         return new Term(1);
+    }
+
+    @Override
+    public int getResult(List<Integer> dims) {
+        return 0;
     }
 }
 

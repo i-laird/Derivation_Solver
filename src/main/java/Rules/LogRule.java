@@ -1,6 +1,8 @@
 package Rules;
 
 import java.util.LinkedList;
+import java.util.List;
+
 import Terms.Term;
 
 
@@ -14,5 +16,10 @@ public class LogRule extends DerivationRule {
         int base = this.terms.get(0).getNum();
         Term inside = this.terms.get(1);
         return rf.makeFracRule(new Term(1), rf.makeProductRule(inside, rf.makeNaturalLogRule(this.terms.get(0))));
+    }
+
+    @Override
+    public int getResult(List<Integer> dims) {
+        return 0;
     }
 }

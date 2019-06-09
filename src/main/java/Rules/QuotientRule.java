@@ -2,6 +2,8 @@ package Rules;
 
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
+
 import Terms.Term;
 
 
@@ -42,5 +44,10 @@ public class QuotientRule extends DerivationRule {
 
     public QuotientRule(LinkedList<Term> l) {
         super(l);
+    }
+
+    @Override
+    public int getResult(List<Integer> dims) {
+        return 0;
     }
 }

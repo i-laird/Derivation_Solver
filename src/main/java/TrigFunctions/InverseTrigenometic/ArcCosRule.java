@@ -4,6 +4,7 @@ import Rules.DerivationRule;
 import Terms.Term;
 
 import java.util.LinkedList;
+import java.util.List;
 
 public class ArcCosRule extends DerivationRule {
 
@@ -20,5 +21,10 @@ public class ArcCosRule extends DerivationRule {
                         new Term(1),
                         new Term(2)
                 ));
+    }
+
+    @Override
+    public int getResult(List<Integer> dims) {
+        return 0;
     }
 }

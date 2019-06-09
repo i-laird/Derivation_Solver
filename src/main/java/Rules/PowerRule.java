@@ -25,7 +25,9 @@ public class PowerRule extends DerivationRule {
         return new Term(1);
     }
 
-    public int evaluate(List<Integer> dims){
+    @Override
+    public int getResult(List<Integer> dims) {
         return (int)Math.pow((double)this.terms.get(0).evaluate(dims), (double)this.terms.get(1).evaluate(dims));
     }
+
 }
