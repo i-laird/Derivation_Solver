@@ -3,6 +3,7 @@ package Terms;
 import Enums.AbstractMath;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Variable extends Term implements AbstractMath{
@@ -31,5 +32,9 @@ public class Variable extends Term implements AbstractMath{
 
     public Term getTermFromOp(Term one, Term two){
         return this;
+    }
+
+    public int evaluate(List<Integer> dims){
+        return dims.get(0);
     }
 }

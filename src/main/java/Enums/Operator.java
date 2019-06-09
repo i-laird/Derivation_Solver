@@ -82,7 +82,7 @@ public enum Operator implements AbstractMath{
             // see if the rule needs to be wrapped in a chain rule
             // if it is just one variable inside there is no need for the chain rule because of the implied one
             if(specialCase && one.getClass() != Variable.class){
-                toReturn = rf.makeChainRule(toReturn, one);
+                toReturn = rf.makeChainRule(toReturn, two);
             }
             return toReturn;
     }

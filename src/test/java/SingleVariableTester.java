@@ -41,12 +41,14 @@ public class SingleVariableTester {
                 Arguments.of("2x",                   createSingleList(DOES_NOT_MATTER), 2),
                 Arguments.of("2 * x",                createSingleList(DOES_NOT_MATTER), 2),
                 Arguments.of("2x + 3x - 16",         createSingleList(DOES_NOT_MATTER), 5),
+                Arguments.of("- 2x + 3x - 16",         createSingleList(DOES_NOT_MATTER), 1),
 
 
                 Arguments.of("x ^ 2",                createSingleList(1),          2 ),
                 Arguments.of("x ^ 2",                createSingleList(-1),         -2 ),
-                Arguments.of("x ^ 3",                createSingleList(5),          15 ),
-                Arguments.of("x ^ 3 + x ^ 2 - 5",    createSingleList(2),          10 ),
+                Arguments.of("x ^ 3",                createSingleList(5),          75 ),
+                Arguments.of("x ^ 3 + x ^ 2 - 5",    createSingleList(2),          16 ),
+                Arguments.of("- x ^ 3 + x ^ 2 - 5",  createSingleList(2),          -8 ),
 
                 Arguments.of("ln x",                 createSingleList(1),          1 )
                 );
