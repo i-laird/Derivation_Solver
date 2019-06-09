@@ -24,10 +24,11 @@ public class Parser {
 
         // first run the shunting yard algorithm
         List<AbstractMath> mappedParts = cleanedInput.stream().map(this::getMappedPart).collect(Collectors.toList());
+        List<AbstractMath> negFixed = removeMultipleNegatives(mappedParts);
         Queue<Wrapper>  outputParts = new LinkedList<>(); //these are those that would be written to console
         Stack<Wrapper>  stack = new Stack<>();
         Stack<Term> derivativeStack = new Stack<>();
-        for(AbstractMath am: mappedParts){
+        for(AbstractMath am: negFixed){
             if(am.getClass() == Negative.class){
                 negative = (Negative)am;
                 continue;
@@ -167,6 +168,37 @@ public class Parser {
             }
             else{
                 returnList.add(s);
+            }
+        }
+        return returnList;
+    }
+
+    public List<AbstractMath> removeMultipleNegatives(List<AbstractMath> l){
+        List<AbstractMath> returnList = new LinkedList<>();
+        Queue<AbstractMath> suspicious = new LinkedList<>();
+        for (AbstractMath am : l){
+            //when this happens it is time to clear out the queue
+            if(am.getClass()  != Negative.class && am != Operator.SUBTRACT ){
+                if (!suspicious.isEmpty()) {
+                    AbstractMath topElem = suspicious.remove();
+                    //this needs to become an addition
+                    if (topElem == Operator.SUBTRACT) {
+                        while (!suspicious.isEmpty()) {
+                            suspicious.remove();
+                            topElem = (topElem == Operator.SUBTRACT ? Operator.ADD : Operator.SUBTRACT);
+                        }
+                        returnList.add(topElem);
+                    } else if (topElem.getClass() == Negative.class) {
+                        int size = suspicious.size() + 1;
+                        if (size % 2 == 1) {
+                            returnList.add(topElem);
+                        }
+                    }
+                }\
+                returnList.add(am);
+            }
+            else{
+                suspicious.add(am);
             }
         }
         return returnList;
