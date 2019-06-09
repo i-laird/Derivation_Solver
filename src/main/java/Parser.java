@@ -105,6 +105,9 @@ public class Parser {
         while(!stack.empty()){
             Wrapper part = stack.pop();
             if(part.getAm().getClass() != Paren.class) {
+                if ((Operator) part.getAm() == Operator.NAT_LOG) {
+                    outputParts.add(new Wrapper(new Num(1)));
+                }
                 outputParts.add(part);
             }
         }

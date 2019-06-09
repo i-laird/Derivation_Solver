@@ -44,7 +44,7 @@ public enum Operator implements AbstractMath{
         boolean specialCase = false;
         switch(this) {
             case NAT_LOG:
-                toReturn = rf.makeNaturalLogRule(one);
+                toReturn = rf.makeNaturalLogRule(two);
                 specialCase = true;
                 break;
             case LOG:

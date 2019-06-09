@@ -57,9 +57,10 @@ public class SingleVariableTester {
                 Arguments.of("x ^ 2",                createSingleList(-1),         -2.0),
                 Arguments.of("x ^ 3",                createSingleList(5),          75.0),
                 Arguments.of("x ^ 3 + x ^ 2 - 5",    createSingleList(2),          16.0),
-                Arguments.of("- x ^ 3 + x ^ 2 - 5",  createSingleList(2),          -8.0)
+                Arguments.of("- x ^ 3 + x ^ 2 - 5",  createSingleList(2),          -8.0),
 
-                //Arguments.of("ln x",                 createSingleList(1),          1 )
+                Arguments.of("ln x",                 createSingleList(1),          1.0 ),
+                Arguments.of("ln x",                 createSingleList(100),        1.0 / 100 )
                 );
     }
 
