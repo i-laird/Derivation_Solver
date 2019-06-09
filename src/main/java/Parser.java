@@ -83,14 +83,16 @@ public class Parser {
                     if (stack.empty()){
                         break;
                     }
-                    if((stack.peek()).getAm().getClass() != Paren.class && ((((Operator) (stack.peek()).getAm())).precedence < ((Operator) am).precedence) || (((Operator) (stack.peek()).getAm()).precedence == ((Operator) am).precedence) && ((Operator) (stack.peek()).getAm()).associativity == Operator.Associativity.LEFT) {
-                        break;
-                    }
-                    // account for natural log being weird
-                    // TODO check to see if this works
-                    if ((Operator) (stack.peek()).getAm() == Operator.NAT_LOG) {
-                        outputParts.add(new Wrapper(new Num(1)));
-                    }
+                    try {
+                        if ((stack.peek()).getAm().getClass() != Paren.class && ((((Operator) (stack.peek()).getAm())).precedence < ((Operator) am).precedence) || (((Operator) (stack.peek()).getAm()).precedence == ((Operator) am).precedence) && ((Operator) (stack.peek()).getAm()).associativity == Operator.Associativity.LEFT) {
+                            break;
+                        }
+                        // account for natural log being weird
+                        // TODO check to see if this works
+                        if ((Operator) am == Operator.NAT_LOG) {
+                            outputParts.add(new Wrapper(new Num(1)));
+                        }
+                    }catch(ClassCastException e){}
                     outputParts.add(stack.pop());
                 }
                 stack.push(new Wrapper(am));
@@ -105,9 +107,11 @@ public class Parser {
         while(!stack.empty()){
             Wrapper part = stack.pop();
             if(part.getAm().getClass() != Paren.class) {
-                if ((Operator) part.getAm() == Operator.NAT_LOG) {
-                    outputParts.add(new Wrapper(new Num(1)));
-                }
+                try {
+                    if ((Operator) part.getAm() == Operator.NAT_LOG) {
+                        outputParts.add(new Wrapper(new Num(1)));
+                    }
+                }catch(ClassCastException e){}
                 outputParts.add(part);
             }
         }
@@ -188,7 +192,7 @@ public class Parser {
             return returnThing;
         }
         if(s.length() != 1){
-            throw new RuntimeException("This part is invalid");
+            throw new RuntimeException("This part is invalid: " + s);
         }
         operatorOrFunctionSeen = false;
         return Variable.getVariable(s.charAt(0));

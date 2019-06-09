@@ -11,7 +11,7 @@ public enum Function implements AbstractMath {
         switch(s.toUpperCase()){
             case "SIN":
                 return SIN;
-            case "COSINE":
+            case "COS":
                 return COSINE;
             case "TAN":
                 return TAN;

@@ -60,7 +60,13 @@ public class SingleVariableTester {
                 Arguments.of("- x ^ 3 + x ^ 2 - 5",  createSingleList(2),          -8.0),
 
                 Arguments.of("ln x",                 createSingleList(1),          1.0 ),
-                Arguments.of("ln x",                 createSingleList(100),        1.0 / 100 )
+                Arguments.of("ln x",                 createSingleList(100),        1.0 / 100 ),
+                Arguments.of("sin x",                createSingleList(1),          Math.cos(1.0)),
+                Arguments.of("cos x",                createSingleList(3),          -1 * Math.sin(3)),
+                Arguments.of("tan x",                createSingleList(2),          Math.pow(1.0 / Math.sin(2), 2)),
+
+                Arguments.of("sin x + x ^ 3",        createSingleList(2),          Math.cos(2.0) + 12)
+
                 );
     }
 
