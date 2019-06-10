@@ -19,7 +19,7 @@ public class PowerRule extends DerivationRule {
 
         //if it is not zero we just do a simple multiplication
         if (pow != 0){
-            return rf.makeProductRule(this.negative ? new Term(pow * -1) : new Term(pow), rf.makePowerRule(base, new Term(pow - 1)));
+            return rf.makeProductRule(this.negative ? new Term(pow * -1) : new Term(pow), rf.makePowerRule(new Term(pow - 1), base));
         }
 
         return new Term(1);
@@ -27,7 +27,7 @@ public class PowerRule extends DerivationRule {
 
     @Override
     public double getResult(List<Integer> dims) {
-        return Math.pow(this.terms.get(0).evaluate(dims), this.terms.get(1).evaluate(dims));
+        return Math.pow(this.terms.get(1).evaluate(dims), this.terms.get(0).evaluate(dims));
     }
 
 }

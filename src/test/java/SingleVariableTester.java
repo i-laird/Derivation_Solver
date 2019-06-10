@@ -63,10 +63,11 @@ public class SingleVariableTester {
                 Arguments.of("ln x",                 createSingleList(100),        1.0 / 100 ),
                 Arguments.of("sin x",                createSingleList(1),          Math.cos(1.0)),
                 Arguments.of("cos x",                createSingleList(3),          -1 * Math.sin(3)),
-                Arguments.of("tan x",                createSingleList(2),          Math.pow(1.0 / Math.sin(2), 2)),
+                Arguments.of("tan x",                createSingleList(2),          Math.pow(2, 1.0 / Math.sin(2))),
 
                 Arguments.of("sin x + x ^ 3",        createSingleList(2),          Math.cos(2.0) + 12),
-                Arguments.of("sin x + x ^ 2 - cos x",createSingleList(3),          Math.cos(3.0) + 6 + Math.sin(3.0))
+                Arguments.of("sin x + x ^ 2 - cos x",createSingleList(3),          Math.cos(3.0) + 6 + Math.sin(3.0)),
+                Arguments.of("sin x * x ^ 2",        createSingleList(3),         (Math.cos(3.0) * 9) + ( 6 * Math.sin(3.0)))
 
         );
     }
