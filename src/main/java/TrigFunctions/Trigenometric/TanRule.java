@@ -5,15 +5,16 @@ import java.util.List;
 
 import Rules.DerivationRule;
 import Terms.Term;
+import TrigFunctions.TrigRule;
 
-public class TanRule extends DerivationRule {
+public class TanRule extends TrigRule {
 
     public TanRule(LinkedList<Term> l) {
         super(l);
     }
 
     @Override
-    public Term getDerivative() {
+    public Term getDerivPart() {
         // d/dx tan(x) = sec(x)^2
         return DerivationRule.rf.makePowerRule(DerivationRule.rf.makeSecRule(this.terms.get(0)), new Term(2));
     }

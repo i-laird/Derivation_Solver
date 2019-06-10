@@ -2,18 +2,19 @@ package TrigFunctions.Hyperbolic;
 
 import Rules.DerivationRule;
 import Terms.Term;
+import TrigFunctions.TrigRule;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class SinhRule extends DerivationRule {
+public class SinhRule extends TrigRule {
 
     public SinhRule(LinkedList<Term> l) {
         super(l);
     }
 
     @Override
-    public Term getDerivative() {
+    public Term getDerivPart() {
         return rf.makeCoshRule(this.terms.get(0));
     }
 

@@ -5,16 +5,17 @@ import java.util.List;
 
 import Rules.DerivationRule;
 import Terms.Term;
+import TrigFunctions.TrigRule;
 
 
-public class CscRule extends DerivationRule {
+public class CscRule extends TrigRule {
 
     public CscRule(LinkedList<Term> l) {
         super(l);
     }
 
     @Override
-    public Term getDerivative() {
+    public Term getDerivPart() {
         // d/dx csc(x) = -csc(x) * cot(x)
         return DerivationRule.rf.makeProductRule(DerivationRule.rf.makeCscRule(this.terms.get(0)).flipSign(), DerivationRule.rf.makeCotRule(this.terms.get(0)));
     }

@@ -5,15 +5,16 @@ import java.util.List;
 
 import Rules.DerivationRule;
 import Terms.Term;
+import TrigFunctions.TrigRule;
 
-public class SinRule extends DerivationRule {
+public class SinRule extends TrigRule {
 
     public SinRule(LinkedList<Term> l) {
         super(l);
     }
 
     @Override
-    public Term getDerivative() {
+    public Term getDerivPart() {
         return DerivationRule.rf.makeCosRule(this.terms.get(0));
     }
 

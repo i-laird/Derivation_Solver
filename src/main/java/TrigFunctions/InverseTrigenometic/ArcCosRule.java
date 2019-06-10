@@ -2,18 +2,19 @@ package TrigFunctions.InverseTrigenometic;
 
 import Rules.DerivationRule;
 import Terms.Term;
+import TrigFunctions.TrigRule;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class ArcCosRule extends DerivationRule {
+public class ArcCosRule extends TrigRule {
 
     public ArcCosRule(LinkedList<Term> l) {
         super(l);
     }
 
     @Override
-    public Term getDerivative() {
+    public Term getDerivPart() {
         return rf.makeFracRule(new Term(-1),
                 rf.makePowerFracRule(
                         rf.makeAdditionRule(new Term(1),
