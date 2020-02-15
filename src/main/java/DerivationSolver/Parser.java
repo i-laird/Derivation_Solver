@@ -36,6 +36,10 @@ public class Parser {
      * created the tree and stores it in root
      */
     public Parser(InputStream in){
+
+        // used to find when to end the jurisdiction of unary operators
+        Map<AbstractMath, AbstractMath> functionToLastAppliedTerm = new HashMap<>();
+
         //reset the variables
         Var.reset();
         Scanner inputScan = new Scanner(new BufferedInputStream(in));
@@ -52,7 +56,10 @@ public class Parser {
         Queue<Wrapper>  outputParts = new LinkedList<>(); //these are those that would be written to console
         Stack<Wrapper>  stack = new Stack<>();
         Stack<Term> derivativeStack = new Stack<>();
-        for(AbstractMath am: negFixed){
+
+        ListIterator<AbstractMath> iter = negFixed.listIterator();
+        while (iter.hasNext()){
+            AbstractMath am = iter.next();
             if(am.getClass() == Negative.class){
                 negative = (Negative)am;
                 continue;
@@ -65,9 +72,30 @@ public class Parser {
                 else {
                     outputParts.add(new Wrapper(am));
                 }
+                for(Map.Entry<AbstractMath, AbstractMath> k : functionToLastAppliedTerm.entrySet()){
+                    if(am == k.getValue()){
+                        outputParts.add(new Wrapper(k.getKey()));
+                        functionToLastAppliedTerm.remove(k.getKey());
+                        break;
+                    }
+                }
             }
+            // if it is a unary operator figure out when the operator stops applying
             else if(am.getClass() == Function.class) {
-                stack.push(new Wrapper(am));
+                ListIterator<AbstractMath> iter2 = negFixed.listIterator(iter.nextIndex());
+
+                AbstractMath next = iter2.next();
+
+                if(next.getClass() != Num.class && next.getClass() != Variable.class){
+                    // if not go to when the closing paren is
+                    while (next.getClass() != Paren.class || next != Paren.RIGHT_PAREN) {
+                        next = iter2.next();
+                    }
+                }
+
+                functionToLastAppliedTerm.put(am, next);
+
+                //stack.push(new Wrapper(am));
             }
             else if(am.getClass() == Paren.class){
                 if(am == Paren.LEFT_PAREN){
@@ -76,6 +104,13 @@ public class Parser {
                 else{
                     while((stack.peek()).getAm() != Paren.LEFT_PAREN){
                         outputParts.add(stack.pop());
+                    }
+                    for(Map.Entry<AbstractMath, AbstractMath> k : functionToLastAppliedTerm.entrySet()){
+                        if(am == k.getValue()){
+                            outputParts.add(new Wrapper(k.getKey()));
+                            functionToLastAppliedTerm.remove(k.getKey());
+                            break;
+                        }
                     }
                 }
             }
@@ -86,7 +121,7 @@ public class Parser {
                         break;
                     }
                     try {
-                        if ((stack.peek()).getAm().getClass() != Paren.class && ((((Operator) (stack.peek()).getAm())).precedence < ((Operator) am).precedence) || (((Operator) (stack.peek()).getAm()).precedence == ((Operator) am).precedence) && ((Operator) (stack.peek()).getAm()).associativity == Operator.Associativity.LEFT) {
+                        if ((stack.peek()).getAm().getClass() == Paren.class || ((((Operator) (stack.peek()).getAm())).precedence < ((Operator) am).precedence) || (((Operator) (stack.peek()).getAm()).precedence == ((Operator) am).precedence) && ((Operator) (stack.peek()).getAm()).associativity == Operator.Associativity.LEFT) {
                             break;
                         }
                         // account for natural log being weird
@@ -94,7 +129,9 @@ public class Parser {
                         if ((Operator) am == Operator.NAT_LOG) {
                             outputParts.add(new Wrapper(new Num(1)));
                         }
-                    }catch(ClassCastException e){}
+                    }catch(ClassCastException e){
+                        System.err.println(e);
+                    }
                     outputParts.add(stack.pop());
                 }
                 stack.push(new Wrapper(am));

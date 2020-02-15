@@ -73,7 +73,7 @@ public class SingleVariableTester {
                 Arguments.of("sin x + x ^ 3",        createSingleList(2),          Math.cos(2.0) + 12),
                 Arguments.of("sin x + x ^ 2 - cos x",createSingleList(3),          Math.cos(3.0) + 6 + Math.sin(3.0)),
                 Arguments.of("sin x * x ^ 2",        createSingleList(3),         (Math.cos(3.0) * 9) + ( 6 * Math.sin(3.0))),
-                Arguments.of("sin ( x ) * x ^ 2",        createSingleList(3),         (Math.cos(3.0) * 9) + ( 6 * Math.sin(3.0)))
+                Arguments.of("sin ( x ) * x ^ 2",        createSingleList(3),     (Math.cos(3.0) * 9) + ( 6 * Math.sin(3.0)))
 
         );
     }
