@@ -205,19 +205,38 @@ public class Parser {
      * example: 3x into 3 * x
      */
     public List<String> cleanInput(String [] list){
-        //turn something like 3x into 3 * x
-        //this makes it easier later
+
+        // stick the strings on in the order of a stack
+        Stack<String> strings = new Stack<>();
+        for(int i = list.length - 1; i >= 0; i--){
+            strings.push(list[i]);
+        }
+
         List<String> returnList = new LinkedList<>();
-        for (String s : list){
-            if(s.matches(".*[0-9][a-z].*")){
-                String [] parsedParts = s.split("(?=[a-z])", 2);
-                returnList.add(parsedParts[0]);
-                returnList.add("*");
-                returnList.add(parsedParts[1]);
+
+        while (!strings.isEmpty()){
+            String s = strings.pop();
+            String [] parsedParts = null;
+
+            // split based on a non space followed by a paren sinx -> sin x
+            parsedParts = s.split(".*[^ ](?=[\\(\\)])");
+
+            if(parsedParts.length > 1) {
+                for(int i = parsedParts.length - 1; i >= 0; i--){
+                    strings.push(parsedParts[i]);
+                }
+                continue;
             }
-            else{
-                returnList.add(s);
+
+            //turn something like 3x into 3 * x
+            if (s.matches(".*[0-9][a-z].*")) {
+                parsedParts = s.split("(?=[a-z])", 2);
+                strings.push(parsedParts[1]);
+                strings.push("*");
+                strings.push(parsedParts[0]);
+                continue;
             }
+            returnList.add(s);
         }
         return returnList;
     }

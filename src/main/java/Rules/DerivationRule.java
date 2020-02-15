@@ -14,6 +14,7 @@ public abstract class DerivationRule extends Term {
     }
 
     public DerivationRule(){}
+
     @Override
     public Term getDerivative() {
         LinkedList<Term> derived = new LinkedList<>();
