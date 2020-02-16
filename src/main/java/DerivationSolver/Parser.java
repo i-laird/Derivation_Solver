@@ -88,14 +88,26 @@ public class Parser {
 
                 if(next.getClass() != Num.class && next.getClass() != Variable.class){
                     // if not go to when the closing paren is
-                    while (next.getClass() != Paren.class || next != Paren.RIGHT_PAREN) {
+                    int leftParenCount = 0;
+                    while(true){
+                        if(next.getClass() == Paren.class){
+                            if(next == Paren.LEFT_PAREN){
+                                leftParenCount++;
+                            }
+                            else{
+                                if(leftParenCount > 1){
+                                    leftParenCount--;
+                                }
+                                else{
+                                    break;
+                                }
+                            }
+                        }
                         next = iter2.next();
                     }
                 }
 
                 functionToLastAppliedTerm.put(am, next);
-
-                //stack.push(new Wrapper(am));
             }
             else if(am.getClass() == Paren.class){
                 if(am == Paren.LEFT_PAREN){
