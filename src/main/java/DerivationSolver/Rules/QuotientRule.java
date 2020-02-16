@@ -32,21 +32,16 @@ public class QuotientRule extends DerivationRule {
         subtraction.add(new ProductRule(p1));
         subtraction.add(new ProductRule(p2).flipSign());
 
-        // the denom gets added first
-        quotient.add(
-                new ChainRule(new LinkedList<Term>(Arrays.asList(
-                    new PowerRule(new LinkedList<Term>(Arrays.asList(
-                            new Term(2),
-                            original.get(DENOM_POS)
-                    ))),
-                    original.get(DENOM_POS)
-                )))
-        );
+        Term numerator = new AdditionRule(subtraction);
+        Term denom = new ChainRule(new LinkedList<Term>(Arrays.asList(
+                new PowerRule(new LinkedList<Term>(Arrays.asList(
+                        new Term(2),
+                        original.get(DENOM_POS)
+                ))),
+                original.get(DENOM_POS)
+        )));
 
-        // then add the numerator
-        quotient.add(new AdditionRule(subtraction));
-
-        return new QuotientRule(quotient);
+        return rf.makeFracRule(denom, numerator);
     }
 
     public QuotientRule(LinkedList<Term> l) {

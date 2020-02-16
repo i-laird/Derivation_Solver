@@ -14,7 +14,7 @@ public class NaturalLogRule extends DerivationRule {
     @Override
     public Term getDerivative() {
         Term inside = this.terms.get(0);
-        return rf.makeFracRule(new Term(1), inside);
+        return rf.makeFracRule(inside, new Term(1));
     }
 
     @Override
