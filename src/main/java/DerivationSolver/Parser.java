@@ -274,7 +274,7 @@ public class Parser {
             String [] parsedParts = null;
 
             // split based on a non space followed by a paren sinx -> sin x
-            parsedParts = s.split("((?<=[\\(\\)])|(?=[\\(\\)]))");
+            parsedParts = s.split("((?<=[\\(\\)\\*\\^])|(?=[\\(\\)\\*\\^]))");
 
             if(parsedParts.length > 1) {
                 for(int i = parsedParts.length - 1; i >= 0; i--){

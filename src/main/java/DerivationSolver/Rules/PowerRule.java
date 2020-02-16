@@ -7,15 +7,22 @@ import DerivationSolver.Terms.Term;
 
 
 public class PowerRule extends DerivationRule {
+
+    // POW is the first in the terms
+    public static final int POW_POS = 0;
+
+    // BASE is the second in the terms
+    public static final int BASE_POS = 1;
+
     public PowerRule(LinkedList<Term> l) {
         super(l);
     }
 
-    //TODO fix the ordering
     @Override
     public Term getDerivative() {
-        int pow = this.terms.get(0).getNum();
-        Term base = this.terms.get(1);
+
+        int pow = this.terms.get(POW_POS).getNum();
+        Term base = this.terms.get(BASE_POS);
 
         //if it is not zero we just do a simple multiplication
         if (pow != 0){
