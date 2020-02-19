@@ -15,56 +15,82 @@ import java.util.stream.Collectors;
  *
  * Parsers an input line to create the operation/function tree.
  *
- * Uses the shunting yard algorithm so that the expression can be converted to
- * reverse polish notation. The tree is then constructed.
+ * STEPS:
+ * 1) Uses the shunting yard algorithm to convert mathematical expression from infix to postfix notation.
+ *      -order of operations is taken into account when parsing
+ *      -I had to modify the standard algorithm to account for unary operators (i.e. sin() cos())
+ * 2) Creates AST from the postfix expression.
  *
- * The ouput of the parser is a root that can then be grabbed with getRoot.
- * This can then have its derivative taken, or it can be directly evaluated as it.
+ * TO USE:
+ * 1) create the Parser using an input stream
+ * 2) Call get root to get the term at the base of the AST.
+ *
+ * TO GET DERIVATIVE:
+ * call getDerivative on the term returned from getRoot()
  *
  * @see Term
  */
 public class Parser {
     private boolean operatorOrFunctionSeen = true;
+
+    // the root of the AST (populated by constructor)
     Term root = null;
 
     /**
      * @author Laird
      * @param in the inputstream from which the mathematical expression to be parsed
-     *           is contained
+     *           is contained in infix notation
      * return: none
      *
-     * created the tree and stores it in root
+     * creates the tree and stores it in root
      */
     public Parser(InputStream in){
 
         // used to find when to end the jurisdiction of unary operators
+        // i.e. for sin(x) a mapping will be stored from sin to the end paren
         Map<AbstractMath, AbstractMath> functionToLastAppliedTerm = new HashMap<>();
 
         //reset the variables
         Var.reset();
         Scanner inputScan = new Scanner(new BufferedInputStream(in));
         String line = inputScan.nextLine();
+
+        // tokenize the line by white space
         String [] parts = line.split("\\s+");
         Negative negative = null;
 
-        //clean the input a little
+        // clean the tokens
+        // this step further splits the tokens if the string does not delimit by white space
         List<String> cleanedInput = cleanInput(parts);
 
-        // first run the shunting yard algorithm
+        // map each token to its associated mathematical operation
         List<AbstractMath> mappedParts = cleanedInput.stream().map(this::getMappedPart).filter(Objects::nonNull).collect(Collectors.toList());
+
+        // remove excessive negatives
+        // i.e. NEGATIVE NEGATIVE 5 -> 5
         List<AbstractMath> negFixed = removeMultipleNegatives(mappedParts);
-        Queue<Wrapper>  outputParts = new LinkedList<>(); //these are those that would be written to console
+
+        // holds the reverse polish notation
+        Queue<Wrapper>  outputParts = new LinkedList<>();
         Stack<Wrapper>  stack = new Stack<>();
         Stack<Term> derivativeStack = new Stack<>();
 
+        // used to iterate over the tokens
         ListIterator<AbstractMath> iter = negFixed.listIterator();
+
         while (iter.hasNext()){
             AbstractMath am = iter.next();
+
+            // if this is a NEGATIVE remember it and go to next token
             if(am.getClass() == Negative.class){
                 negative = (Negative)am;
                 continue;
             }
+
+            // if token is a constant or a variable
             if(am.getClass() == Num.class || am.getClass() == Variable.class){
+
+                // if negated previously
                 if(negative != null){
                     outputParts.add(new Wrapper(am, negative));
                     negative = null;
@@ -72,6 +98,9 @@ public class Parser {
                 else {
                     outputParts.add(new Wrapper(am));
                 }
+
+                // see if any unary operator ends at this
+                // this will only occur when the unary operator did not use parenthesis
                 for(Map.Entry<AbstractMath, AbstractMath> k : functionToLastAppliedTerm.entrySet()){
                     if(am == k.getValue()){
                         outputParts.add(new Wrapper(k.getKey()));
@@ -80,14 +109,17 @@ public class Parser {
                     }
                 }
             }
+
             // if it is a unary operator figure out when the operator stops applying
             else if(am.getClass() == Function.class) {
                 ListIterator<AbstractMath> iter2 = negFixed.listIterator(iter.nextIndex());
 
                 AbstractMath next = iter2.next();
 
-                if(next.getClass() != Num.class && next.getClass() != Variable.class){
-                    // if not go to when the closing paren is
+                // if the immediate following is an OPEN PAREN look for CLOSE PAREN
+                if(next.getClass() == Paren.class && next == Paren.LEFT_PAREN ){
+
+                    // stores the number of OPEN PAREN seen
                     int leftParenCount = 0;
                     while(true){
                         if(next.getClass() == Paren.class){
