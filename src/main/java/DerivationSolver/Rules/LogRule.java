@@ -5,7 +5,11 @@ import java.util.List;
 
 import DerivationSolver.Terms.Term;
 
-
+/**
+ * Log Rule
+ *
+ * @author Ian Laird
+ */
 public class LogRule extends DerivationRule {
     public LogRule(LinkedList<Term> l) {
         super(l);
