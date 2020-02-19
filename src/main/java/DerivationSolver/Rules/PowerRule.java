@@ -5,7 +5,11 @@ import java.util.List;
 
 import DerivationSolver.Terms.Term;
 
-
+/**
+ * POWER RULE
+ *
+ * Used for when one term is raised to a power of another term
+ */
 public class PowerRule extends DerivationRule {
 
     // POW is the first in the terms
@@ -18,6 +22,11 @@ public class PowerRule extends DerivationRule {
         super(l);
     }
 
+    /**
+     * d/dx(x^n) = (n-1) * x
+     *
+     * @return the antiderivative
+     */
     @Override
     public Term getDerivative() {
 

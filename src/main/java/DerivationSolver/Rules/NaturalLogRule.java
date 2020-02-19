@@ -7,18 +7,25 @@ import DerivationSolver.Terms.Term;
 
 
 public class NaturalLogRule extends DerivationRule {
+    public static final int ARGUMENT_INDEX = 0;
+
     public NaturalLogRule(LinkedList<Term> l) {
         super(l);
     }
 
+    /**
+     * d/dx(lnx) = 1/x
+     * @return
+     */
     @Override
     public Term getDerivative() {
-        Term inside = this.terms.get(0);
-        return rf.makeFracRule(inside, new Term(1));
+
+        Term argument = this.terms.get(ARGUMENT_INDEX);
+        return rf.makeFracRule(argument, new Term(1));
     }
 
     @Override
     public double getResult(List<Integer> dims) {
-        return Math.log(this.terms.get(1).evaluate(dims));
+        return Math.log(this.terms.get(ARGUMENT_INDEX).evaluate(dims));
     }
 }

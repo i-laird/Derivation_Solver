@@ -16,8 +16,8 @@ public class RuleFactory {
     private RuleFactory(){}
     public static RuleFactory getFactory(){return rf;}
 
-    public QuotientRule makeFracRule(Term top, Term bottom){
-        return new QuotientRule(new LinkedList<>(Arrays.asList(top, bottom)));
+    public QuotientRule makeFracRule(Term denominator, Term numerator){
+        return new QuotientRule(new LinkedList<>(Arrays.asList(denominator, numerator)));
     }
 
     public ProductRule makeProductRule(Term left, Term right){

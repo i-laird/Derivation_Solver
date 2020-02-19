@@ -3,11 +3,26 @@ package DerivationSolver.Rules;
 import java.util.LinkedList;
 import java.util.List;
 
+import DerivationSolver.Parser;
 import DerivationSolver.Terms.Term;
 
-
+/**
+ * PRODUCT RULE
+ *
+ * this is used when multiple terms are multiplied together.
+ *
+ * This class supports a product rule of more than two terms but {@link Parser}
+ * will not construct AST that have more than two kid
+ */
 public class ProductRule extends DerivationRule {
 
+
+    /**
+     * d/dx( f(x) * g(x) ) = f(x) * g'(x) + f'(x) * g(x)
+     * @param original the original terms
+     * @param derived the derivation of the terms
+     * @return
+     */
     @Override
     protected Term putTogether(LinkedList<Term> original, LinkedList<Term> derived){
         //need to account for a variable number of terms that are being multipled

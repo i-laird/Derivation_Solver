@@ -11,19 +11,31 @@ import DerivationSolver.Terms.Term;
  * @author Ian Laird
  */
 public class LogRule extends DerivationRule {
+
+    public static final int BASE_INDEX = 0;
+    public static final int ARGUMENT_INDEX = 1;
+
     public LogRule(LinkedList<Term> l) {
         super(l);
     }
 
+    /**
+     * d/dx(logax) = 1 / (x ln(a))
+     * @return derivative
+     */
     @Override
     public Term getDerivative() {
-        int base = this.terms.get(0).getNum();
-        Term inside = this.terms.get(1);
-        return rf.makeFracRule(new Term(1), rf.makeProductRule(inside, rf.makeNaturalLogRule(this.terms.get(0))));
+
+        int base = this.terms.get(BASE_INDEX).getNum();
+        Term argument = this.terms.get(ARGUMENT_INDEX);
+
+        Term denominator = rf.makeProductRule(argument, rf.makeNaturalLogRule(this.terms.get(BASE_INDEX)));
+
+        return rf.makeFracRule(denominator, new Term(1));
     }
 
     @Override
     public double getResult(List<Integer> dims) {
-        return Math.log(this.terms.get(0).evaluate(dims)) / Math.log(this.terms.get(1).evaluate(dims));
+        return Math.log(this.terms.get(BASE_INDEX).evaluate(dims)) / Math.log(this.terms.get(ARGUMENT_INDEX).evaluate(dims));
     }
 }
