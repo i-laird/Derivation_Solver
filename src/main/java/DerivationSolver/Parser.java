@@ -46,187 +46,20 @@ public class Parser {
      */
     public Parser(InputStream in){
 
-        // used to find when to end the jurisdiction of unary operators
-        // i.e. for sin(x) a mapping will be stored from sin to the end paren
-        Map<AbstractMath, AbstractMath> functionToLastAppliedTerm = new HashMap<>();
-
-        //reset the variables
+        //reset the variable
         Var.reset();
+
         Scanner inputScan = new Scanner(new BufferedInputStream(in));
         String line = inputScan.nextLine();
 
-        // tokenize the line by white space
-        String [] parts = line.split("\\s+");
-        Negative negative = null;
+        // tokenize the expression
+        List<AbstractMath> negFixed = tokenizeExpression(line);
 
-        // clean the tokens
-        // this step further splits the tokens if the string does not delimit by white space
-        List<String> cleanedInput = cleanInput(parts);
+        // convert the expression to postfix notation
+        Queue<Wrapper>  outputParts = convertToPostFix(negFixed);
 
-        // map each token to its associated mathematical operation
-        List<AbstractMath> mappedParts = cleanedInput.stream().map(this::getMappedPart).filter(Objects::nonNull).collect(Collectors.toList());
-
-        // remove excessive negatives
-        // i.e. NEGATIVE NEGATIVE 5 -> 5
-        List<AbstractMath> negFixed = removeMultipleNegatives(mappedParts);
-
-        // holds the reverse polish notation
-        Queue<Wrapper>  outputParts = new LinkedList<>();
-        Stack<Wrapper>  stack = new Stack<>();
-        Stack<Term> derivativeStack = new Stack<>();
-
-        // used to iterate over the tokens
-        ListIterator<AbstractMath> iter = negFixed.listIterator();
-
-        while (iter.hasNext()){
-            AbstractMath am = iter.next();
-
-            // if this is a NEGATIVE remember it and go to next token
-            if(am.getClass() == Negative.class){
-                negative = (Negative)am;
-                continue;
-            }
-
-            // if token is a constant or a variable
-            if(am.getClass() == Num.class || am.getClass() == Variable.class){
-
-                // if negated previously
-                if(negative != null){
-                    outputParts.add(new Wrapper(am, negative));
-                    negative = null;
-                }
-                else {
-                    outputParts.add(new Wrapper(am));
-                }
-
-                // see if any unary operator ends at this
-                // this will only occur when the unary operator did not use parenthesis
-                for(Map.Entry<AbstractMath, AbstractMath> k : functionToLastAppliedTerm.entrySet()){
-                    if(am == k.getValue()){
-                        outputParts.add(new Wrapper(k.getKey()));
-                        functionToLastAppliedTerm.remove(k.getKey());
-                        break;
-                    }
-                }
-            }
-
-            // if it is a unary operator figure out when the operator stops applying
-            else if(am.getClass() == Function.class) {
-                ListIterator<AbstractMath> iter2 = negFixed.listIterator(iter.nextIndex());
-
-                AbstractMath next = iter2.next();
-
-                // if the immediate following is an OPEN PAREN look for CLOSE PAREN
-                if(next.getClass() == Paren.class && next == Paren.LEFT_PAREN ){
-
-                    // stores the number of OPEN PAREN seen
-                    int leftParenCount = 0;
-                    while(true){
-                        if(next.getClass() == Paren.class){
-                            if(next == Paren.LEFT_PAREN){
-                                leftParenCount++;
-                            }
-                            else{
-                                if(leftParenCount > 1){
-                                    leftParenCount--;
-                                }
-                                else{
-                                    break;
-                                }
-                            }
-                        }
-                        next = iter2.next();
-                    }
-                }
-
-                functionToLastAppliedTerm.put(am, next);
-            }
-            else if(am.getClass() == Paren.class){
-                if(am == Paren.LEFT_PAREN){
-                    stack.push(new Wrapper(am));
-                }
-                else{
-                    while((stack.peek()).getAm() != Paren.LEFT_PAREN){
-                        outputParts.add(stack.pop());
-                    }
-                    for(Map.Entry<AbstractMath, AbstractMath> k : functionToLastAppliedTerm.entrySet()){
-                        if(am == k.getValue()){
-                            outputParts.add(new Wrapper(k.getKey()));
-                            functionToLastAppliedTerm.remove(k.getKey());
-                            break;
-                        }
-                    }
-                }
-            }
-            else {
-                //if not a functin or a number it must be an operator
-                while(true){
-                    if (stack.empty()){
-                        break;
-                    }
-                    try {
-                        if ((stack.peek()).getAm().getClass() == Paren.class || ((((Operator) (stack.peek()).getAm())).precedence < ((Operator) am).precedence) || (((Operator) (stack.peek()).getAm()).precedence == ((Operator) am).precedence) && ((Operator) (stack.peek()).getAm()).associativity == Operator.Associativity.LEFT) {
-                            break;
-                        }
-                        // account for natural log being weird
-                        // TODO check to see if this works
-                        if ((Operator) am == Operator.NAT_LOG) {
-                            outputParts.add(new Wrapper(new Num(1)));
-                        }
-                    }catch(ClassCastException e){
-                        System.err.println(e);
-                    }
-                    outputParts.add(stack.pop());
-                }
-                stack.push(new Wrapper(am));
-            }
-            if(negative != null){
-                Wrapper popped = stack.pop();
-                popped.setN(negative);
-                negative = null;
-                stack.push(popped);
-            }
-        }
-        while(!stack.empty()){
-            Wrapper part = stack.pop();
-            if(part.getAm().getClass() != Paren.class) {
-                try {
-                    if ((Operator) part.getAm() == Operator.NAT_LOG) {
-                        outputParts.add(new Wrapper(new Num(1)));
-                    }
-                }catch(ClassCastException e){}
-                outputParts.add(part);
-            }
-        }
-        // then analyze the expression now that it is in reverse polish notation
-        for (Wrapper w : outputParts){
-            //see if it is just a number
-            //if so just push it onto the stack
-            AbstractMath part = w.getAm();
-            if(part.getClass() == Num.class) {
-                derivativeStack.push(new Term(((Num)part).getNum()));
-            }
-            else if (part.getClass() == Variable.class){
-                derivativeStack.push((Variable)part);
-            }
-            else if(part.getClass() == Function.class){
-                Term operand = derivativeStack.pop();
-                derivativeStack.push(part.getTermFromOp(operand, null));
-            }
-            //it is an operand
-            else{
-                Term operandOne = derivativeStack.pop(),
-                        operandTwo = derivativeStack.pop();
-                derivativeStack.push(part.getTermFromOp(operandOne, operandTwo));
-            }
-            if(w.getN() != null){
-                derivativeStack.push(derivativeStack.pop().flipSign());
-            }
-        }
-        root = derivativeStack.pop();
-        if(!derivativeStack.empty()){
-            throw new RuntimeException("Parsing Error");
-        }
+        // evaluate the post fix expression
+        root = evaluatePostfix(outputParts);
     }
 
     /**
@@ -236,6 +69,9 @@ public class Parser {
         return this.root;
     }
 
+    /**
+     * @return the derivative of the expression
+     */
     public Term getDeriv(){
         return this.root.getDerivative();
     }
@@ -362,5 +198,244 @@ public class Parser {
             }
         }
         return returnList;
+    }
+
+    /**
+     * converts a list of tokens to postfix notation
+     * @param tokens the tokens
+     * @return post fix notation
+     */
+    private static Queue<Wrapper> convertToPostFix(List<AbstractMath> tokens){
+        Queue<Wrapper>  outputParts = new LinkedList<>();
+        Negative negative = null;
+
+        // used to iterate over the tokens
+        ListIterator<AbstractMath> iter = tokens.listIterator();
+
+        // used to find when to end the jurisdiction of unary operators
+        // i.e. for sin(x) a mapping will be stored from sin to the end paren
+        Map<AbstractMath, AbstractMath> functionToLastAppliedTerm = new HashMap<>();
+
+        Stack<Wrapper>  stack = new Stack<>();
+
+        while (iter.hasNext()){
+            AbstractMath am = iter.next();
+
+            // if this is a NEGATIVE remember it and go to next token
+            if(am.getClass() == Negative.class){
+                negative = (Negative)am;
+                continue;
+            }
+
+            // if token is a constant or a variable
+            if(am.getClass() == Num.class || am.getClass() == Variable.class){
+
+                // if negated previously
+                if(negative != null){
+                    outputParts.add(new Wrapper(am, negative));
+                    negative = null;
+                }
+                else {
+                    outputParts.add(new Wrapper(am));
+                }
+
+                // see if any unary operator ends at this
+                // this will only occur when the unary operator did not use parenthesis
+                for(Map.Entry<AbstractMath, AbstractMath> k : functionToLastAppliedTerm.entrySet()){
+                    if(am == k.getValue()){
+                        outputParts.add(new Wrapper(k.getKey()));
+                        functionToLastAppliedTerm.remove(k.getKey());
+                        break;
+                    }
+                }
+            }
+
+            // if it is a unary operator figure out when the operator stops applying
+            else if(am.getClass() == Function.class) {
+                ListIterator<AbstractMath> iter2 = tokens.listIterator(iter.nextIndex());
+
+                AbstractMath next = iter2.next();
+
+                // if the immediate following is an OPEN PAREN look for CLOSE PAREN
+                if(next.getClass() == Paren.class && next == Paren.LEFT_PAREN ){
+
+                    // stores the number of OPEN PAREN seen
+                    int leftParenCount = 0;
+                    while(true){
+                        if(next.getClass() == Paren.class){
+                            if(next == Paren.LEFT_PAREN){
+                                leftParenCount++;
+                            }
+                            else{
+                                if(leftParenCount > 1){
+                                    leftParenCount--;
+                                }
+                                else{
+                                    break;
+                                }
+                            }
+                        }
+                        next = iter2.next();
+                    }
+                }
+
+                functionToLastAppliedTerm.put(am, next);
+            }
+
+            // if the token is a paren
+            else if(am.getClass() == Paren.class){
+
+                // if it is an opening paren push it onto the stack
+                if(am == Paren.LEFT_PAREN){
+                    stack.push(new Wrapper(am));
+                }
+
+                // if it is an open paren
+                else{
+
+                    //  keep popping from the stack until an open paren is encountered
+                    while((stack.peek()).getAm() != Paren.LEFT_PAREN){
+                        outputParts.add(stack.pop());
+                    }
+
+                    // see if a unary operator ended at this point
+                    for(Map.Entry<AbstractMath, AbstractMath> k : functionToLastAppliedTerm.entrySet()){
+                        if(am == k.getValue()){
+                            outputParts.add(new Wrapper(k.getKey()));
+                            functionToLastAppliedTerm.remove(k.getKey());
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // if an operator
+            else {
+
+                //TODO comment this part
+                while(true){
+                    if (stack.empty()){
+                        break;
+                    }
+                    try {
+                        if ((stack.peek()).getAm().getClass() == Paren.class || ((((Operator) (stack.peek()).getAm())).precedence < ((Operator) am).precedence) || (((Operator) (stack.peek()).getAm()).precedence == ((Operator) am).precedence) && ((Operator) (stack.peek()).getAm()).associativity == Operator.Associativity.LEFT) {
+                            break;
+                        }
+                        // account for natural log being weird
+                        // TODO check to see if this works
+                        if ((Operator) am == Operator.NAT_LOG) {
+                            outputParts.add(new Wrapper(new Num(1)));
+                        }
+                    }catch(ClassCastException e){
+                        System.err.println(e);
+                    }
+                    outputParts.add(stack.pop());
+                }
+                stack.push(new Wrapper(am));
+            }
+
+            // if negative preceded this negate the top of the stack
+            if(negative != null){
+                Wrapper popped = stack.pop();
+                popped.setN(negative);
+                negative = null;
+                stack.push(popped);
+            }
+        }
+
+        // if there are things left on the stack put them all into the queue
+        while(!stack.empty()){
+            Wrapper part = stack.pop();
+            if(part.getAm().getClass() != Paren.class) {
+                try {
+                    if ((Operator) part.getAm() == Operator.NAT_LOG) {
+                        outputParts.add(new Wrapper(new Num(1)));
+                    }
+                }catch(ClassCastException e){}
+                outputParts.add(part);
+            }
+        }
+        return outputParts;
+    }
+
+    /**
+     * tokenize the expression
+     * @param expression the expression to tokenize
+     * @return in order syntax and numbers
+     */
+    private List<AbstractMath> tokenizeExpression(String expression){
+        // tokenize the line by white space
+        String [] parts = expression.split("\\s+");
+
+        // clean the tokens
+        // this step further splits the tokens if the string does not delimit by white space
+        List<String> cleanedInput = cleanInput(parts);
+
+        // map each token to its associated mathematical operation
+        List<AbstractMath> mappedParts = cleanedInput.stream().map(this::getMappedPart).filter(Objects::nonNull).collect(Collectors.toList());
+
+        // remove excessive negatives
+        // i.e. NEGATIVE NEGATIVE 5 -> 5
+        return removeMultipleNegatives(mappedParts);
+    }
+
+    /**
+     * analyze the expression now that it is in reverse polish notation
+     * Steps:
+     *      1) if a number or variable push onto the stack
+     *      2) if an operator pop the correct number of terms from the stack (one or two)
+     *      3) set these as the children of the operator
+     *      4) push the operator back onto the stack
+     *      5) go until only one element on the stack
+     * @param outputParts the tokens in post fix order
+     * @return
+     */
+    private static Term evaluatePostfix(Queue<Wrapper>  outputParts){
+
+        // used to built the parse tree
+        Stack<Term> parseTree = new Stack<>();
+
+        for (Wrapper w : outputParts){
+
+            AbstractMath part = w.getAm();
+
+            // if it is a number push it onto the stack
+            if(part.getClass() == Num.class) {
+                parseTree.push(new Term(((Num)part).getNum()));
+            }
+
+            // if it is a variable push it onto the stack
+            else if (part.getClass() == Variable.class){
+                parseTree.push((Variable)part);
+            }
+
+            // if it is a unary operator pop one element off of the stack
+            else if(part.getClass() == Function.class){
+                Term operand = parseTree.pop();
+                parseTree.push(part.getTermFromOp(operand, null));
+            }
+
+            //it is an operand pop two items off of the stack
+            else{
+                Term operandOne = parseTree.pop(),
+                        operandTwo = parseTree.pop();
+                parseTree.push(part.getTermFromOp(operandOne, operandTwo));
+            }
+
+            // if necessary flip the sign of the top of the stack
+            if(w.getN() != null){
+                parseTree.peek().flipSign();
+            }
+        }
+
+        Term root = parseTree.pop();
+
+        // if there is still something in the stack after popping the root there was an ERROR
+        if(!parseTree.empty()){
+            throw new RuntimeException("Parsing Error");
+        }
+
+        // the last element of the stack is the root of the tree
+        return root;
     }
 }
