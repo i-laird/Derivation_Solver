@@ -53,10 +53,10 @@ public class Parser {
         String line = inputScan.nextLine();
 
         // tokenize the expression
-        List<AbstractMath> negFixed = tokenizeExpression(line);
+        List<AbstractMath> tokenized = tokenizeExpression(line);
 
         // convert the expression to postfix notation
-        Queue<Wrapper>  outputParts = convertToPostFix(negFixed);
+        Queue<Wrapper>  outputParts = convertToPostFix(tokenized);
 
         // evaluate the post fix expression
         root = evaluatePostfix(outputParts);
@@ -74,6 +74,74 @@ public class Parser {
      */
     public Term getDeriv(){
         return this.root.getDerivative();
+    }
+
+    /**
+     * tokenize the expression
+     * @param expression the expression to tokenize
+     * @return in order syntax and numbers
+     */
+    private List<AbstractMath> tokenizeExpression(String expression){
+        // tokenize the line by white space
+        String [] parts = expression.split("\\s+");
+
+        // clean the tokens
+        // this step further splits the tokens if the string does not delimit by white space
+        List<String> cleanedInput = cleanInput(parts);
+
+        // map each token to its associated mathematical operation
+        List<AbstractMath> mappedParts = cleanedInput
+                .stream()
+                .map(this::getMappedPart) // converts to syntax enum i.e. sin -> SIN
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        // remove excessive negatives
+        // i.e. NEGATIVE NEGATIVE 5 -> 5
+        return removeMultipleNegatives(mappedParts);
+    }
+
+    /**
+     * @param list an array of strings to be cleaned
+     * @return splits monomials
+     *
+     * example: 3x into 3 * x
+     */
+    public List<String> cleanInput(String [] list){
+
+        // stick the strings on in the order of a stack
+        Stack<String> strings = new Stack<>();
+        for(int i = list.length - 1; i >= 0; i--){
+            strings.push(list[i]);
+        }
+
+        List<String> returnList = new LinkedList<>();
+
+        while (!strings.isEmpty()){
+            String s = strings.pop();
+            String [] parsedParts = null;
+
+            // split based on a non space followed by a paren sinx -> sin x
+            parsedParts = s.split("((?<=[\\(\\)\\*\\^])|(?=[\\(\\)\\*\\^]))");
+
+            if(parsedParts.length > 1) {
+                for(int i = parsedParts.length - 1; i >= 0; i--){
+                    strings.push(parsedParts[i]);
+                }
+                continue;
+            }
+
+            //turn something like 3x into 3 * x
+            if (s.matches(".*[0-9][a-z].*")) {
+                parsedParts = s.split("(?=[a-z])", 2);
+                strings.push(parsedParts[1]);
+                strings.push("*");
+                strings.push(parsedParts[0]);
+                continue;
+            }
+            returnList.add(s);
+        }
+        return returnList;
     }
 
     /**
@@ -119,49 +187,6 @@ public class Parser {
         }
         operatorOrFunctionSeen = false;
         return Variable.getVariable(s.charAt(0));
-    }
-
-    /**
-     * @param list an array of strings to be cleaned
-     * @return splits monomials
-     *
-     * example: 3x into 3 * x
-     */
-    public List<String> cleanInput(String [] list){
-
-        // stick the strings on in the order of a stack
-        Stack<String> strings = new Stack<>();
-        for(int i = list.length - 1; i >= 0; i--){
-            strings.push(list[i]);
-        }
-
-        List<String> returnList = new LinkedList<>();
-
-        while (!strings.isEmpty()){
-            String s = strings.pop();
-            String [] parsedParts = null;
-
-            // split based on a non space followed by a paren sinx -> sin x
-            parsedParts = s.split("((?<=[\\(\\)\\*\\^])|(?=[\\(\\)\\*\\^]))");
-
-            if(parsedParts.length > 1) {
-                for(int i = parsedParts.length - 1; i >= 0; i--){
-                    strings.push(parsedParts[i]);
-                }
-                continue;
-            }
-
-            //turn something like 3x into 3 * x
-            if (s.matches(".*[0-9][a-z].*")) {
-                parsedParts = s.split("(?=[a-z])", 2);
-                strings.push(parsedParts[1]);
-                strings.push("*");
-                strings.push(parsedParts[0]);
-                continue;
-            }
-            returnList.add(s);
-        }
-        return returnList;
     }
 
     /**
@@ -356,27 +381,6 @@ public class Parser {
             }
         }
         return outputParts;
-    }
-
-    /**
-     * tokenize the expression
-     * @param expression the expression to tokenize
-     * @return in order syntax and numbers
-     */
-    private List<AbstractMath> tokenizeExpression(String expression){
-        // tokenize the line by white space
-        String [] parts = expression.split("\\s+");
-
-        // clean the tokens
-        // this step further splits the tokens if the string does not delimit by white space
-        List<String> cleanedInput = cleanInput(parts);
-
-        // map each token to its associated mathematical operation
-        List<AbstractMath> mappedParts = cleanedInput.stream().map(this::getMappedPart).filter(Objects::nonNull).collect(Collectors.toList());
-
-        // remove excessive negatives
-        // i.e. NEGATIVE NEGATIVE 5 -> 5
-        return removeMultipleNegatives(mappedParts);
     }
 
     /**
