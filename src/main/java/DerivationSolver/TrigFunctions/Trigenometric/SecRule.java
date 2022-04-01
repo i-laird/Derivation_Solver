@@ -21,6 +21,6 @@ public class SecRule extends TrigRule {
 
     @Override
     public double getResult(List<Integer> dims) {
-        return 1.0 / Math.sin(this.terms.get(0).evaluate(dims));
+        return 1.0 / Math.cos(this.terms.get(0).evaluate(dims));
     }
 }

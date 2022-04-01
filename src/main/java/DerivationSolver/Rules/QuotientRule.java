@@ -47,13 +47,18 @@ public class QuotientRule extends DerivationRule {
         subtraction.add(new ProductRule(p2).flipSign());
 
         Term numerator = new AdditionRule(subtraction);
-        Term denom = new ChainRule(new LinkedList<Term>(Arrays.asList(
-                new PowerRule(new LinkedList<Term>(Arrays.asList(
+        Term denom = new PowerRule(new LinkedList<Term>(Arrays.asList(
                         new Term(2),
                         original.get(DENOM_POS)
-                ))),
-                original.get(DENOM_POS)
-        )));
+                ))
+        );
+//        Term denom = new ChainRule(new LinkedList<Term>(Arrays.asList(
+//                new PowerRule(new LinkedList<Term>(Arrays.asList(
+//                        new Term(2),
+//                        original.get(DENOM_POS)
+//                ))),
+//                original.get(DENOM_POS)
+//        )));
 
         return rf.makeFracRule(denom, numerator);
     }
@@ -64,6 +69,8 @@ public class QuotientRule extends DerivationRule {
 
     @Override
     public double getResult(List<Integer> dims) {
-        return this.terms.get(NUMERATOR_POS).evaluate(dims) / this.terms.get(DENOM_POS).evaluate(dims);
+        double numeratorEvaluated = this.terms.get(NUMERATOR_POS).evaluate(dims);
+        double denominatorEvaluated = this.terms.get(DENOM_POS).evaluate(dims);
+        return numeratorEvaluated / denominatorEvaluated;
     }
 }

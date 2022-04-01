@@ -1,6 +1,7 @@
 import DerivationSolver.Parser;
 import DerivationSolver.Terms.Term;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -18,6 +19,17 @@ import java.util.stream.Stream;
 @ExtendWith(SpringExtension.class)
 public class SingleVariableTester {
 
+    @Test
+    public void tester(){
+        String toTest = "tan(x) / cos(x)";
+
+        InputStream stream = new ByteArrayInputStream(toTest.getBytes(StandardCharsets.UTF_8));
+        Parser p = new Parser(stream);
+        Term root = p.getRoot();
+        Term deriv = root.getDerivative();
+        double evaluatedNum = deriv.evaluate(createSingleList(3));
+    }
+
     private static int DOES_NOT_MATTER = 3;
 
     @DisplayName("Single Derivatives")
@@ -29,13 +41,14 @@ public class SingleVariableTester {
         Term root = p.getRoot();
         Term deriv = root.getDerivative();
         double evaluatedNum = deriv.evaluate(evaluationPoints);
-        assertEquals(evaluatedNum, result);
+        assertEquals(result, evaluatedNum);
     }
 
     private static Stream<Arguments> singleVariable(){
         return Stream.of(
                 //first test the polynomials
                 Arguments.of("     1     ",          createSingleList(DOES_NOT_MATTER), 0.0),
+                Arguments.of("            -     1 ", createSingleList(DOES_NOT_MATTER), 0.0),
                 Arguments.of("1",                    createSingleList(DOES_NOT_MATTER), 0.0),
                 Arguments.of("10",                   createSingleList(DOES_NOT_MATTER), 0.0),
                 Arguments.of("-100",                 createSingleList(DOES_NOT_MATTER), 0.0),
@@ -68,7 +81,7 @@ public class SingleVariableTester {
                 Arguments.of("ln x",                 createSingleList(100),        1.0 / 100 ),
                 Arguments.of("sin x",                createSingleList(1),          Math.cos(1.0)),
                 Arguments.of("cos x",                createSingleList(3),          -1 * Math.sin(3)),
-                Arguments.of("tan x",                createSingleList(2),          Math.pow(2, 1.0 / Math.sin(2))),
+                Arguments.of("tan x",                createSingleList(2),          Math.pow(1.0 / Math.cos(2), 2)),
 
                 Arguments.of("sin x + x ^ 3",        createSingleList(2),          Math.cos(2.0) + 12),
                 Arguments.of("sin x + x ^ 2 - cos x",createSingleList(3),          Math.cos(3.0) + 6 + Math.sin(3.0)),
@@ -77,7 +90,9 @@ public class SingleVariableTester {
                 Arguments.of("sin(x)*x^2",           createSingleList(3),         (Math.cos(3.0) * 9) + ( 6 * Math.sin(3.0))),
 
                 // cos x * x^-2 + -2x^-3 * sin x
-                Arguments.of("sin(x) / x^2",         createSingleList(3),       (Math.cos(3.0) * (1.0/9)) - ( 2.0 * (1.0 / 27.0) * Math.sin(3.0)))
+                Arguments.of("sin(x) / x^2",         createSingleList(3),       (Math.cos(3.0) * (1.0/9)) - ( 2.0 * (1.0 / 27.0) * Math.sin(3.0))),
+                Arguments.of("sin(x) / cos(x)",      createSingleList(3),       (Math.pow(Math.sin(3.0), 2) / Math.pow(Math.cos(3.0), 2)) + 1),
+                Arguments.of("tan(x) / cos(x)",      createSingleList(3),       ((Math.sin(3.0)*Math.tan(3.0)) + (Math.cos(3.0) * (Math.pow(1.0 / Math.cos(3.0), 2)))) / Math.pow(Math.cos(3.0), 2))
 
         );
     }
