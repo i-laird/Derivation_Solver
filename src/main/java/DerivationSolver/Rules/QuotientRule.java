@@ -32,33 +32,12 @@ public class QuotientRule extends DerivationRule {
         if (original.size() != 2 || derived.size() != 2){
             return null;
         }
-        LinkedList<Term> p1 = new LinkedList<>(),
-                p2 = new LinkedList<>(),
-                subtraction = new LinkedList<>(),
-                quotient = new LinkedList<>();
 
-        p1.add(derived.get(NUMERATOR_POS));
-        p1.add(original.get(DENOM_POS));
+        Term numerator = rf.makeAdditionRule(
+                            rf.makeProductRule(derived.get(NUMERATOR_POS), original.get(DENOM_POS)),
+                            rf.makeProductRule(derived.get(DENOM_POS), original.get(NUMERATOR_POS)).flipSign());
 
-        p2.add(derived.get(DENOM_POS));
-        p2.add(original.get(NUMERATOR_POS));
-
-        subtraction.add(new ProductRule(p1));
-        subtraction.add(new ProductRule(p2).flipSign());
-
-        Term numerator = new AdditionRule(subtraction);
-        Term denom = new PowerRule(new LinkedList<Term>(Arrays.asList(
-                        new Term(2),
-                        original.get(DENOM_POS)
-                ))
-        );
-//        Term denom = new ChainRule(new LinkedList<Term>(Arrays.asList(
-//                new PowerRule(new LinkedList<Term>(Arrays.asList(
-//                        new Term(2),
-//                        original.get(DENOM_POS)
-//                ))),
-//                original.get(DENOM_POS)
-//        )));
+        Term denom = rf.makePowerRule(new Term(2), original.get(DENOM_POS));
 
         return rf.makeFracRule(denom, numerator);
     }

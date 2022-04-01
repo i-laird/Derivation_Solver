@@ -14,11 +14,11 @@ public class TanhRule extends TrigRule {
 
     @Override
     public Term getDerivPart() {
-        return rf.makeAdditionRule(new Term(1), rf.makePowerRule(rf.makeTanhRule(this.terms.get(0)), new Term(2)).flipSign());
+        return rf.makePowerRule(new Term(2), rf.makeSechRule(this.terms.get(0)));
     }
 
     @Override
     public double getResult(List<Integer> dims) {
-        return 0;
+        return Math.tanh(this.terms.get(0).evaluate(dims));
     }
 }

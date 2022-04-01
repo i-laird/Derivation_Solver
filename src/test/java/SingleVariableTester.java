@@ -21,7 +21,7 @@ public class SingleVariableTester {
 
     @Test
     public void tester(){
-        String toTest = "tan(x) / cos(x)";
+        String toTest = "(tan(x))^2 / sec(x)";
 
         InputStream stream = new ByteArrayInputStream(toTest.getBytes(StandardCharsets.UTF_8));
         Parser p = new Parser(stream);
@@ -90,11 +90,12 @@ public class SingleVariableTester {
                 Arguments.of("sin(x)*x^2",           createSingleList(3),         (Math.cos(3.0) * 9) + ( 6 * Math.sin(3.0))),
 
                 // cos x * x^-2 + -2x^-3 * sin x
-                Arguments.of("sin(x) / x^2",         createSingleList(3),       (Math.cos(3.0) * (1.0/9)) - ( 2.0 * (1.0 / 27.0) * Math.sin(3.0))),
-                Arguments.of("sin(x) / cos(x)",      createSingleList(3),       (Math.pow(Math.sin(3.0), 2) / Math.pow(Math.cos(3.0), 2)) + 1),
-                Arguments.of("tan(x) / cos(x)",      createSingleList(3),       ((Math.sin(3.0)*Math.tan(3.0)) + (Math.cos(3.0) * (Math.pow(1.0 / Math.cos(3.0), 2)))) / Math.pow(Math.cos(3.0), 2))
+                Arguments.of("sin(x) / x^2",         createSingleList(3),         (Math.cos(3.0) * (1.0/9)) - ( 2.0 * (1.0 / 27.0) * Math.sin(3.0))),
+                Arguments.of("sin(x) / cos(x)",      createSingleList(3),         (Math.pow(Math.sin(3.0), 2) / Math.pow(Math.cos(3.0), 2)) + 1),
+                Arguments.of("tan(x) / cos(x)",      createSingleList(3),         ((Math.sin(3.0)*Math.tan(3.0)) + (Math.cos(3.0) * (Math.pow(1.0 / Math.cos(3.0), 2)))) / Math.pow(Math.cos(3.0), 2)),
+                Arguments.of("(tan(x))^2 / sec(x)",  createSingleList(3),         ((2 * Math.pow(1.0 / Math.cos(3.0) , 3) * Math.tan(3.0)) - (((1.0 / Math.cos(3.0)) * Math.pow(Math.tan(3.0), 3)))) / (Math.pow(1.0 / Math.cos(3.0) , 2)))
 
-        );
+                );
     }
 
     private static List<Integer> createSingleList(Integer xVal){
