@@ -21,7 +21,7 @@ public class SingleVariableTester {
 
     @Test
     public void tester(){
-        String toTest = "- x";
+        String toTest = "-10x+5x";
 
         InputStream stream = new ByteArrayInputStream(toTest.getBytes(StandardCharsets.UTF_8));
         Parser p = new Parser(stream);
@@ -56,7 +56,10 @@ public class SingleVariableTester {
                 Arguments.of("0",                    createSingleList(DOES_NOT_MATTER), 0.0),
                 Arguments.of("x",                    createSingleList(DOES_NOT_MATTER), 1.0),
                 Arguments.of("- x",                  createSingleList(DOES_NOT_MATTER), -1.0),
+                Arguments.of("-100x",                createSingleList(DOES_NOT_MATTER), -100),
                 Arguments.of("- x + x",              createSingleList(DOES_NOT_MATTER), 0.0),
+                Arguments.of("-10x+5x",              createSingleList(DOES_NOT_MATTER), -5.0),
+                Arguments.of("-10x*5x",              createSingleList(DOES_NOT_MATTER), -300.0),
                 Arguments.of("0x",                   createSingleList(DOES_NOT_MATTER), 0.0),
                 Arguments.of("1x",                   createSingleList(DOES_NOT_MATTER), 1.0),
                 Arguments.of("2x",                   createSingleList(DOES_NOT_MATTER), 2.0),

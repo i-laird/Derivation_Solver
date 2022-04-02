@@ -143,6 +143,11 @@ public class Parser {
                 continue;
             }
 
+            // split out AD signs
+            if(splitByRegex(s,null,"((?=\\+)|(?<=\\+))",processStack, null)){
+                continue;
+            }
+
             returnList.add(s);
         }
         return returnList;
