@@ -231,6 +231,7 @@ public class Parser {
      * @return post fix notation
      */
     private static Queue<Wrapper> convertToPostFix(List<AbstractMath> tokens){
+        int numRightParenEncountered = 0;
         Queue<Wrapper>  outputParts = new LinkedList<>();
         Negative negative = null;
 
@@ -239,7 +240,7 @@ public class Parser {
 
         // used to find when to end the jurisdiction of unary operators
         // i.e. for sin(x) a mapping will be stored from sin to the end paren
-        Map<AbstractMath, AbstractMath> functionToLastAppliedTerm = new HashMap<>();
+        Map<AbstractMath, Integer> functionToLastAppliedTerm = new HashMap<>();
 
         Stack<Wrapper>  stack = new Stack<>();
 
@@ -266,8 +267,8 @@ public class Parser {
 
                 // see if any unary operator ends at this
                 // this will only occur when the unary operator did not use parenthesis
-                for(Map.Entry<AbstractMath, AbstractMath> k : functionToLastAppliedTerm.entrySet()){
-                    if(am == k.getValue()){
+                for(Map.Entry<AbstractMath, Integer> k : functionToLastAppliedTerm.entrySet()){
+                    if(numRightParenEncountered == k.getValue()){
                         outputParts.add(new Wrapper(k.getKey()));
                         functionToLastAppliedTerm.remove(k.getKey());
                         break;
@@ -277,6 +278,7 @@ public class Parser {
 
             // if it is a unary operator figure out when the operator stops applying
             else if(am.getClass() == Function.class) {
+                int tempRightParenCount = 0;
                 ListIterator<AbstractMath> iter2 = tokens.listIterator(iter.nextIndex());
 
                 AbstractMath next = iter2.next();
@@ -292,6 +294,7 @@ public class Parser {
                                 leftParenCount++;
                             }
                             else{
+                                ++tempRightParenCount;
                                 if(leftParenCount > 1){
                                     leftParenCount--;
                                 }
@@ -304,7 +307,7 @@ public class Parser {
                     }
                 }
 
-                functionToLastAppliedTerm.put(am, next);
+                functionToLastAppliedTerm.put(am, numRightParenEncountered + tempRightParenCount);
             }
 
             // if the token is a paren
@@ -315,17 +318,21 @@ public class Parser {
                     stack.push(new Wrapper(am));
                 }
 
-                // if it is an open paren
+                // if it is a RIGHT paren
                 else{
+                    ++numRightParenEncountered;
 
-                    //  keep popping from the stack until an open paren is encountered
+                    //  keep popping from the stack until a LEFT paren is encountered
                     while((stack.peek()).getAm() != Paren.LEFT_PAREN){
                         outputParts.add(stack.pop());
                     }
 
+                    // get rid of this left paran
+                    stack.pop();
+
                     // see if a unary operator ended at this point
-                    for(Map.Entry<AbstractMath, AbstractMath> k : functionToLastAppliedTerm.entrySet()){
-                        if(am == k.getValue()){
+                    for(Map.Entry<AbstractMath, Integer> k : functionToLastAppliedTerm.entrySet()){
+                        if(numRightParenEncountered == k.getValue()){
                             outputParts.add(new Wrapper(k.getKey()));
                             functionToLastAppliedTerm.remove(k.getKey());
                             break;
