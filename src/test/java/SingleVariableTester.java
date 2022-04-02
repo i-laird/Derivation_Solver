@@ -21,7 +21,7 @@ public class SingleVariableTester {
 
     @Test
     public void tester(){
-        String toTest = "sin( x + cos(x))";
+        String toTest = "- x";
 
         InputStream stream = new ByteArrayInputStream(toTest.getBytes(StandardCharsets.UTF_8));
         Parser p = new Parser(stream);
@@ -96,9 +96,11 @@ public class SingleVariableTester {
                 Arguments.of("(tan(x))^2 / sec(x)",  createSingleList(3),         ((2 * Math.pow(1.0 / Math.cos(3.0) , 3) * Math.tan(3.0)) - (((1.0 / Math.cos(3.0)) * Math.pow(Math.tan(3.0), 3)))) / (Math.pow(1.0 / Math.cos(3.0) , 2))),
 
                 Arguments.of("sin( x^2)",            createSingleList(3),          2 * 3.0 * Math.cos(9.0)),
-                Arguments.of("sin( x + cos(x))",     createSingleList(3),          (1 - Math.sin(3.0)) * Math.cos(Math.cos(3.0) + 3.0))
+                Arguments.of("sin( x + cos(x))",     createSingleList(3),          (1 - Math.sin(3.0)) * Math.cos(Math.cos(3.0) + 3.0)),
+                Arguments.of("sin( x - cos(x))",     createSingleList(3),          (1 + Math.sin(3.0)) * Math.cos(Math.cos(3.0) - 3.0)),
+                Arguments.of("sin( x + -cos(x))",    createSingleList(3),          (1 + Math.sin(3.0)) * Math.cos(Math.cos(3.0) - 3.0))
 
-                );
+        );
     }
 
     private static List<Integer> createSingleList(Integer xVal){

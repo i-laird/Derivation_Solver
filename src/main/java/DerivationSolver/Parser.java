@@ -109,39 +109,57 @@ public class Parser {
      */
     public List<String> cleanInput(String [] list){
 
-        // stick the strings on in the order of a stack
-        Stack<String> strings = new Stack<>();
+        // create a stack that will hold the items that need to be processed
+        Stack<String> processStack = new Stack<>();
+
         for(int i = list.length - 1; i >= 0; i--){
-            strings.push(list[i]);
+            processStack.push(list[i]);
         }
 
         List<String> returnList = new LinkedList<>();
 
-        while (!strings.isEmpty()){
-            String s = strings.pop();
+        while (!processStack.isEmpty()){
+            String s = processStack.pop();
             String [] parsedParts = null;
 
-            // split based on a non space followed by a paren sinx -> sin x
+            // split parens out i.e. sin( -> sin (
             parsedParts = s.split("((?<=[\\(\\)\\*\\^])|(?=[\\(\\)\\*\\^]))");
 
             if(parsedParts.length > 1) {
                 for(int i = parsedParts.length - 1; i >= 0; i--){
-                    strings.push(parsedParts[i]);
+                    processStack.push(parsedParts[i]);
                 }
                 continue;
             }
 
             //turn something like 3x into 3 * x
             if (s.matches(".*[0-9][a-z].*")) {
-                parsedParts = s.split("(?=[a-z])", 2);
-                strings.push(parsedParts[1]);
-                strings.push("*");
-                strings.push(parsedParts[0]);
+                splitByRegex(s,2,"(?=[a-z])",processStack, "*" );
                 continue;
             }
+
+            // split out NEGATIVE signs
+            if(splitByRegex(s,null,"((?=-)|(?<=-))",processStack, null)){
+                continue;
+            }
+
             returnList.add(s);
         }
         return returnList;
+    }
+
+    private static boolean splitByRegex(String toSplit, Integer splitLimit, String regex, Stack<String> processStack, String separator){
+        String [] parsedParts = Objects.nonNull(splitLimit) ? toSplit.split(regex, splitLimit) : toSplit.split(regex);
+        if(parsedParts.length > 1) {
+            for(int i = parsedParts.length - 1; i >= 0; i--){
+                processStack.push(parsedParts[i]);
+                if (i > 0 && Objects.nonNull(separator) && !separator.equals("")) {
+                    processStack.push(separator);
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -199,19 +217,25 @@ public class Parser {
         Queue<AbstractMath> suspicious = new LinkedList<>();
         for (AbstractMath am : l){
             //when this happens it is time to clear out the queue
-            if(am.getClass()  != Negative.class && am != Operator.SUBTRACT ){
+            if(am.getClass() != Negative.class && am != Operator.SUBTRACT && am != Operator.ADD ){
                 if (!suspicious.isEmpty()) {
                     AbstractMath topElem = suspicious.remove();
                     //this needs to become an addition
-                    if (topElem == Operator.SUBTRACT) {
+                    if (topElem == Operator.SUBTRACT || topElem == Operator.ADD) {
                         while (!suspicious.isEmpty()) {
-                            suspicious.remove();
-                            topElem = (topElem == Operator.SUBTRACT ? Operator.ADD : Operator.SUBTRACT);
+                            AbstractMath removed = suspicious.remove();
+                            if(removed != Operator.ADD) {
+                                topElem = (topElem == Operator.SUBTRACT ? Operator.ADD : Operator.SUBTRACT);
+                            }
                         }
                         returnList.add(topElem);
                     } else if (topElem.getClass() == Negative.class) {
-                        int size = suspicious.size() + 1;
-                        if (size % 2 == 1) {
+                        int count = 1;
+                        for(AbstractMath am2 : suspicious){
+                            if(am2 != Operator.ADD);
+                            count += 1;
+                        }
+                        if (count % 2 == 1) {
                             returnList.add(topElem);
                         }
                     }
