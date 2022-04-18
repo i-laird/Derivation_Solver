@@ -1,7 +1,7 @@
 package calculator.util;
 
-import calculator.enums.AbstractMath;
-import calculator.enums.Negative;
+import calculator.util.token.AbstractMath;
+import calculator.util.token.Negative;
 
 /**
  * Wrapper

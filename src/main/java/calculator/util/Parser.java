@@ -1,8 +1,13 @@
 package calculator.util;
 
-import calculator.enums.*;
-import calculator.terms.Term;
-import calculator.terms.Variable;
+import calculator.util.terms.Term;
+import calculator.util.terms.Variable;
+import calculator.util.token.AbstractMath;
+import calculator.util.token.Num;
+import calculator.util.token.Function;
+import calculator.util.token.Negative;
+import calculator.util.token.Operator;
+import calculator.util.token.Paren;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;

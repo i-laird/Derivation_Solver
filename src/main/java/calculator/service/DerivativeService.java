@@ -2,7 +2,7 @@ package calculator.service;
 
 import calculator.DTO.Response;
 import calculator.util.Parser;
-import calculator.terms.Term;
+import calculator.util.terms.Term;
 import calculator.util.StringToStream;
 import org.springframework.stereotype.Service;
 
