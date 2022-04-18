@@ -1,5 +1,5 @@
-import DerivationSolver.Parser;
-import DerivationSolver.Terms.Term;
+import calculator.util.Parser;
+import calculator.terms.Term;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

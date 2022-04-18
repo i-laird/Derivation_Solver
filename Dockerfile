@@ -21,4 +21,4 @@ WORKDIR /run
 
 COPY --from=build /build/target/DerivationSolver-*.jar ./
 
-CMD ["java", "-jar", "./target/DerivationSolver.jar"]
+CMD ["java", "-jar", "./target/calculator.jar"]
