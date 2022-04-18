@@ -2,7 +2,6 @@ package DerivationSolver;
 
 import DerivationSolver.Enums.*;
 import DerivationSolver.Terms.Term;
-import DerivationSolver.Terms.Var;
 import DerivationSolver.Terms.Variable;
 
 import java.io.BufferedInputStream;
@@ -45,9 +44,6 @@ public class Parser {
      * creates the tree and stores it in root
      */
     public Parser(InputStream in){
-
-        //reset the variable
-        Var.reset();
 
         Scanner inputScan = new Scanner(new BufferedInputStream(in));
         String line = inputScan.nextLine();
@@ -209,7 +205,7 @@ public class Parser {
             throw new RuntimeException("This part is invalid: " + s);
         }
         operatorOrFunctionSeen = false;
-        return Variable.getVariable(s.charAt(0));
+        return new Variable(s.charAt(0));
     }
 
     /**

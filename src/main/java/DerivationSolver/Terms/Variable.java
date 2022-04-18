@@ -6,20 +6,11 @@ import java.util.List;
 
 public class Variable extends Term implements AbstractMath{
 
-    public static Variable getVariable(char c){
-        return new Variable(Var.getVariable(c));
-    }
-
-
     //local variables
-    Var v = null;
-
-    public Variable(Var v) {
-        this.v = v;
-    }
+    private Character variableSymbol = null;
 
     public Variable (char c){
-        this.v = Var.getVariable(c);
+        this.variableSymbol = c;
     }
 
     @Override
@@ -35,4 +26,5 @@ public class Variable extends Term implements AbstractMath{
     public double evaluate(List<Integer> dims){
         return (this.negative ? dims.get(0) * -1 : dims.get(0));
     }
+
 }
