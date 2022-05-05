@@ -1,6 +1,6 @@
 
 # stage 1
-FROM maven:3.6.0-jdk-11-slim as build
+FROM maven:3.8.5-openjdk-18-slim as build
 
 MAINTAINER Ian Laird
 
@@ -8,14 +8,11 @@ WORKDIR /build
 
 COPY pom.xml .
 
-RUN mvn dependency:go-offline -B
-
 COPY ./src ./src
 
 RUN mvn package
 
-# stage 2
-FROM openjdk:11-jre-slim as run
+FROM openjdk:18.0-jdk as run
 
 WORKDIR /run
 
