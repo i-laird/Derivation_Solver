@@ -314,22 +314,12 @@ public class Parser {
                     outputParts.add(new Wrapper(am));
                 }
 
+                // TODO I think there will be a problem if two unary operator of same type end on same paren
+                // i.e. sin ( sin x )
+
                 // see if any unary operator ends at this
                 // this will only occur when the unary operator did not use parentheses
-                for(Map.Entry<AbstractMath, List<Integer>> k : functionToLastAppliedTerm.entrySet()) {
-                    List<Integer> valueList = k.getValue();
-                    for (int i = 0; i < valueList.size(); i++) {
-                        Integer val = valueList.get(i);
-                        if (val == numRightParenEncountered) {
-                            outputParts.add(new Wrapper(k.getKey()));
-                            valueList.remove(i);
-                            if (valueList.isEmpty()) {
-                                functionToLastAppliedTerm.remove(k.getKey());
-                            }
-                            break;
-                        }
-                    }
-                }
+                checkUnaryEnd(functionToLastAppliedTerm, numRightParenEncountered, outputParts);
             }
 
             // if it is a unary operator figure out when the operator stops applying
@@ -389,22 +379,7 @@ public class Parser {
 
                     AbstractMath toRemove = null;
 
-                    // see if a unary operator ended at this point
-                    for(Map.Entry<AbstractMath, List<Integer>> k : functionToLastAppliedTerm.entrySet()){
-                        List<Integer> valueList = k.getValue();
-                        for(int i =0; i < valueList.size(); i++){
-                            Integer val = valueList.get(i);
-                            if(val == numRightParenEncountered){
-                                outputParts.add(new Wrapper(k.getKey()));
-                                valueList.remove(i);
-                                if(valueList.isEmpty()){
-                                    toRemove = k.getKey();
-                                }
-                                break;
-                            }
-                        }
-                    }
-                    functionToLastAppliedTerm.remove(toRemove);
+                    checkUnaryEnd(functionToLastAppliedTerm, numRightParenEncountered, outputParts);
                 }
             }
 
@@ -515,5 +490,26 @@ public class Parser {
 
         // the last element of the stack is the root of the tree
         return root;
+    }
+
+    public static void checkUnaryEnd(Map<AbstractMath, List<Integer>> functionToLastAppliedTerm, int numRightParenEncountered, Queue<Wrapper> outputParts){
+        AbstractMath toRemove = null;
+
+        // see if a unary operator ended at this point
+        for(Map.Entry<AbstractMath, List<Integer>> k : functionToLastAppliedTerm.entrySet()){
+            List<Integer> valueList = k.getValue();
+            for(int i =0; i < valueList.size(); i++){
+                Integer val = valueList.get(i);
+                if(val == numRightParenEncountered){
+                    outputParts.add(new Wrapper(k.getKey()));
+                    valueList.remove(i);
+                    if(valueList.isEmpty()){
+                        toRemove = k.getKey();
+                    }
+                    break;
+                }
+            }
+        }
+        functionToLastAppliedTerm.remove(toRemove);
     }
 }
