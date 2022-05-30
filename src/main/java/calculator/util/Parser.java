@@ -83,11 +83,11 @@ public class Parser {
      * @return in order syntax and numbers
      */
     private List<AbstractMath> tokenizeExpression(String expression){
-        // tokenize the line by white space
+
+        // split line by white space
         String [] parts = expression.split("\\s+");
 
-        // clean the tokens
-        // this step further splits the tokens if the string does not delimit by white space
+        // this step further splits if the string does not delimit by white space
         List<String> cleanedInput = cleanInput(parts);
 
         // map each token to its associated mathematical operation
@@ -144,8 +144,13 @@ public class Parser {
                 continue;
             }
 
-            // split out AD signs
+            // split out ADD signs
             if(splitByRegex(s,null,"((?=\\+)|(?<=\\+))",processStack, null)){
+                continue;
+            }
+
+            // split out MULTIPLY signs
+            if(splitByRegex(s,null,"((?=\\*)|(?<=\\*))",processStack, null)){
                 continue;
             }
 
@@ -217,39 +222,48 @@ public class Parser {
      * @param l the list of math terms in order
      * @return double negatives are removed, and negated subtraction
      *  becomes addition
+     *
+     *  example:
+     *      NEGATIVE NEGATIVE 5 -> 5
      */
     public List<AbstractMath> removeMultipleNegatives(List<AbstractMath> l){
         List<AbstractMath> returnList = new LinkedList<>();
-        Queue<AbstractMath> suspicious = new LinkedList<>();
+
+        // holds all plus and minus signs encountered that have not been processed yet
+        Queue<AbstractMath> plusMinusToProcess = new LinkedList<>();
         for (AbstractMath am : l){
-            //when this happens it is time to clear out the queue
+
+            // IF the token being analyzed is not a minus or plus sign
+            // it is time to clear out the queue of the unprocessed + and - signs
             if(am.getClass() != Negative.class && am != Operator.SUBTRACT && am != Operator.ADD ){
-                if (!suspicious.isEmpty()) {
-                    AbstractMath topElem = suspicious.remove();
-                    //this needs to become an addition
-                    if (topElem == Operator.SUBTRACT || topElem == Operator.ADD) {
-                        while (!suspicious.isEmpty()) {
-                            AbstractMath removed = suspicious.remove();
-                            if(removed != Operator.ADD) {
-                                topElem = (topElem == Operator.SUBTRACT ? Operator.ADD : Operator.SUBTRACT);
-                            }
+                if (!plusMinusToProcess.isEmpty()) {
+                    int minusCount = 0;
+                    AbstractMath topElem = plusMinusToProcess.peek();
+
+                    //count the number of - signs (negative and subtraction)
+                    while(!plusMinusToProcess.isEmpty()){
+                        AbstractMath toEval = plusMinusToProcess.remove();
+                        if(toEval.getClass() == Negative.class || toEval == Operator.SUBTRACT){
+                            ++minusCount;
                         }
-                        returnList.add(topElem);
-                    } else if (topElem.getClass() == Negative.class) {
-                        int count = 1;
-                        for(AbstractMath am2 : suspicious){
-                            if(am2 != Operator.ADD);
-                            count += 1;
-                        }
-                        if (count % 2 == 1) {
-                            returnList.add(topElem);
+                    }
+
+                    // handle addition / subtraction case
+                    if(topElem == Operator.SUBTRACT || topElem == Operator.ADD) {
+                        returnList.add((minusCount % 2 == 1) ? Operator.SUBTRACT : Operator.ADD);
+                    }
+
+                    // handle negation case
+                    else if(topElem.getClass() == Negative.class){
+                        if(minusCount % 2 == 1){
+                            returnList.add(new Negative());
                         }
                     }
                 }
                 returnList.add(am);
             }
             else{
-                suspicious.add(am);
+                plusMinusToProcess.add(am);
             }
         }
         return returnList;
