@@ -225,6 +225,7 @@ public class Parser {
      *
      *  example:
      *      NEGATIVE NEGATIVE 5 -> 5
+     *      5 PLUS NEGATIVE 5 -> 5 MINUS 5
      */
     public List<AbstractMath> removeMultipleNegatives(List<AbstractMath> l){
         List<AbstractMath> returnList = new LinkedList<>();
@@ -284,7 +285,7 @@ public class Parser {
 
         // used to find when to end the jurisdiction of unary operators
         // i.e. for sin(x) a mapping will be stored from sin to the end paren
-        Map<AbstractMath, Integer> functionToLastAppliedTerm = new HashMap<>();
+        Map<AbstractMath, List<Integer>> functionToLastAppliedTerm = new HashMap<>();
 
         Stack<Wrapper>  stack = new Stack<>();
 
@@ -293,11 +294,15 @@ public class Parser {
 
             // if this is a NEGATIVE remember it and go to next token
             if(am.getClass() == Negative.class){
+                if(Objects.nonNull(negative)){
+                    throw new RuntimeException("Double negative encountered after token simplification");
+                }
                 negative = (Negative)am;
                 continue;
             }
 
             // if token is a constant or a variable
+            // negate if necessary and then output to output queue
             if(am.getClass() == Num.class || am.getClass() == Variable.class){
 
                 // if negated previously
@@ -310,12 +315,19 @@ public class Parser {
                 }
 
                 // see if any unary operator ends at this
-                // this will only occur when the unary operator did not use parenthesis
-                for(Map.Entry<AbstractMath, Integer> k : functionToLastAppliedTerm.entrySet()){
-                    if(numRightParenEncountered == k.getValue()){
-                        outputParts.add(new Wrapper(k.getKey()));
-                        functionToLastAppliedTerm.remove(k.getKey());
-                        break;
+                // this will only occur when the unary operator did not use parentheses
+                for(Map.Entry<AbstractMath, List<Integer>> k : functionToLastAppliedTerm.entrySet()) {
+                    List<Integer> valueList = k.getValue();
+                    for (int i = 0; i < valueList.size(); i++) {
+                        Integer val = valueList.get(i);
+                        if (val == numRightParenEncountered) {
+                            outputParts.add(new Wrapper(k.getKey()));
+                            valueList.remove(i);
+                            if (valueList.isEmpty()) {
+                                functionToLastAppliedTerm.remove(k.getKey());
+                            }
+                            break;
+                        }
                     }
                 }
             }
@@ -350,8 +362,9 @@ public class Parser {
                         next = iter2.next();
                     }
                 }
-
-                functionToLastAppliedTerm.put(am, numRightParenEncountered + tempRightParenCount);
+                functionToLastAppliedTerm.putIfAbsent(am, new LinkedList<>());
+                List<Integer> valueList = functionToLastAppliedTerm.get(am);
+                valueList.add(numRightParenEncountered + tempRightParenCount);
             }
 
             // if the token is a paren
@@ -374,14 +387,24 @@ public class Parser {
                     // get rid of this left paran
                     stack.pop();
 
+                    AbstractMath toRemove = null;
+
                     // see if a unary operator ended at this point
-                    for(Map.Entry<AbstractMath, Integer> k : functionToLastAppliedTerm.entrySet()){
-                        if(numRightParenEncountered == k.getValue()){
-                            outputParts.add(new Wrapper(k.getKey()));
-                            functionToLastAppliedTerm.remove(k.getKey());
-                            break;
+                    for(Map.Entry<AbstractMath, List<Integer>> k : functionToLastAppliedTerm.entrySet()){
+                        List<Integer> valueList = k.getValue();
+                        for(int i =0; i < valueList.size(); i++){
+                            Integer val = valueList.get(i);
+                            if(val == numRightParenEncountered){
+                                outputParts.add(new Wrapper(k.getKey()));
+                                valueList.remove(i);
+                                if(valueList.isEmpty()){
+                                    toRemove = k.getKey();
+                                }
+                                break;
+                            }
                         }
                     }
+                    functionToLastAppliedTerm.remove(toRemove);
                 }
             }
 
