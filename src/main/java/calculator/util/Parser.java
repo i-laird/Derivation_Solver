@@ -8,6 +8,7 @@ import calculator.util.token.Function;
 import calculator.util.token.Negative;
 import calculator.util.token.Operator;
 import calculator.util.token.Paren;
+import ch.qos.logback.classic.pattern.Abbreviator;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
@@ -99,7 +100,10 @@ public class Parser {
 
         // remove excessive negatives
         // i.e. NEGATIVE NEGATIVE 5 -> 5
-        return removeMultipleNegatives(mappedParts);
+        List<AbstractMath> negativesRemoved = removeMultipleNegatives(mappedParts);
+
+        List<AbstractMath> unaryParensAdded = addParenAfterUnary(new LinkedList<>(), negativesRemoved, 0, 0);
+        return unaryParensAdded;
     }
 
     /**
@@ -270,11 +274,54 @@ public class Parser {
         return returnList;
     }
 
-    /**
-     * converts a list of tokens to postfix notation
-     * @param tokens the tokens
-     * @return post fix notation
-     */
+    public static List<AbstractMath> addParenAfterUnary(List<AbstractMath> returnList, List<AbstractMath> l, int index, int rightParenToAdd ){
+        while(index < l.size()){
+            AbstractMath current = l.get(index);
+            returnList.add(current);
+
+            // if a unary operator
+            if (current.getClass() == Function.class) {
+                index++;
+                AbstractMath next = l.get(index);
+
+                // if not a left paren
+                if (!(next.getClass() == Paren.class && next == Paren.LEFT_PAREN)) {
+                    returnList.add(Paren.LEFT_PAREN);
+
+                    // finding where to put the closing parenthesis
+                    while (true) {
+                        returnList.add(next);
+                        if(next.getClass() == Negative.class) {
+                            index++;
+                            next = l.get(index);
+                            continue;
+                        }
+                        if(next.getClass() == Function.class) {
+                            returnList.addAll(addParenAfterUnary(returnList, l, index + 1, rightParenToAdd + 1));
+                            return returnList;
+                        }
+                        break;
+                    }
+                    returnList.add(Paren.RIGHT_PAREN);
+                    ++index;
+                }
+            }
+            else{
+                for(int i = 0 ; i < rightParenToAdd; i++){
+                    returnList.add(Paren.RIGHT_PAREN);
+                    rightParenToAdd = 0;
+                }
+                ++index;
+            }
+        }
+        return returnList;
+    }
+
+        /**
+         * converts a list of tokens to postfix notation
+         * @param tokens the tokens
+         * @return post fix notation
+         */
     private static Queue<Wrapper> convertToPostFix(List<AbstractMath> tokens){
         int numRightParenEncountered = 0;
         Queue<Wrapper>  outputParts = new LinkedList<>();
@@ -313,13 +360,6 @@ public class Parser {
                 else {
                     outputParts.add(new Wrapper(am));
                 }
-
-                // TODO I think there will be a problem if two unary operator of same type end on same paren
-                // i.e. sin ( sin x )
-
-                // see if any unary operator ends at this
-                // this will only occur when the unary operator did not use parentheses
-                checkUnaryEnd(functionToLastAppliedTerm, numRightParenEncountered, outputParts);
             }
 
             // if it is a unary operator figure out when the operator stops applying
