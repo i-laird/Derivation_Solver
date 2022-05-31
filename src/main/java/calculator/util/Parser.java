@@ -8,7 +8,7 @@ import calculator.util.token.Function;
 import calculator.util.token.Negative;
 import calculator.util.token.Operator;
 import calculator.util.token.Paren;
-import ch.qos.logback.classic.pattern.Abbreviator;
+import lombok.NonNull;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
@@ -49,12 +49,14 @@ public class Parser {
      *
      * creates the tree and stores it in root
      */
-    public Parser(InputStream in){
+    public Parser(@NonNull InputStream in){
 
         Scanner inputScan = new Scanner(new BufferedInputStream(in));
         String line = inputScan.nextLine();
 
         // tokenize the expression
+        // performs some sanitizing such as removing excess negatives
+        // and adding parens as necessary
         List<AbstractMath> tokenized = tokenizeExpression(line);
 
         // convert the expression to postfix notation
@@ -83,7 +85,7 @@ public class Parser {
      * @param expression the expression to tokenize
      * @return in order syntax and numbers
      */
-    private List<AbstractMath> tokenizeExpression(String expression){
+    private List<AbstractMath> tokenizeExpression(@NonNull String expression){
 
         // split line by white space
         String [] parts = expression.split("\\s+");
@@ -102,6 +104,7 @@ public class Parser {
         // i.e. NEGATIVE NEGATIVE 5 -> 5
         List<AbstractMath> negativesRemoved = removeMultipleNegatives(mappedParts);
 
+        // add parens after unary operators as necessary
         List<AbstractMath> unaryParensAdded = addParenAfterUnary(new LinkedList<>(), negativesRemoved, 0, 0);
         return unaryParensAdded;
     }
@@ -112,7 +115,7 @@ public class Parser {
      *
      * example: 3x into 3 * x
      */
-    public List<String> cleanInput(String [] list){
+    public List<String> cleanInput(@NonNull String [] list){
 
         // create a stack that will hold the items that need to be processed
         Stack<String> processStack = new Stack<>();
@@ -123,38 +126,43 @@ public class Parser {
 
         List<String> returnList = new LinkedList<>();
 
+        // one at a time evaluate the elements of the stack to see if they can be further subdivided
+        // for example 5+ should become 5 +
+        //             5x should become 5 * x
+        // once the token is split push all the subtokens on the stack where they will be checked for further splits
+        // loop stops when there are no more tokens left to evaluate
         while (!processStack.isEmpty()){
             String s = processStack.pop();
             String [] parsedParts = null;
 
-            // split parens out i.e. sin( -> sin (
-            parsedParts = s.split("((?<=[\\(\\)\\*\\^])|(?=[\\(\\)\\*\\^]))");
-
-            if(parsedParts.length > 1) {
-                for(int i = parsedParts.length - 1; i >= 0; i--){
-                    processStack.push(parsedParts[i]);
-                }
+            // add space before parentheses
+            if(splitByRegex(s,null,"((?<=[\\(\\)\\*\\^])|(?=[\\(\\)\\*\\^]))", processStack, null)){
                 continue;
             }
 
             //turn something like 3x into 3 * x
             if (s.matches(".*[0-9][a-z].*")) {
-                splitByRegex(s,2,"(?=[a-z])",processStack, "*" );
+                splitByRegex(s,2,"(?=[a-z])", processStack, "*" );
                 continue;
             }
 
-            // split out NEGATIVE signs
-            if(splitByRegex(s,null,"((?=-)|(?<=-))",processStack, null)){
+            // add space NEGATIVE signs
+            if(splitByRegex(s,null,"((?=-)|(?<=-))", processStack, null)){
                 continue;
             }
 
-            // split out ADD signs
-            if(splitByRegex(s,null,"((?=\\+)|(?<=\\+))",processStack, null)){
+            // add space before ADD signs
+            if(splitByRegex(s,null,"((?=\\+)|(?<=\\+))", processStack, null)){
                 continue;
             }
 
-            // split out MULTIPLY signs
-            if(splitByRegex(s,null,"((?=\\*)|(?<=\\*))",processStack, null)){
+            // add space before MULTIPLY signs
+            if(splitByRegex(s,null,"((?=\\*)|(?<=\\*))", processStack, null)){
+                continue;
+            }
+
+            // add space before DIVIDE signs
+            if(splitByRegex(s,null,"((?=/)|(?<=/))", processStack, null)){
                 continue;
             }
 
@@ -163,8 +171,25 @@ public class Parser {
         return returnList;
     }
 
-    private static boolean splitByRegex(String toSplit, Integer splitLimit, String regex, Stack<String> processStack, String separator){
+    /**
+     *
+     * @param toSplit the string to split
+     * @param splitLimit maximum number of substring to create from the base string
+     * @param regex regular expression to use for splitting
+     * @param processStack holds the items that need to be processed
+     * @param separator if a non empty string is pushed between every element that is added to the stack
+     * @return if the string was split into at least two substrings
+     *
+     * ASSUMPTION: if a split is not possible (i.e. after using regex there is still only one string)
+     *      then nothing is added to the process stack and false is returned
+     */
+    private static boolean splitByRegex(@NonNull String toSplit, Integer splitLimit, @NonNull String regex, @NonNull Stack<String> processStack, String separator){
+        if(Objects.nonNull(splitLimit) && splitLimit < 1){
+            return false;
+        }
         String [] parsedParts = Objects.nonNull(splitLimit) ? toSplit.split(regex, splitLimit) : toSplit.split(regex);
+
+        // if number of substring is more than 1 then push all substrings to the stack with separator
         if(parsedParts.length > 1) {
             for(int i = parsedParts.length - 1; i >= 0; i--){
                 processStack.push(parsedParts[i]);
@@ -184,7 +209,7 @@ public class Parser {
      *
      * caution: if s is only white space or empty null is returned
      */
-    public AbstractMath getMappedPart(String s){
+    public AbstractMath getMappedPart(@NonNull String s){
         //get rid of anything that is just white space
         if(s.matches("\\s+") || s.isEmpty()){
             return null;
@@ -197,7 +222,7 @@ public class Parser {
             return Paren.RIGHT_PAREN;
         }
         AbstractMath returnThing = null;
-        //see if it is an integeer
+        //see if it is an integer
         if (s.matches("[+-]?\\d+")){
             operatorOrFunctionSeen = false;
             return new Num(Integer.parseInt(s));
@@ -216,7 +241,7 @@ public class Parser {
             return returnThing;
         }
         if(s.length() != 1){
-            throw new RuntimeException("This part is invalid: " + s);
+            throw new RuntimeException("Invalid term seen: " + s);
         }
         operatorOrFunctionSeen = false;
         return new Variable(s.charAt(0));
@@ -274,7 +299,16 @@ public class Parser {
         return returnList;
     }
 
-    public static List<AbstractMath> addParenAfterUnary(List<AbstractMath> returnList, List<AbstractMath> l, int index, int rightParenToAdd ){
+    /**
+     *
+     * @param returnList list after parens have been added after all unary operators
+     * @param l list to evaluate
+     * @param index index to start evaluation at (0 for root case)
+     * @param rightParenToAdd the number of ummatched left parens encountered so far (0 for root case)
+     * @returnlist after parens have been added after all unary operators for all elements of l after and
+     *      including index index
+     */
+    public static List<AbstractMath> addParenAfterUnary(@NonNull List<AbstractMath> returnList, @NonNull List<AbstractMath> l, int index, int rightParenToAdd ){
         while(index < l.size()){
             AbstractMath current = l.get(index);
             returnList.add(current);
@@ -317,12 +351,12 @@ public class Parser {
         return returnList;
     }
 
-        /**
-         * converts a list of tokens to postfix notation
-         * @param tokens the tokens
-         * @return post fix notation
-         */
-    private static Queue<Wrapper> convertToPostFix(List<AbstractMath> tokens){
+    /**
+     * converts a list of tokens to postfix notation
+     * @param tokens the tokens
+     * @return post fix notation
+     */
+    private static Queue<Wrapper> convertToPostFix(@NonNull List<AbstractMath> tokens){
         int numRightParenEncountered = 0;
         Queue<Wrapper>  outputParts = new LinkedList<>();
         Negative negative = null;
@@ -334,7 +368,7 @@ public class Parser {
         // i.e. for sin(x) a mapping will be stored from sin to the end paren
         Map<AbstractMath, List<Integer>> functionToLastAppliedTerm = new HashMap<>();
 
-        Stack<Wrapper>  stack = new Stack<>();
+        Stack<Wrapper> stack = new Stack<>();
 
         while (iter.hasNext()){
             AbstractMath am = iter.next();
@@ -352,14 +386,8 @@ public class Parser {
             // negate if necessary and then output to output queue
             if(am.getClass() == Num.class || am.getClass() == Variable.class){
 
-                // if negated previously
-                if(negative != null){
-                    outputParts.add(new Wrapper(am, negative));
-                    negative = null;
-                }
-                else {
-                    outputParts.add(new Wrapper(am));
-                }
+                outputParts.add(new Wrapper(am, negative));
+                negative = null;
             }
 
             // if it is a unary operator figure out when the operator stops applying
@@ -419,6 +447,7 @@ public class Parser {
 
                     AbstractMath toRemove = null;
 
+                    // check if any unary operators domain ends here
                     checkUnaryEnd(functionToLastAppliedTerm, numRightParenEncountered, outputParts);
                 }
             }
@@ -426,15 +455,17 @@ public class Parser {
             // if an operator
             else {
 
-                //TODO comment this part
                 while(true){
                     if (stack.empty()){
                         break;
                     }
                     try {
+
+                        // shunting yard algorithm stuff
                         if ((stack.peek()).getAm().getClass() == Paren.class || ((((Operator) (stack.peek()).getAm())).precedence < ((Operator) am).precedence) || (((Operator) (stack.peek()).getAm()).precedence == ((Operator) am).precedence) && ((Operator) (stack.peek()).getAm()).associativity == Operator.Associativity.LEFT) {
                             break;
                         }
+
                         // account for natural log being weird
                         // TODO check to see if this works
                         if ((Operator) am == Operator.NAT_LOG) {
@@ -483,7 +514,7 @@ public class Parser {
      * @param outputParts the tokens in post fix order
      * @return
      */
-    private static Term evaluatePostfix(Queue<Wrapper>  outputParts){
+    private static Term evaluatePostfix( @NonNull Queue<Wrapper> outputParts){
 
         // used to built the parse tree
         Stack<Term> parseTree = new Stack<>();
@@ -532,7 +563,7 @@ public class Parser {
         return root;
     }
 
-    public static void checkUnaryEnd(Map<AbstractMath, List<Integer>> functionToLastAppliedTerm, int numRightParenEncountered, Queue<Wrapper> outputParts){
+    public static void checkUnaryEnd(@NonNull Map<AbstractMath, List<Integer>> functionToLastAppliedTerm, int numRightParenEncountered, @NonNull Queue<Wrapper> outputParts){
         AbstractMath toRemove = null;
 
         // see if a unary operator ended at this point
