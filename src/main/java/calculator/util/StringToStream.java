@@ -1,5 +1,7 @@
 package calculator.util;
 
+import lombok.Singular;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -7,7 +9,9 @@ import java.nio.charset.StandardCharsets;
 /**
  * @author Ian Laird
  */
-public class StringToStream {
+final public class StringToStream {
+    private StringToStream(){}
+    private StringToStream(StringToStream s){}
 
     /**
      * converts a string to an input stream

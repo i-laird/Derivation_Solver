@@ -27,7 +27,7 @@ public class AdditionRule extends DerivationRule {
         return new AdditionRule(derived);
     }
 
-    AdditionRule(LinkedList<Term> l) {
+    public AdditionRule(LinkedList<Term> l) {
         super(l);
     }
 
