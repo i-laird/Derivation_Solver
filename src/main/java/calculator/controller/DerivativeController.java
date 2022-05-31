@@ -17,6 +17,11 @@ public class DerivativeController {
     @Autowired
     private DerivativeService derivativeService;
 
+    @GetMapping("health")
+    public String healthCheck(){
+        return "Hello World";
+    }
+
     @GetMapping("")
     public Response generateDerivative(@RequestParam("expression") String expression, @RequestParam("points")List<Integer> points){
         return derivativeService.evaluate(expression, points);

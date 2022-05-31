@@ -18,4 +18,6 @@ WORKDIR /run
 
 COPY --from=build /build/target/DerivationSolver-*.jar ./
 
-CMD ["java", "-jar", "./target/calculator.jar"]
+EXPOSE 8080
+
+CMD ["java", "-jar", "./DerivationSolver-2.0-SNAPSHOT.jar"]
