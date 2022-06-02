@@ -33,4 +33,8 @@ public class Term {
     public double evaluate(List<Integer> dims){
         return (double)this.getNum();
     }
+
+    public String toString(){
+        return Integer.toString(negative ? num * -1 : num);
+    }
 }

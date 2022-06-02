@@ -27,4 +27,9 @@ public class Variable extends Term implements AbstractMath{
         return (this.negative ? dims.get(0) * -1 : dims.get(0));
     }
 
+    @Override
+    public String toString(){
+        return String.valueOf(this.variableSymbol);
+    }
+
 }

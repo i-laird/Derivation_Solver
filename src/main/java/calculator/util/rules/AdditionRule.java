@@ -2,6 +2,7 @@ package calculator.util.rules;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import calculator.util.terms.Term;
 
@@ -48,6 +49,11 @@ public class AdditionRule extends DerivationRule {
      */
     public double getResult(List<Integer> dims){
         return this.terms.stream().map(x -> x.evaluate(dims)).reduce(0.0, Double::sum);
+    }
+
+    @Override
+    public String toString() {
+        return terms.stream().map(Object::toString).collect(Collectors.joining(" + "));
     }
 
 }

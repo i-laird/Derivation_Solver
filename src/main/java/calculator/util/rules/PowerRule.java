@@ -47,4 +47,9 @@ public class PowerRule extends DerivationRule {
         return Math.pow(this.terms.get(1).evaluate(dims), this.terms.get(0).evaluate(dims));
     }
 
+    @Override
+    public String toString() {
+        return this.terms.get(BASE_POS) + " ^ ( " + this.terms.get(POW_POS) + " ) ";
+    }
+
 }

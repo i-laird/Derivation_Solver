@@ -30,5 +30,10 @@ public class PowerFracRule extends DerivationRule {
     public double getResult(List<Integer> dims) {
         return 0;
     }
+
+    @Override
+    public String toString() {
+        return this.terms.get(0) + " ^ ( " + this.terms.get(1).getNum() + " / " + this.terms.get(2).getNum() + " ) ";
+    }
 }
 

@@ -18,4 +18,9 @@ public abstract class TrigRule extends DerivationRule {
     public abstract Term getDerivPart();
 
     public TrigRule(LinkedList<Term > l){super(l);}
+
+    @Override
+    public String toString(){
+        return ""; //TODO fix this
+    }
 }

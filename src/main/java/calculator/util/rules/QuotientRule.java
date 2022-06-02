@@ -52,4 +52,9 @@ public class QuotientRule extends DerivationRule {
         double denominatorEvaluated = this.terms.get(DENOM_POS).evaluate(dims);
         return numeratorEvaluated / denominatorEvaluated;
     }
+
+    @Override
+    public String toString() {
+        return " ( " + this.terms.get(NUMERATOR_POS) + ") / ( " + this.terms.get(DENOM_POS) + " ) ";
+    }
 }

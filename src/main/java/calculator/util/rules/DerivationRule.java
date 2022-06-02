@@ -62,4 +62,8 @@ public abstract class DerivationRule extends Term {
     }
 
     public abstract double getResult(List<Integer> dims);
+
+    @Override
+    public abstract String toString();
+
 }

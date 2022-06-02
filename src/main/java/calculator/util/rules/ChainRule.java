@@ -28,4 +28,9 @@ public class ChainRule extends DerivationRule {
     public double getResult(List<Integer> dims) {
         return this.terms.get(0).evaluate(dims);
     }
+
+    @Override
+    public String toString() {
+        return ""; // TODO is this right?
+    }
 }

@@ -2,6 +2,7 @@ package calculator.util.rules;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import calculator.util.Parser;
 import calculator.util.terms.Term;
@@ -61,6 +62,11 @@ public class ProductRule extends DerivationRule {
     @Override
     public double getResult(List<Integer> dims) {
         return this.terms.stream().map(x -> x.evaluate(dims)).reduce((x,y) -> x*y).get();
+    }
+
+    @Override
+    public String toString() {
+        return terms.stream().map(Object::toString).collect(Collectors.joining(" * "));
     }
 
 }

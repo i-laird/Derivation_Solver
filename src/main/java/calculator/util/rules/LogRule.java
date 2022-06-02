@@ -40,4 +40,9 @@ public class LogRule extends DerivationRule {
     public double getResult(List<Integer> dims) {
         return Math.log(this.terms.get(BASE_INDEX).evaluate(dims)) / Math.log(this.terms.get(ARGUMENT_INDEX).evaluate(dims));
     }
+
+    @Override
+    public String toString() {
+        return "log " + this.terms.get(BASE_INDEX) + " ( " + this.terms.get(ARGUMENT_INDEX) + " ) ";
+    }
 }

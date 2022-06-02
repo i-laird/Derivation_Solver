@@ -29,4 +29,9 @@ public class NaturalLogRule extends DerivationRule {
     public double getResult(List<Integer> dims) {
         return Math.log(this.terms.get(ARGUMENT_INDEX).evaluate(dims));
     }
+
+    @Override
+    public String toString() {
+        return "ln (" + this.terms.get(ARGUMENT_INDEX) + " )";
+    }
 }
