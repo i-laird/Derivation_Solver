@@ -13,6 +13,10 @@ public class CothRule  extends TrigRule {
     }
 
     @Override
+    public String functionName() {
+        return "coth";
+    }
+    @Override
     public Term getDerivPart() {
         return makeAdditionRule(new Term(1), makePowerRule(makeCothRule(this.terms.get(0)), new Term(2)).flipSign());
     }

@@ -13,6 +13,10 @@ public class SinhRule extends TrigRule {
     }
 
     @Override
+    public String functionName() {
+        return "sinh";
+    }
+    @Override
     public Term getDerivPart() {
         return makeCoshRule(this.terms.get(0));
     }

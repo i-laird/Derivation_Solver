@@ -14,6 +14,10 @@ public class ArcCosRule extends TrigRule {
     }
 
     @Override
+    public String functionName() {
+        return "cos-1";
+    }
+    @Override
     public Term getDerivPart() {
         return makeFracRule(new Term(-1),
                 makePowerFracRule(

@@ -14,6 +14,10 @@ public class CscRule extends TrigRule {
     }
 
     @Override
+    public String functionName() {
+        return "csc";
+    }
+    @Override
     public Term getDerivPart() {
         // d/dx csc(x) = -csc(x) * cot(x)
         return makeProductRule(makeCscRule(this.terms.get(0)).flipSign(), makeCotRule(this.terms.get(0)));

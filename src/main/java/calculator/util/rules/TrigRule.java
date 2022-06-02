@@ -21,6 +21,8 @@ public abstract class TrigRule extends DerivationRule {
 
     @Override
     public String toString(){
-        return ""; //TODO fix this
+        return functionName() + " ( " + terms.get(0) + " ) ";
     }
+
+    public abstract String functionName();
 }

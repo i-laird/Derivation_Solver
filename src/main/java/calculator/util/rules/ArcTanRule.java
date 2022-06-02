@@ -13,6 +13,10 @@ public class ArcTanRule extends TrigRule {
     }
 
     @Override
+    public String functionName() {
+        return "tan-1";
+    }
+    @Override
     public Term getDerivPart() {
         return makeFracRule(new Term(1), makeAdditionRule(new Term(1), makePowerRule(this.terms.get(0), new Term(2))));
     }

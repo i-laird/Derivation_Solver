@@ -13,6 +13,11 @@ public class SinRule extends TrigRule {
     }
 
     @Override
+    public String functionName() {
+        return "sin";
+    }
+
+    @Override
     public Term getDerivPart() {
         return makeCosRule(this.terms.get(0));
     }

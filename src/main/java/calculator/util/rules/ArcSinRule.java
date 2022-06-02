@@ -13,6 +13,10 @@ public class ArcSinRule  extends TrigRule {
     }
 
     @Override
+    public String functionName() {
+        return "sin-1";
+    }
+    @Override
     public Term getDerivPart() {
         return makeFracRule(new Term(1),
                makePowerFracRule(

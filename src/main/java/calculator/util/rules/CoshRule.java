@@ -14,6 +14,10 @@ public class CoshRule  extends TrigRule {
     }
 
     @Override
+    public String functionName() {
+        return "cosh";
+    }
+    @Override
     public Term getDerivPart() {
         return makeSinhRule(this.terms.get(0));
     }

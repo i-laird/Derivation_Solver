@@ -13,6 +13,10 @@ public class TanhRule extends TrigRule {
     }
 
     @Override
+    public String functionName() {
+        return "tanh";
+    }
+    @Override
     public Term getDerivPart() {
         return makePowerRule(new Term(2), makeSechRule(this.terms.get(0)));
     }

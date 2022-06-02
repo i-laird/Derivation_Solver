@@ -13,6 +13,10 @@ public class SechRule extends TrigRule {
     }
 
     @Override
+    public String functionName() {
+        return "sech";
+    }
+    @Override
     public Term getDerivPart() {
         return makeProductRule(makeTanhRule(this.terms.get(0)).flipSign(), makeSechRule(this.terms.get(0)));
     }

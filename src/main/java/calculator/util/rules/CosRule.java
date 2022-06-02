@@ -14,6 +14,10 @@ public class CosRule extends TrigRule {
     }
 
     @Override
+    public String functionName() {
+        return "cos";
+    }
+    @Override
     public Term getDerivPart() {
         // d/dx cos(x) = -sin(x)
         return makeSinRule(this.terms.get(0)).flipSign();

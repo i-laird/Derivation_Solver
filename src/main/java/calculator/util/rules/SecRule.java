@@ -13,6 +13,10 @@ public class SecRule extends TrigRule {
     }
 
     @Override
+    public String functionName() {
+        return "sec";
+    }
+    @Override
     public Term getDerivPart() {
         // d/dx sec(x) = sec(x) * tan(x)
         return makeProductRule(makeTanRule(this.terms.get(0)), makeSecRule(this.terms.get(0)));

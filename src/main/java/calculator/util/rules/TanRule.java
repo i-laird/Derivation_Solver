@@ -13,6 +13,10 @@ public class TanRule extends TrigRule {
     }
 
     @Override
+    public String functionName() {
+        return "tan";
+    }
+    @Override
     public Term getDerivPart() {
         // d/dx tan(x) = sec(x)^2
         return makePowerRule(new Term(2), makeSecRule(this.terms.get(0)));
