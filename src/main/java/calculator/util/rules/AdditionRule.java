@@ -17,7 +17,9 @@ import calculator.util.terms.Term;
 public class AdditionRule extends DerivationRule {
 
     /**
-     * d/dx(x + y) = d/dx(x) + d/dx(y
+     * d/dx(x + y) = d/dx(x) + d/dx(y)
+     *
+     * The derivative of the addition of terms is equal to the addition of the derivative of each term.
      *
      * @param original the original terms to be added
      * @param derived the derivative of each
@@ -51,6 +53,12 @@ public class AdditionRule extends DerivationRule {
         return this.terms.stream().map(x -> x.evaluate(dims)).reduce(0.0, Double::sum);
     }
 
+
+    /**
+     * tostring
+     *
+     * Calls tostring on each term and joins them together with a + symbol
+     */
     @Override
     public String toString() {
         return terms.stream().map(Object::toString).collect(Collectors.joining(" + "));

@@ -24,5 +24,13 @@ public abstract class TrigRule extends DerivationRule {
         return functionName() + " ( " + terms.get(0) + " ) ";
     }
 
+    /**
+     * Function name that is to be used in the tostring representation.
+     *
+     * Assumptions:
+     *  function name must not have a space in it
+     *  function name must match up with the name used for parsing
+     * @return function name
+     */
     public abstract String functionName();
 }

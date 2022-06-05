@@ -26,10 +26,12 @@ public abstract class DerivationRule extends Term {
     public DerivationRule(){}
 
     /**
-     * Steps:
+     * {@inheritDoc}
+     *
+     * {@link DerivationRule} Steps:
      * 1) Find derivative of each term in the expression
      * 2) Put together these derivatives to find the derivative of the original
-     * @return the derivative of the rule
+     * @return the derivative of the {@link DerivationRule}
      */
     @Override
     public Term getDerivative() {
@@ -49,8 +51,10 @@ public abstract class DerivationRule extends Term {
     }
 
     /**
-     * gets the result and flips it to negative if necessary
-     * @param dims the evaluation dims
+     * gets the result of the expression using {@link calculator.util.rules.DerivationRule#getResult(List)}
+     * and negates it if necessary.
+     *
+     * @param dims values to use for the variables
      * @return the result
      */
     public double evaluate(List<Integer> dims){
@@ -61,7 +65,16 @@ public abstract class DerivationRule extends Term {
         return toReturn;
     }
 
-    public abstract double getResult(List<Integer> dims);
+    /**
+     * getResult
+     *
+     * returns the result after evaluating the expression. Does not account for the negative flag and that is why this
+     * method is not intended to be called publicly.
+     *
+     * @param dims values to use for the variables
+     * @return evaluated expression for dims
+     */
+    abstract double getResult(List<Integer> dims);
 
     @Override
     public abstract String toString();
