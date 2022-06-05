@@ -7,7 +7,7 @@ import calculator.util.terms.Term;
 
 import static calculator.util.rules.RuleFactory.*;
 
-public class CosRule extends TrigRule {
+public final class CosRule extends TrigRule {
 
     CosRule(LinkedList<Term> l) {
         super(l);

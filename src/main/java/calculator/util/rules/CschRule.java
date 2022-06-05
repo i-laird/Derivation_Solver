@@ -7,7 +7,7 @@ import static calculator.util.rules.RuleFactory.*;
 import java.util.LinkedList;
 import java.util.List;
 
-public class CschRule  extends TrigRule {
+public final class CschRule  extends TrigRule {
 
     CschRule(LinkedList<Term> l) {
         super(l);

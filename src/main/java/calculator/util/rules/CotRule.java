@@ -7,7 +7,7 @@ import calculator.util.terms.Term;
 
 import static calculator.util.rules.RuleFactory.*;
 
-public class CotRule extends TrigRule {
+public final class CotRule extends TrigRule {
 
     CotRule(LinkedList<Term> l) {
         super(l);

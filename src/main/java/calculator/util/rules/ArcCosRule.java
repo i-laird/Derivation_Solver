@@ -7,7 +7,7 @@ import static calculator.util.rules.RuleFactory.*;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ArcCosRule extends TrigRule {
+public final class ArcCosRule extends TrigRule {
 
     ArcCosRule(LinkedList<Term> l) {
         super(l);

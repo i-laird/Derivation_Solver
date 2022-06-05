@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import static calculator.util.rules.RuleFactory.*;
 
-public class CothRule  extends TrigRule {
+public final class CothRule  extends TrigRule {
 
     CothRule(LinkedList<Term> l) {
         super(l);

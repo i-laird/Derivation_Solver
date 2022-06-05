@@ -6,7 +6,7 @@ import java.util.List;
 import calculator.util.terms.Term;
 
 import static calculator.util.rules.RuleFactory.*;
-public class SinRule extends TrigRule {
+public final class SinRule extends TrigRule {
 
     SinRule(LinkedList<Term> l) {
         super(l);

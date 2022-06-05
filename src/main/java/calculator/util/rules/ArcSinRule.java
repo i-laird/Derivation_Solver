@@ -5,8 +5,7 @@ import calculator.util.terms.Term;
 import java.util.LinkedList;
 import java.util.List;
 import static calculator.util.rules.RuleFactory.*;
-
-public class ArcSinRule  extends TrigRule {
+public final class ArcSinRule  extends TrigRule {
 
     ArcSinRule(LinkedList<Term> l) {
         super(l);

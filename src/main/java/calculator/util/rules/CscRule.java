@@ -7,7 +7,7 @@ import calculator.util.terms.Term;
 
 import static calculator.util.rules.RuleFactory.*;
 
-public class CscRule extends TrigRule {
+public final class CscRule extends TrigRule {
 
     CscRule(LinkedList<Term> l) {
         super(l);

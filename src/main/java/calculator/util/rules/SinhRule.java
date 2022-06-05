@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import static calculator.util.rules.RuleFactory.*;
 
-public class SinhRule extends TrigRule {
+public final class SinhRule extends TrigRule {
 
     SinhRule(LinkedList<Term> l) {
         super(l);

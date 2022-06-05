@@ -6,7 +6,7 @@ import java.util.List;
 import calculator.util.terms.Term;
 
 import static calculator.util.rules.RuleFactory.*;
-public class SecRule extends TrigRule {
+public final class SecRule extends TrigRule {
 
     SecRule(LinkedList<Term> l) {
         super(l);

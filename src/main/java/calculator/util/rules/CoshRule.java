@@ -7,7 +7,7 @@ import static calculator.util.rules.RuleFactory.*;
 import java.util.LinkedList;
 import java.util.List;
 
-public class CoshRule  extends TrigRule {
+public final class CoshRule  extends TrigRule {
 
     CoshRule(LinkedList<Term> l) {
         super(l);

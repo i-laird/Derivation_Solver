@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import static calculator.util.rules.RuleFactory.*;
 
-public class SechRule extends TrigRule {
+public final class SechRule extends TrigRule {
 
     SechRule(LinkedList<Term> l) {
         super(l);

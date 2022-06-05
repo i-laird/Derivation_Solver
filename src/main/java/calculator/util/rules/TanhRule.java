@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import static calculator.util.rules.RuleFactory.*;
 
-public class TanhRule extends TrigRule {
+public final class TanhRule extends TrigRule {
 
     TanhRule(LinkedList<Term> l) {
         super(l);

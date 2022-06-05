@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import static calculator.util.rules.RuleFactory.*;
 
-public class ArcTanRule extends TrigRule {
+public final class ArcTanRule extends TrigRule {
 
     ArcTanRule(LinkedList<Term> l) {
         super(l);

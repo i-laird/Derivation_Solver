@@ -4,7 +4,10 @@ import calculator.util.terms.Term;
 
 import java.util.LinkedList;
 
-public abstract non-sealed class TrigRule extends Rule {
+public abstract sealed class TrigRule extends Rule permits
+        SinRule, CosRule, TanRule, SecRule, CscRule, CotRule,
+        SinhRule, CoshRule, TanhRule, SechRule, CschRule, CothRule,
+        ArcSinRule, ArcCosRule, ArcTanRule, ArcCotRule {
 
     protected Term t;
 
