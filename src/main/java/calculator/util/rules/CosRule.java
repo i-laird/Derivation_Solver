@@ -20,11 +20,11 @@ public class CosRule extends TrigRule {
     @Override
     public Term getDerivPart() {
         // d/dx cos(x) = -sin(x)
-        return makeSinRule(this.terms.get(0)).flipSign();
+        return makeSinRule(this.t).flipSign();
     }
 
     @Override
     public double getResult(List<Integer> dims) {
-        return Math.cos(this.terms.get(0).evaluate(dims));
+        return Math.cos(this.t.evaluate(dims));
     }
 }

@@ -21,11 +21,11 @@ public class CotRule extends TrigRule {
     @Override
     public Term getDerivPart() {
         // d/dx cot(x) = -csc(x)^2
-        return makePowerRule(makeCscRule(this.terms.get(0)), new Term(2).flipSign());
+        return makePowerRule(makeCscRule(this.t), new Term(2).flipSign());
     }
 
     @Override
     public double getResult(List<Integer> dims) {
-        return 1.0 / Math.tan(this.terms.get(0).evaluate(dims));
+        return 1.0 / Math.tan(this.t.evaluate(dims));
     }
 }

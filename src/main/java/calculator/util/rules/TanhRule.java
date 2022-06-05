@@ -18,11 +18,11 @@ public class TanhRule extends TrigRule {
     }
     @Override
     public Term getDerivPart() {
-        return makePowerRule(new Term(2), makeSechRule(this.terms.get(0)));
+        return makePowerRule(new Term(2), makeSechRule(this.t));
     }
 
     @Override
     public double getResult(List<Integer> dims) {
-        return Math.tanh(this.terms.get(0).evaluate(dims));
+        return Math.tanh(this.t.evaluate(dims));
     }
 }

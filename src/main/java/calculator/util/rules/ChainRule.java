@@ -5,7 +5,7 @@ import calculator.util.terms.Term;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ChainRule extends DerivationRule {
+public final class ChainRule extends DerivationRule {
 
     @Override
     protected Term putTogether(LinkedList<Term> original, LinkedList<Term> derived){

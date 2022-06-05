@@ -18,11 +18,11 @@ public class SinhRule extends TrigRule {
     }
     @Override
     public Term getDerivPart() {
-        return makeCoshRule(this.terms.get(0));
+        return makeCoshRule(this.t);
     }
 
     @Override
     public double getResult(List<Integer> dims) {
-        return Math.sinh(this.terms.get(0).evaluate(dims));
+        return Math.sinh(this.t.evaluate(dims));
     }
 }

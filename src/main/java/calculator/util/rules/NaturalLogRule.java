@@ -7,7 +7,7 @@ import calculator.util.terms.Term;
 import static calculator.util.rules.RuleFactory.*;
 
 
-public class NaturalLogRule extends DerivationRule {
+public final class NaturalLogRule extends DerivationRule {
     public static final int ARGUMENT_INDEX = 0;
 
     NaturalLogRule(LinkedList<Term> l) {
@@ -23,6 +23,11 @@ public class NaturalLogRule extends DerivationRule {
 
         Term argument = this.terms.get(ARGUMENT_INDEX);
         return makeFracRule(argument, new Term(1));
+    }
+
+    @Override
+    protected Term putTogether(LinkedList<Term> original, LinkedList<Term> derived) {
+        return null;
     }
 
     @Override

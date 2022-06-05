@@ -19,7 +19,7 @@ public class CschRule  extends TrigRule {
     }
     @Override
     public Term getDerivPart() {
-        return makeProductRule(makeCotRule(this.terms.get(0)).flipSign(), makeCschRule(this.terms.get(0)));
+        return makeProductRule(makeCotRule(this.t).flipSign(), makeCschRule(this.t));
     }
 
     @Override

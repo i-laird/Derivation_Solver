@@ -19,11 +19,11 @@ public class SecRule extends TrigRule {
     @Override
     public Term getDerivPart() {
         // d/dx sec(x) = sec(x) * tan(x)
-        return makeProductRule(makeTanRule(this.terms.get(0)), makeSecRule(this.terms.get(0)));
+        return makeProductRule(makeTanRule(this.t), makeSecRule(this.t));
     }
 
     @Override
     public double getResult(List<Integer> dims) {
-        return 1.0 / Math.cos(this.terms.get(0).evaluate(dims));
+        return 1.0 / Math.cos(this.t.evaluate(dims));
     }
 }

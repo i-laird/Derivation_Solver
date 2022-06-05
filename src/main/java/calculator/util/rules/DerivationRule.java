@@ -14,7 +14,8 @@ import calculator.util.terms.Term;
  *
  * Derivatives are found by finding the derivative of each term and then calling putTogether().
  */
-public abstract class DerivationRule extends Term {
+public abstract sealed class DerivationRule extends Rule permits
+        AdditionRule, QuotientRule, ProductRule, PowerRule, PowerFracRule, ChainRule, NaturalLogRule, LogRule {
 
     // the terms held in the rule
     protected LinkedList<Term> terms;
@@ -46,35 +47,7 @@ public abstract class DerivationRule extends Term {
      * @param derived the derivation of the terms
      * @return the result
      */
-    protected Term putTogether(LinkedList<Term> original, LinkedList<Term> derived){
-        return null;
-    }
-
-    /**
-     * gets the result of the expression using {@link calculator.util.rules.DerivationRule#getResult(List)}
-     * and negates it if necessary.
-     *
-     * @param dims values to use for the variables
-     * @return the result
-     */
-    public double evaluate(List<Integer> dims){
-        double toReturn = this.getResult(dims);
-        if(this.negative){
-            toReturn = toReturn * -1;
-        }
-        return toReturn;
-    }
-
-    /**
-     * getResult
-     *
-     * returns the result after evaluating the expression. Does not account for the negative flag and that is why this
-     * method is not intended to be called publicly.
-     *
-     * @param dims values to use for the variables
-     * @return evaluated expression for dims
-     */
-    abstract double getResult(List<Integer> dims);
+    protected abstract Term putTogether(LinkedList<Term> original, LinkedList<Term> derived);
 
     @Override
     public abstract String toString();

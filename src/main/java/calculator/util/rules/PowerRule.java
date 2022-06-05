@@ -11,7 +11,7 @@ import static calculator.util.rules.RuleFactory.*;
  *
  * Used for when one term is raised to a power of another term
  */
-public class PowerRule extends DerivationRule {
+public final class PowerRule extends DerivationRule {
 
     // POW is the first in the terms
     public static final int POW_POS = 0;
@@ -40,6 +40,11 @@ public class PowerRule extends DerivationRule {
         }
 
         return new Term(1);
+    }
+
+    @Override
+    protected Term putTogether(LinkedList<Term> original, LinkedList<Term> derived) {
+        return null;
     }
 
     @Override

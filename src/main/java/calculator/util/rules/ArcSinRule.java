@@ -21,7 +21,7 @@ public class ArcSinRule  extends TrigRule {
         return makeFracRule(new Term(1),
                makePowerFracRule(
                     makeAdditionRule(new Term(1),
-                    makePowerRule(this.terms.get(0), new Term(2)).flipSign()),
+                    makePowerRule(this.t, new Term(2)).flipSign()),
                     new Term(1),
                     new Term(2)
                ));

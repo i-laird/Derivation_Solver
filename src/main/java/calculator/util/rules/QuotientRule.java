@@ -14,7 +14,7 @@ import static calculator.util.rules.RuleFactory.*;
  *
  * @author Ian Laird
  */
-public class QuotientRule extends DerivationRule {
+public final class QuotientRule extends DerivationRule {
 
     public final static int NUMERATOR_POS = 1;
     public final static int DENOM_POS = 0;

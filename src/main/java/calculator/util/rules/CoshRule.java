@@ -19,11 +19,11 @@ public class CoshRule  extends TrigRule {
     }
     @Override
     public Term getDerivPart() {
-        return makeSinhRule(this.terms.get(0));
+        return makeSinhRule(this.t);
     }
 
     @Override
     public double getResult(List<Integer> dims) {
-        return Math.cosh(this.terms.get(0).evaluate(dims));
+        return Math.cosh(this.t.evaluate(dims));
     }
 }

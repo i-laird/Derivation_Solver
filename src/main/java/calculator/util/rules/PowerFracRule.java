@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import static calculator.util.rules.RuleFactory.*;
 
-public class PowerFracRule extends DerivationRule {
+public final class PowerFracRule extends DerivationRule {
 
     PowerFracRule(LinkedList<Term> l) {
         super(l);
@@ -24,6 +24,11 @@ public class PowerFracRule extends DerivationRule {
         }
 
         return new Term(1);
+    }
+
+    @Override
+    protected Term putTogether(LinkedList<Term> original, LinkedList<Term> derived) {
+        return null;
     }
 
     @Override

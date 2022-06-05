@@ -4,7 +4,9 @@ import calculator.util.terms.Term;
 
 import java.util.LinkedList;
 
-public abstract class TrigRule extends DerivationRule {
+public abstract non-sealed class TrigRule extends Rule {
+
+    protected Term t;
 
     @Override
     public Term getDerivative() {
@@ -17,11 +19,11 @@ public abstract class TrigRule extends DerivationRule {
 
     public abstract Term getDerivPart();
 
-    public TrigRule(LinkedList<Term > l){super(l);}
+    public TrigRule(LinkedList<Term > l){this.t = l.get(0);}
 
     @Override
     public String toString(){
-        return functionName() + " ( " + terms.get(0) + " ) ";
+        return functionName() + " ( " + t + " ) ";
     }
 
     /**

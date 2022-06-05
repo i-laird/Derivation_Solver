@@ -19,11 +19,11 @@ public class TanRule extends TrigRule {
     @Override
     public Term getDerivPart() {
         // d/dx tan(x) = sec(x)^2
-        return makePowerRule(new Term(2), makeSecRule(this.terms.get(0)));
+        return makePowerRule(new Term(2), makeSecRule(this.t));
     }
 
     @Override
     public double getResult(List<Integer> dims) {
-        return Math.tan(this.terms.get(0).evaluate(dims));
+        return Math.tan(this.t.evaluate(dims));
     }
 }

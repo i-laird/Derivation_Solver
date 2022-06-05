@@ -19,11 +19,11 @@ public class SinRule extends TrigRule {
 
     @Override
     public Term getDerivPart() {
-        return makeCosRule(this.terms.get(0));
+        return makeCosRule(this.t);
     }
 
     @Override
     public double getResult(List<Integer> dims) {
-        return Math.sin(this.terms.get(0).evaluate(dims));
+        return Math.sin(this.t.evaluate(dims));
     }
 }

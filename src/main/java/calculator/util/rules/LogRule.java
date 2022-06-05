@@ -12,7 +12,7 @@ import static calculator.util.rules.RuleFactory.*;
  *
  * @author Ian Laird
  */
-public class LogRule extends DerivationRule {
+public final class LogRule extends DerivationRule {
 
     public static final int BASE_INDEX = 0;
     public static final int ARGUMENT_INDEX = 1;
@@ -34,6 +34,11 @@ public class LogRule extends DerivationRule {
         Term denominator = makeProductRule(argument, makeNaturalLogRule(this.terms.get(BASE_INDEX)));
 
         return makeFracRule(denominator, new Term(1));
+    }
+
+    @Override
+    protected Term putTogether(LinkedList<Term> original, LinkedList<Term> derived) {
+        return null;
     }
 
     @Override

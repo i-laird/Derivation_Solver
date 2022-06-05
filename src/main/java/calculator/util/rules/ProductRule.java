@@ -15,7 +15,7 @@ import calculator.util.terms.Term;
  * This class supports a product rule of more than two terms but {@link Parser}
  * will not construct AST that have more than two kid
  */
-public class ProductRule extends DerivationRule {
+public final class ProductRule extends DerivationRule {
 
 
     /**

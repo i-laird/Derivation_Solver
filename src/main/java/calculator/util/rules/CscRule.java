@@ -20,11 +20,11 @@ public class CscRule extends TrigRule {
     @Override
     public Term getDerivPart() {
         // d/dx csc(x) = -csc(x) * cot(x)
-        return makeProductRule(makeCscRule(this.terms.get(0)).flipSign(), makeCotRule(this.terms.get(0)));
+        return makeProductRule(makeCscRule(this.t).flipSign(), makeCotRule(this.t));
     }
 
     @Override
     public double getResult(List<Integer> dims) {
-        return 1.0 / Math.sin(this.terms.get(0).evaluate(dims));
+        return 1.0 / Math.sin(this.t.evaluate(dims));
     }
 }

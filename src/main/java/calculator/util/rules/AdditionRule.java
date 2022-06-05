@@ -14,7 +14,7 @@ import calculator.util.terms.Term;
  *
  * d/dx(x + y) = d/dx(x) + d/dx(y
  */
-public class AdditionRule extends DerivationRule {
+public final class AdditionRule extends DerivationRule {
 
     /**
      * d/dx(x + y) = d/dx(x) + d/dx(y)
