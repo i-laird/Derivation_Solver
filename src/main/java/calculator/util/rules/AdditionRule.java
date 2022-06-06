@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 
 import calculator.util.terms.Term;
 
+import static calculator.util.rules.RuleFactory.makeAdditionRule;
+
 /**
  * AdditionRule
  * @author Ian Laird
@@ -22,10 +24,10 @@ public final class AdditionRule extends DerivationRule {
      */
     @Override
     public Term getDerivative() {
-        return new AdditionRule(terms.stream().map(x -> x.getDerivative()).collect(Collectors.toCollection(LinkedList::new)));
+        return makeAdditionRule(terms.stream().map(x -> x.getDerivative()).collect(Collectors.toCollection(LinkedList::new)));
     }
 
-    public AdditionRule(LinkedList<Term> l) {
+    AdditionRule(LinkedList<Term> l) {
         super(l);
     }
 

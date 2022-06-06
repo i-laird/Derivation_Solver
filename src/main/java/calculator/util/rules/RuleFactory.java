@@ -4,6 +4,7 @@ import calculator.util.terms.Term;
 
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 
 public final class RuleFactory {
 
@@ -15,6 +16,10 @@ public final class RuleFactory {
 
     public static ProductRule makeProductRule(Term left, Term right){
         return new ProductRule(new LinkedList<>(Arrays.asList(left, right)));
+    }
+
+    public static ProductRule makeProductRule(LinkedList<Term> t){
+        return new ProductRule(t);
     }
 
     public static NaturalLogRule makeNaturalLogRule(Term inside){
@@ -47,6 +52,15 @@ public final class RuleFactory {
         }
         return new AdditionRule(ts);
     }
+
+    public static AdditionRule makeAdditionRule(List<Term> t){
+        LinkedList<Term> ts = new LinkedList<Term>();
+        for (Term term : t){
+            ts.add(term);
+        }
+        return new AdditionRule(ts);
+    }
+
 
     public static SinRule makeSinRule(Term inside){
         return new SinRule(new LinkedList<>(Arrays.asList(inside)));

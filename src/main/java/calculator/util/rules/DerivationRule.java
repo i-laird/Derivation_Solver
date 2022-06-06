@@ -1,7 +1,6 @@
 package calculator.util.rules;
 
 import java.util.LinkedList;
-import java.util.List;
 
 import calculator.util.terms.Term;
 

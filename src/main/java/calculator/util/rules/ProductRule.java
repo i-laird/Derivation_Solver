@@ -7,6 +7,9 @@ import java.util.stream.Collectors;
 import calculator.util.Parser;
 import calculator.util.terms.Term;
 
+import static calculator.util.rules.RuleFactory.makeAdditionRule;
+import static calculator.util.rules.RuleFactory.makeProductRule;
+
 /**
  * PRODUCT RULE
  *
@@ -33,9 +36,9 @@ public final class ProductRule extends DerivationRule {
                     multTerms.add(this.terms.get(j).getDerivative());
                 }
             }
-            addTerms.add(new ProductRule(multTerms));
+            addTerms.add(makeProductRule(multTerms));
         }
-        AdditionRule toReturn = new AdditionRule(addTerms);
+        AdditionRule toReturn = makeAdditionRule(addTerms);
         if(this.negative){
             toReturn.flipSign();
         }
