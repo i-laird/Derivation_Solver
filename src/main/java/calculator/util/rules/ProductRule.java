@@ -17,28 +17,20 @@ import calculator.util.terms.Term;
  */
 public final class ProductRule extends DerivationRule {
 
-
     /**
      * d/dx( f(x) * g(x) ) = f(x) * g'(x) + f'(x) * g(x)
-     * @param original the original terms
-     * @param derived the derivation of the terms
-     * @return
      */
     @Override
-    protected Term putTogether(LinkedList<Term> original, LinkedList<Term> derived){
-        //need to account for a variable number of terms that are being multipled
-        if(original.size() != derived.size()){
-            throw new RuntimeException("The sizes do not match");
-        }
+    public Term getDerivative() {
         LinkedList<Term> addTerms = new LinkedList<>();
-        for(int i = 0; i < original.size(); i++){
+        for(int i = 0; i < this.terms.size(); i++){
             LinkedList<Term> multTerms = new LinkedList<>();
-            for(int j = 0; j < original.size(); j++){
+            for(int j = 0; j < this.terms.size(); j++){
                 if(i != j){
-                    multTerms.add(original.get(j));
+                    multTerms.add(this.terms.get(j));
                 }
                 else{
-                    multTerms.add(derived.get(j));
+                    multTerms.add(this.terms.get(j).getDerivative());
                 }
             }
             addTerms.add(new ProductRule(multTerms));
@@ -50,13 +42,18 @@ public final class ProductRule extends DerivationRule {
         return toReturn;
     }
 
+    ProductRule(LinkedList<Term> l) {
+        super(l);
+    }
+
+    /**
+     * Adds a term to the product Rule
+     * @param t the term to add
+     * @return this
+     */
     public ProductRule addTerm(Term t){
         this.terms.add(t);
         return this;
-    }
-
-    ProductRule(LinkedList<Term> l) {
-        super(l);
     }
 
     @Override

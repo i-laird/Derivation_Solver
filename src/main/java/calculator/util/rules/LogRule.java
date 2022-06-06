@@ -37,11 +37,6 @@ public final class LogRule extends DerivationRule {
     }
 
     @Override
-    protected Term putTogether(LinkedList<Term> original, LinkedList<Term> derived) {
-        return null;
-    }
-
-    @Override
     public double getResult(List<Integer> dims) {
         return Math.log(this.terms.get(BASE_INDEX).evaluate(dims)) / Math.log(this.terms.get(ARGUMENT_INDEX).evaluate(dims));
     }

@@ -27,11 +27,6 @@ public final class PowerFracRule extends DerivationRule {
     }
 
     @Override
-    protected Term putTogether(LinkedList<Term> original, LinkedList<Term> derived) {
-        return null;
-    }
-
-    @Override
     public double getResult(List<Integer> dims) {
         return 0;
     }

@@ -43,11 +43,6 @@ public final class PowerRule extends DerivationRule {
     }
 
     @Override
-    protected Term putTogether(LinkedList<Term> original, LinkedList<Term> derived) {
-        return null;
-    }
-
-    @Override
     public double getResult(List<Integer> dims) {
         return Math.pow(this.terms.get(1).evaluate(dims), this.terms.get(0).evaluate(dims));
     }

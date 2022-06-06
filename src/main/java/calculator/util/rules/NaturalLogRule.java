@@ -26,11 +26,6 @@ public final class NaturalLogRule extends DerivationRule {
     }
 
     @Override
-    protected Term putTogether(LinkedList<Term> original, LinkedList<Term> derived) {
-        return null;
-    }
-
-    @Override
     public double getResult(List<Integer> dims) {
         return Math.log(this.terms.get(ARGUMENT_INDEX).evaluate(dims));
     }

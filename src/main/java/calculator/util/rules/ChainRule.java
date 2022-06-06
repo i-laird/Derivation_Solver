@@ -8,12 +8,11 @@ import java.util.List;
 public final class ChainRule extends DerivationRule {
 
     @Override
-    protected Term putTogether(LinkedList<Term> original, LinkedList<Term> derived){
-        if (original.size() != 2 || derived.size() != 2){
+    public Term getDerivative() {
+        if(this.terms.size() != 2){
             return null;
         }
-
-        ProductRule toReturn = RuleFactory.makeProductRule(derived.get(0), derived.get(1));
+        ProductRule toReturn = RuleFactory.makeProductRule(this.terms.get(0).getDerivative(), this.terms.get(1).getDerivative());
         if(this.negative){
             toReturn.flipSign();
         }

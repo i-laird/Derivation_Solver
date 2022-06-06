@@ -31,4 +31,10 @@ public abstract sealed class Rule extends Term permits DerivationRule, TrigRule 
      * @return evaluated expression for dims
      */
     abstract double getResult(List<Integer> dims);
+
+    @Override
+    public abstract Term getDerivative();
+
+    @Override
+    public abstract String toString();
 }

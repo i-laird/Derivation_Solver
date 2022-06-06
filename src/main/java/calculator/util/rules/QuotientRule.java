@@ -23,21 +23,19 @@ public final class QuotientRule extends DerivationRule {
 
     /**
      * d/dx( f(x) / g(x) ) = (f'(x)g(x) - g'(x)f(x)) / (g(x))^2
-     * @param original the original terms
-     * @param derived the derivation of the terms
      * @return
      */
     @Override
-    protected Term putTogether(LinkedList<Term> original, LinkedList<Term> derived){
-        if (original.size() != 2 || derived.size() != 2){
+    public Term getDerivative() {
+        if (this.terms.size() != 2){
             return null;
         }
 
         Term numerator = makeAdditionRule(
-                            makeProductRule(derived.get(NUMERATOR_POS), original.get(DENOM_POS)),
-                            makeProductRule(derived.get(DENOM_POS), original.get(NUMERATOR_POS)).flipSign());
+                makeProductRule(this.terms.get(NUMERATOR_POS).getDerivative(), this.terms.get(DENOM_POS)),
+                makeProductRule(this.terms.get(DENOM_POS).getDerivative(), this.terms.get(NUMERATOR_POS)).flipSign());
 
-        Term denom = makePowerRule(new Term(2), original.get(DENOM_POS));
+        Term denom = makePowerRule(new Term(2), this.terms.get(DENOM_POS));
 
         return makeFracRule(denom, numerator);
     }
