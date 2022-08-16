@@ -8,21 +8,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/derivative/")
 public class DerivativeController {
 
     @Autowired
     private DerivativeService derivativeService;
 
-    @GetMapping("health")
+    @GetMapping("/health")
     public String healthCheck(){
-        return "Hello World";
+        return LocalTime.now().toString();
     }
 
-    @GetMapping("")
+    @GetMapping("/derivative")
     public Response generateDerivative(@RequestParam("expression") String expression, @RequestParam("points")List<Integer> points){
         return derivativeService.evaluate(expression, points);
     }
