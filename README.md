@@ -34,5 +34,14 @@ To build the Docker container
 To run the docker container
 `docker run -p 8080:8080 -d derivation_solver`
 
+# MySQL
+To connect to the MySQL Server
+
+SSh into the container that contains mysql
+`docker exec -it <id> bash`
+
+Start MySQL shell
+`mysql -h localhost -u root -p`
+
 ## Author
 [Ian Laird](https://www.linkedin.com/in/ian-laird-b9846198/)
