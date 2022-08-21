@@ -6,6 +6,7 @@ import calculator.exception.UserNotFound;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -18,6 +19,13 @@ class GlobalControllerExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(new ApiError("Unable to Parse expression"));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handleParseError(MethodArgumentNotValidException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)

@@ -10,9 +10,6 @@ import javax.persistence.Id;
 public class User {
 
     @Id
-    private String email;
-
-    private String hashedPassword;
-
-    private String salt;
+    private String username;
+    private String password;
 }
