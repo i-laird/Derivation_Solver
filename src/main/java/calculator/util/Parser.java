@@ -1,5 +1,6 @@
 package calculator.util;
 
+import calculator.exception.ParseError;
 import calculator.util.terms.Term;
 import calculator.util.terms.Variable;
 import calculator.util.token.AbstractMath;
@@ -12,6 +13,7 @@ import lombok.NonNull;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
+import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -241,7 +243,7 @@ public class Parser {
             return returnThing;
         }
         if(s.length() != 1){
-            throw new RuntimeException("Invalid term seen: " + s);
+            throw new ParseError("Invalid term seen: " + s);
         }
         operatorOrFunctionSeen = false;
         return new Variable(s.charAt(0));
@@ -376,7 +378,7 @@ public class Parser {
             // if this is a NEGATIVE remember it and go to next token
             if(am.getClass() == Negative.class){
                 if(Objects.nonNull(negative)){
-                    throw new RuntimeException("Double negative encountered after token simplification");
+                    throw new ParseError("Double negative encountered after token simplification");
                 }
                 negative = (Negative)am;
                 continue;
@@ -556,7 +558,7 @@ public class Parser {
 
         // if there is still something in the stack after popping the root there was an ERROR
         if(!parseTree.empty()){
-            throw new RuntimeException("Parsing Error");
+            throw new ParseError("Invalid Token Encountered: " + parseTree.peek());
         }
 
         // the last element of the stack is the root of the tree
