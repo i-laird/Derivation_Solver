@@ -15,6 +15,8 @@ import java.util.Optional;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
+    private static String ROLE_PREFIX = "ROLE_";
+
     @Autowired
     UserRepository userRepository;
 
@@ -36,6 +38,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         org.springframework.security.core.userdetails.User.UserBuilder userBuilder = org.springframework.security.core.userdetails.User.withUsername(username);
         // set the password of the user
         userBuilder.password(user.get().getPassword());
+
+        userBuilder.roles(user.get().getRole());
 
         // build the user
         return userBuilder.build();

@@ -37,7 +37,7 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody @Valid UserGeneration u) throws Exception {
-        User createdUser = userService.register(u.getEmail(), u.getPassword());
+        userService.register(u.getEmail(), u.getPassword(), "STANDARD");
         return createAuthenticationToken(new JwtRequest(u.getEmail(), u.getPassword()));
     }
 

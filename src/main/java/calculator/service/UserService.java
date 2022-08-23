@@ -17,7 +17,7 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public User register(String email, String password){
+    public User register(String email, String password, String role){
 
         // see if the user already exists
         Optional<User> optionalUser = userRepository.findById(email);
@@ -29,6 +29,7 @@ public class UserService {
         User newUser = new User();
         newUser.setUsername(email);
         newUser.setPassword(passwordEncoder.encode(password));
+        newUser.setRole(role);
 
         return userRepository.save(newUser);
     }

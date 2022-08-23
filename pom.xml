@@ -19,6 +19,7 @@
         <javax.version>3.0.2</javax.version>
         <jjwt.version>0.9.1</jjwt.version>
         <jackson.version>2.13.3</jackson.version>
+        <jakarta.version>2.3.3</jakarta.version>
     </properties>
 
     <dependencies>
@@ -92,6 +93,11 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>${jakarta.version}</version>
         </dependency>
     </dependencies>
 
