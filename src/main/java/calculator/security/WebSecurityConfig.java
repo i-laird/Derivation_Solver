@@ -47,12 +47,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.csrf().disable()
+        httpSecurity
+                //crsf not needed because of jwt
+                .csrf().disable()
                 // dont authenticate these requests with JWT
                 .authorizeRequests()
                 .antMatchers("/authenticate").permitAll()
                 .antMatchers("/derivative").permitAll()
                 .antMatchers("/register").permitAll()
+                .antMatchers("/health").permitAll()
 
                 // all other requests need to be authenticated
                 .anyRequest().authenticated().and().authorizeRequests()
