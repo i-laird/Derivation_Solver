@@ -20,10 +20,28 @@ Clone this repository to your local machine
 `mvn spring-boot:run`
 
 ## Docker
+To initialize the MySQL database:
+```
+docker run --name mysql2 -p 3306:3306 \
+-e MYSQL_ROOT_PASSWORD=1234 \
+-e MYSQL_USER=api \      
+-e MYSQL_PASSWORD=1234 \
+-e MYSQL_DATABASE=calculator \
+-d mysql/mysql-server  
+```
 To build the Docker container
 `docker build -t derivation_solver .`
 To run the docker container
 `docker run -p 8080:8080 -d derivation_solver`
+
+# MySQL
+To connect to the MySQL Server
+
+SSh into the container that contains mysql
+`docker exec -it <id> bash`
+
+Start MySQL shell
+`mysql -h localhost -u root -p`
 
 ## Author
 [Ian Laird](https://www.linkedin.com/in/ian-laird-b9846198/)
