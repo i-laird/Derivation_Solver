@@ -18,7 +18,7 @@
         <passay.version>1.6.2</passay.version>
         <javax.version>3.0.2</javax.version>
         <jjwt.version>0.9.1</jjwt.version>
-        <jackson.version>2.13.3</jackson.version>
+        <jackson.version>2.13.4.1</jackson.version>
         <jakarta.version>2.3.3</jakarta.version>
     </properties>
 
