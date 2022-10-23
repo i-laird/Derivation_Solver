@@ -1,4 +1,5 @@
 import calculator.service.CalculatorService;
+import calculator.util.Parser;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -8,6 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
@@ -15,14 +20,16 @@ import java.util.stream.Stream;
 @ExtendWith(SpringExtension.class)
 public class ExpressionTester {
 
-    @Autowired
-    private CalculatorService calculatorService;
-
     @DisplayName("Expression")
     @ParameterizedTest(name = "{0}")
     @MethodSource("expression")
     public void test(String inputString, double expected ){
-        double result = calculatorService.evaluateExpression(inputString);
+
+        // TODO get this to work autowire not playing nice with spring
+        //double result = calculatorService.evaluateExpression(inputString);
+        InputStream stream = new ByteArrayInputStream(inputString.getBytes(StandardCharsets.UTF_8));
+        Parser p = new Parser(stream);
+        double result = p.getRoot().evaluate(null);
         assertEquals(result, expected);
     }
 
