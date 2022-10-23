@@ -4,7 +4,7 @@ package calculator.DTO;
  * Response DTO
  * @author Ian Laird
  */
-public class Response {
+public class DerivativeResponse {
 
     // the calculated antiderivative
     public String antiderivative;
@@ -12,7 +12,7 @@ public class Response {
     // the antiderivative value when evaluated
     public Double result;
 
-    public Response(String antiderivative, Double result) {
+    public DerivativeResponse(String antiderivative, Double result) {
         this.antiderivative = antiderivative;
         this.result = result;
     }
