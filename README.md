@@ -39,7 +39,7 @@ sudo docker pull mysql/mysql-server:latest
 docker images | grep "mysql/mysql-server"
 ```
 
-### Creating DB and Running it (FIRST TIME)
+### Creating DB Container
 ```shell
 docker run \
 --name mysql2 \
@@ -53,15 +53,7 @@ docker run \
 Note: from a security perspective this is not good because of the
 hardcoded username and password. Be sure to change the password using shell.
 
-### Starting DB from image
-```shell
-docker run \
---name mysql2 \
--p 3306:3306 \
--d mysql/mysql-server
-```
-
-### Start Shell
+### Starting Shell(s)
 Find the container id of the mysql container.
 ```shell
 docker ps | grep "mysql2"

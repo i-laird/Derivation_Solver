@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @ExtendWith(SpringExtension.class)
-public class SingleVariableTester {
+public class SingleVariableDerivativeTester {
 
     @Test
     public void tester(){
