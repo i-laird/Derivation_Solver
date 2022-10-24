@@ -14,6 +14,8 @@ Before contributing to this project there are a few configuration steps you shou
 + Docker
 
 ## Github Actions
+Current Actions are Described [here](actions.md)
+
 Automated Testing is currently performed on the repository using [Github Actions](https://github.com/features/actions).
 There are plans to deploy the application automatically to the cloud using Github Actions.
 
@@ -26,7 +28,7 @@ Note: the only approved way to contribute to master is by a [squash merge](https
 
 ## Database
 
-This application requires a MYSQL database to be running on port 3306 in order to start. While there are many ways to 
+This application requires a MYSQL database to be running on port 3306 in order to start. While there are many ways to
 do this here is how you would do this with Docker.
 
 ### Download Docker Image
