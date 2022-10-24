@@ -9,6 +9,7 @@
     <version>2.1-SNAPSHOT</version>
 
     <properties>
+        <java.version>18</java.version>
         <junit.version>5.9.0</junit.version>
         <spring.version>2.7.4</spring.version>
         <spring.security.version>5.7.3</spring.security.version>
@@ -19,7 +20,10 @@
         <javax.version>3.0.2</javax.version>
         <jjwt.version>0.9.1</jjwt.version>
         <jackson.version>2.13.4.2</jackson.version>
+        <!--be very careful when changing jakarta version it will break-->
         <jakarta.version>2.3.3</jakarta.version>
+        <spotless.maven>2.27.2</spotless.maven>
+        <maven.surefire>3.0.0-M7</maven.surefire>
     </properties>
 
     <dependencies>
@@ -105,7 +109,15 @@
             <artifactId>jakarta.xml.bind-api</artifactId>
             <version>${jakarta.version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.diffplug.spotless/spotless-maven-plugin -->
+        <dependency>
+            <groupId>com.diffplug.spotless</groupId>
+            <artifactId>spotless-maven-plugin</artifactId>
+            <version>${spotless.maven}</version>
+        </dependency>
+
     </dependencies>
+
 
     <build>
         <plugins>
@@ -114,8 +126,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.compiler.plugin.version}</version>
                 <configuration>
-                    <source>18</source>
-                    <target>18</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -126,7 +138,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M7</version>
+                <version>${maven.surefire}</version>
                 <dependencies>
                     <dependency>
                         <groupId>org.junit.jupiter</groupId>
@@ -135,10 +147,52 @@
                     </dependency>
                 </dependencies>
             </plugin>
-
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>${spotless.maven}</version>
+                <configuration>
+                    <!-- optional: limit format enforcement to just the files changed by this feature branch -->
+                    <ratchetFrom>origin/master</ratchetFrom>
+                    <formats>
+                        <!-- you can define as many formats as you want, each is independent -->
+                        <format>
+                            <!-- define the files to apply to -->
+                            <includes>
+                                <include>*.md</include>
+                                <include>.gitignore</include>
+                            </includes>
+                            <!-- define the steps to apply to those files -->
+                            <trimTrailingWhitespace/>
+                            <endWithNewline/>
+                            <indent>
+                                <tabs>true</tabs>
+                                <spacesPerTab>4</spacesPerTab>
+                            </indent>
+                        </format>
+                        <format>
+                            <!-- define the files to apply to -->
+                            <includes>
+                                <include>*.yml</include>
+                            </includes>
+                            <!-- define the steps to apply to those files -->
+                            <trimTrailingWhitespace/>
+                            <endWithNewline/>
+                            <indent>
+                                <tabs>true</tabs>
+                                <spacesPerTab>2</spacesPerTab>
+                            </indent>
+                        </format>
+                    </formats>
+                    <!-- define a language-specific format -->
+                    <java>
+                        <googleJavaFormat>
+                            <reflowLongStrings>true</reflowLongStrings>
+                        </googleJavaFormat>
+                    </java>
+                </configuration>
+            </plugin>
 
         </plugins>
     </build>
-
-    
 </project>

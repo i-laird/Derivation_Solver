@@ -1,28 +1,30 @@
 package calculator.util.rules;
 
-import calculator.util.terms.Term;
-
-import java.util.LinkedList;
-import java.util.List;
 import static calculator.util.rules.RuleFactory.*;
 
-public final class ArcCotRule  extends TrigRule {
+import calculator.util.terms.Term;
+import java.util.LinkedList;
+import java.util.List;
 
-    ArcCotRule(LinkedList<Term> l) {
-        super(l);
-    }
+public final class ArcCotRule extends TrigRule {
 
-    @Override
-    public String functionName() {
-        return "cot-1";
-    }
-    @Override
-    public Term getDerivPart() {
-        return makeFracRule(new Term(-1), makeAdditionRule(new Term(1), makePowerRule(this.t, new Term(2))));
-    }
+  ArcCotRule(LinkedList<Term> l) {
+    super(l);
+  }
 
-    @Override
-    public double getResult(List<Integer> dims) {
-        return 0;
-    }
+  @Override
+  public String functionName() {
+    return "cot-1";
+  }
+
+  @Override
+  public Term getDerivPart() {
+    return makeFracRule(
+        new Term(-1), makeAdditionRule(new Term(1), makePowerRule(this.t, new Term(2))));
+  }
+
+  @Override
+  public double getResult(List<Integer> dims) {
+    return 0;
+  }
 }

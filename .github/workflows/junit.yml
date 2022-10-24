@@ -1,4 +1,4 @@
-name: tests
+name: "Junit"
 on: push
 jobs:
   run_tests:

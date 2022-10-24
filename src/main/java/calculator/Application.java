@@ -12,14 +12,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @SpringBootApplication
 public class Application {
 
-    @Bean
-    PasswordEncoder getEncoder(){
-        return new BCryptPasswordEncoder();
-    }
+  @Bean
+  PasswordEncoder getEncoder() {
+    return new BCryptPasswordEncoder();
+  }
 
-    public static void main(String[] args){
-        SpringApplication.run(Application.class, args);
-        //Parser p = new Parser(System.in);
-        //Term parsedStatement = p.getRoot();
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(Application.class, args);
+    // Parser p = new Parser(System.in);
+    // Term parsedStatement = p.getRoot();
+  }
 }

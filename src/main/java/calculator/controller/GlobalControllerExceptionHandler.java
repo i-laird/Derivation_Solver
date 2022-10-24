@@ -14,23 +14,24 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 class GlobalControllerExceptionHandler {
 
-    @ExceptionHandler(ParseError.class)
-    public ResponseEntity<ApiError> handleParseError(ParseError e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(new ApiError("Unable to Parse expression"));
-    }
+  @ExceptionHandler(ParseError.class)
+  public ResponseEntity<ApiError> handleParseError(ParseError e) {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(new ApiError("Unable to Parse expression"));
+  }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(e.getMessage());
-    }
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<?> handleMethodArgumentNotValidException(
+      MethodArgumentNotValidException e) {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(e.getMessage());
+  }
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(UserNotFound.class)
-    public void handleNotFound() {
-        // Nothing to do
-    }
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  @ExceptionHandler(UserNotFound.class)
+  public void handleNotFound() {
+    // Nothing to do
+  }
 }

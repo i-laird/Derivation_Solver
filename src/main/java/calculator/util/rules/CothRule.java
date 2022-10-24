@@ -1,28 +1,31 @@
+/* (C)2022 */
 package calculator.util.rules;
 
-import calculator.util.terms.Term;
-
-import java.util.LinkedList;
-import java.util.List;
 import static calculator.util.rules.RuleFactory.*;
 
-public final class CothRule  extends TrigRule {
+import calculator.util.terms.Term;
+import java.util.LinkedList;
+import java.util.List;
 
-    CothRule(LinkedList<Term> l) {
-        super(l);
-    }
+public final class CothRule extends TrigRule {
 
-    @Override
-    public String functionName() {
-        return "coth";
-    }
-    @Override
-    public Term getDerivPart() {
-        return makeAdditionRule(new Term(1), makePowerRule(makeCothRule(this.t), new Term(2)).flipSign());
-    }
+  CothRule(LinkedList<Term> l) {
+    super(l);
+  }
 
-    @Override
-    public double getResult(List<Integer> dims) {
-        return 0;
-    }
+  @Override
+  public String functionName() {
+    return "coth";
+  }
+
+  @Override
+  public Term getDerivPart() {
+    return makeAdditionRule(
+        new Term(1), makePowerRule(makeCothRule(this.t), new Term(2)).flipSign());
+  }
+
+  @Override
+  public double getResult(List<Integer> dims) {
+    return 0;
+  }
 }
