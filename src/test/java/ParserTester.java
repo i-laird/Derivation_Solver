@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 //import calculator.util.Parser;
 //import calculator.util.StringToStream;

@@ -1,6 +1,9 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+<<<<<<< HEAD
 import calculator.service.CalculatorService;
+=======
+>>>>>>> origin/master
 import calculator.util.Parser;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
