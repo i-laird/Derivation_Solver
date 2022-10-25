@@ -1,13 +1,6 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-<<<<<<< HEAD
 import calculator.service.CalculatorService;
-=======
->>>>>>> origin/master
-import calculator.util.Parser;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
@@ -26,8 +19,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ContextConfiguration(classes = TestingConfiguration.class)
 public class ExpressionTester {
 
-  @Autowired
-  private CalculatorService calculatorServiceImpl;
+  @Autowired private CalculatorService calculatorServiceImpl;
 
   @DisplayName("Expression Testing")
   @ParameterizedTest(name = "{0}")

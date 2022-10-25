@@ -90,6 +90,18 @@ To run the docker container
 docker run -p 8080:8080 -d derivation_solver
 ```
 
+## Linting
+Proper code format is super important! There is a Github action that will fail if the code is not formatted to Google
+Java Standard. Luckily it is super easy to check if the code is compliant with the required style for this project.
+```shell
+mvn spotless:check
+```
+
+If you want an automated way of applying the desired choice execute the following
+```shell
+mvn spotless:apply
+```
+
 ## Author
 [Ian Laird](https://www.linkedin.com/in/ian-laird-b9846198/)
 
