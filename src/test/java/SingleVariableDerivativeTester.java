@@ -1,16 +1,10 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import calculator.service.CalculatorService;
-import calculator.util.Parser;
-import calculator.util.terms.Term;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -25,8 +19,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ContextConfiguration(classes = TestingConfiguration.class)
 public class SingleVariableDerivativeTester {
 
-  @Autowired
-  private CalculatorService calculatorServiceImpl;
+  @Autowired private CalculatorService calculatorServiceImpl;
 
   private static final int DOES_NOT_MATTER = 3;
 
@@ -34,7 +27,8 @@ public class SingleVariableDerivativeTester {
   @ParameterizedTest(name = "{0}")
   @MethodSource("singleVariable")
   public void test1(String inputString, List<Integer> evaluationPoints, double expected) {
-    double result = (calculatorServiceImpl.evaluateDerivative(inputString, evaluationPoints)).result;
+    double result =
+        (calculatorServiceImpl.evaluateDerivative(inputString, evaluationPoints)).result;
     assertEquals(expected, result);
   }
 

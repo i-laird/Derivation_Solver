@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Bean;
 @SpringBootConfiguration
 public class TestingConfiguration {
 
-    @Bean
-    CalculatorService getCalculatorService(){
-        return new CalculatorServiceImpl();
-    }
+  @Bean
+  CalculatorService getCalculatorService() {
+    return new CalculatorServiceImpl();
+  }
 }
