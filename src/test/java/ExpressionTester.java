@@ -1,5 +1,6 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import calculator.service.CalculatorService;
 import calculator.util.Parser;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -12,31 +13,36 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
+@SpringBootTest
+@ContextConfiguration(classes = TestingConfiguration.class)
 public class ExpressionTester {
 
-  @DisplayName("Expression")
+  @Autowired
+  private CalculatorService calculatorServiceImpl;
+
+  @DisplayName("Expression Testing")
   @ParameterizedTest(name = "{0}")
   @MethodSource("expression")
   public void test(String inputString, double expected) {
-
-    // TODO get this to work autowire not playing nice with spring
-    // double result = calculatorService.evaluateExpression(inputString);
-    InputStream stream = new ByteArrayInputStream(inputString.getBytes(StandardCharsets.UTF_8));
-    Parser p = new Parser(stream);
-    double result = p.getRoot().evaluate(null);
+    double result = calculatorServiceImpl.evaluateExpression(inputString);
     assertEquals(result, expected);
   }
 
   private static Stream<Arguments> expression() {
     return Stream.of(
-        // first test the polynomials
         Arguments.of("1+1", 2.0),
         Arguments.of("123*2", 246.0),
         Arguments.of("10", 10.0),
         Arguments.of("-100", -100.0),
+        Arguments.of("2 * ( 3 + 5 ) / 2", 8.0),
+        Arguments.of("(4+3)/(3-4)", -7.0),
+        Arguments.of("-25+1", -24.0),
         Arguments.of("1 / 4", 0.25));
   }
 

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CalculatorServiceImpl implements CalculatorService {
-
   @Override
   public DerivativeResponse evaluateDerivative(String expression, List<Integer> evalPoints) {
     Parser parser = new Parser(StringToStream.convertStringToStream(expression));
