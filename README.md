@@ -17,7 +17,7 @@ Before contributing to this project there are a few configuration steps you shou
 Current Actions are Described [here](actions.md)
 
 Automated Testing is currently performed on the repository using [GitHub Actions](https://github.com/features/actions).
-There are plans to deploy the application automatically to the cloud using Github Actions.
+There are plans to deploy the application automatically to the cloud using GitHub Actions.
 
 Actions are defined in the `.github/workflows` folder. These tests are required to pass in
 order to merge a pull request into master.
