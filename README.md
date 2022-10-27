@@ -4,27 +4,29 @@ This is a RESTful derivation solver for single variable equations. This is one o
 
 Interaction with the calculator happens through a REST API.
 
-# New User?
+## New User?
 
 Before contributing to this project there are a few configuration steps you should follow in order to properly configure your machine.
 
-## Install List
+### Install List
 + Maven
 + Java 18 Note: make sure you install OpenJDK not Oracle
 + Docker
 
-## Github Actions
+## GitHub Actions
 Current Actions are Described [here](actions.md)
 
-Automated Testing is currently performed on the repository using [Github Actions](https://github.com/features/actions).
-There are plans to deploy the application automatically to the cloud using Github Actions.
+Automated Testing is currently performed on the repository using [GitHub Actions](https://github.com/features/actions).
+There are plans to deploy the application automatically to the cloud using GitHub Actions.
 
 Actions are defined in the `.github/workflows` folder. These tests are required to pass in
 order to merge a pull request into master.
 
 Note: the only approved way to contribute to master is by a [squash merge](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/about-pull-request-merges#squash-and-merge-your-commits).
 
-# Run Steps
+------------------------------------------------------------------------
+
+## Run Steps
 
 ## Database
 
@@ -56,7 +58,7 @@ Note: from a security perspective this is not good because of the
 hardcoded username and password. Be sure to change the password using shell.
 
 ### Starting Shell(s)
-Find the container id of the mysql container.
+Find the container ID of the mysql container.
 ```shell
 docker ps | grep "mysql2"
 ```
@@ -75,7 +77,7 @@ mysql -h localhost -u root -p
 There are two ways to run the application. The first way is using the spring maven plugin and the second is by spinning up a docker container.
 
 ## spring maven plugin
-```
+```shell
 mvn spring-boot:run
 ```
 
@@ -88,6 +90,18 @@ docker build -t derivation_solver .
 To run the docker container
 ```shell
 docker run -p 8080:8080 -d derivation_solver
+```
+
+## Linting
+Proper code format is super important! There is a GitHub action that will fail if the code is not formatted to Google
+Java Standard. Luckily it is super easy to check if the code is compliant with the required style for this project.
+```shell
+mvn spotless:check
+```
+
+If you want an automated way of applying the desired choice execute the following
+```shell
+mvn spotless:apply
 ```
 
 ## Author

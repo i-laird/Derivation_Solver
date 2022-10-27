@@ -1,47 +1,35 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import calculator.util.Parser;
-import calculator.util.terms.Term;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
+import calculator.service.CalculatorService;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
+@SpringBootTest
+@ContextConfiguration(classes = TestingConfiguration.class)
 public class SingleVariableDerivativeTester {
 
-  @Test
-  public void tester() {
-    String toTest = "-10x+5x";
-
-    InputStream stream = new ByteArrayInputStream(toTest.getBytes(StandardCharsets.UTF_8));
-    Parser p = new Parser(stream);
-    Term root = p.getRoot();
-    Term deriv = root.getDerivative();
-    double evaluatedNum = deriv.evaluate(createSingleList(3));
-  }
+  @Autowired private CalculatorService calculatorServiceImpl;
 
   private static final int DOES_NOT_MATTER = 3;
 
-  @DisplayName("Single Derivatives")
+  @DisplayName("Single Derivative Testing")
   @ParameterizedTest(name = "{0}")
   @MethodSource("singleVariable")
-  public void test1(String inputString, List<Integer> evaluationPoints, double result) {
-    InputStream stream = new ByteArrayInputStream(inputString.getBytes(StandardCharsets.UTF_8));
-    Parser p = new Parser(stream);
-    Term root = p.getRoot();
-    Term deriv = root.getDerivative();
-    double evaluatedNum = deriv.evaluate(evaluationPoints);
-    assertEquals(result, evaluatedNum);
+  public void test1(String inputString, List<Integer> evaluationPoints, double expected) {
+    double result =
+        (calculatorServiceImpl.evaluateDerivative(inputString, evaluationPoints)).result;
+    assertEquals(expected, result);
   }
 
   private static Stream<Arguments> singleVariable() {
