@@ -8,7 +8,7 @@ Interaction with the calculator happens through a REST API.
 
 Before contributing to this project there are a few configuration steps you should follow in order to properly configure your machine.
 
-## Install List
+### Install List
 + Maven
 + Java 18 Note: make sure you install OpenJDK not Oracle
 + Docker
@@ -24,7 +24,9 @@ order to merge a pull request into master.
 
 Note: the only approved way to contribute to master is by a [squash merge](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/about-pull-request-merges#squash-and-merge-your-commits).
 
-# Run Steps
+------------------------------------------------------------------------
+
+## Run Steps
 
 ## Database
 
