@@ -1,5 +1,9 @@
 # Derivation Solver
 
+![CodeQL](https://github.com/i-laird/Derivation_Solver/actions/workflows/codeql.yml/badge.svg)
+![Junit](https://github.com/i-laird/Derivation_Solver/actions/workflows/junit.yml/badge.svg)
+![Linting](https://github.com/i-laird/Derivation_Solver/actions/workflows/linter.yml/badge.svg)
+
 This is a RESTful derivation solver for single variable equations. This is one of my personal projects and has been in development on and off for three years now. If you encounter an error please report it to me and I will try and fix it as soon as possible.
 
 Interaction with the calculator happens through a REST API.
