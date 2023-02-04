@@ -1,4 +1,4 @@
-package calculator.util.parse;
+package calculator.util.ast;
 
 import calculator.exception.ParseError;
 import calculator.util.Wrapper;
@@ -10,8 +10,6 @@ import calculator.util.token.Negative;
 import calculator.util.token.Num;
 import calculator.util.token.Operator;
 import calculator.util.token.Paren;
-import java.io.BufferedInputStream;
-import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 import lombok.NonNull;
@@ -19,60 +17,17 @@ import lombok.NonNull;
 /**
  * @author Laird
  *
- *     <p>Parsers an input line to create the operation/function tree.
+ *     <p>Tokenizes an input line to create the operation/function tree.
  *
  *     <p>STEPS: 1) Uses the shunting yard algorithm to convert mathematical expression from infix
  *     to postfix notation. -order of operations is taken into account when parsing -I had to modify
  *     the standard algorithm to account for unary operators (i.e. sin() cos()) 2) Creates AST from
  *     the postfix expression.
  *
- *     <p>TO USE: 1) create the Parser using an input stream 2) Call get root to get the term at the
- *     base of the AST.
- *     <p>TO GET DERIVATIVE: call getDerivative on the term returned from getRoot()
  * @see Term
  */
-public class Parser {
+public class Tokenizer {
   private boolean operatorOrFunctionSeen = true;
-
-  // the root of the AST (populated by constructor)
-  Term root = null;
-
-  /**
-   * @author Laird
-   * @param in the inputstream from which the mathematical expression to be parsed is contained in
-   *     infix notation return: none
-   *     <p>creates the tree and stores it in root
-   */
-  public Parser(@NonNull InputStream in) {
-
-    Scanner inputScan = new Scanner(new BufferedInputStream(in));
-    String line = inputScan.nextLine();
-
-    // tokenize the expression
-    // performs some sanitizing such as removing excess negatives
-    // and adding parens as necessary
-    List<AbstractMath> tokenized = tokenizeExpression(line);
-
-    // convert the expression to postfix notation
-    Queue<Wrapper> outputParts = convertToPostFix(tokenized);
-
-    // evaluate the post fix expression
-    root = evaluatePostfix(outputParts);
-  }
-
-  /**
-   * @return the root of the mathematical expression tree
-   */
-  public Term getRoot() {
-    return this.root;
-  }
-
-  /**
-   * @return the derivative of the expression
-   */
-  public Term getDeriv() {
-    return this.root.getDerivative();
-  }
 
   /**
    * tokenize the expression
@@ -80,7 +35,7 @@ public class Parser {
    * @param expression the expression to tokenize
    * @return in order syntax and numbers
    */
-  private List<AbstractMath> tokenizeExpression(@NonNull String expression) {
+  List<AbstractMath> tokenizeExpression(@NonNull String expression) {
 
     // split line by white space
     String[] parts = expression.split("\\s+");
@@ -118,7 +73,7 @@ public class Parser {
    * @return splits monomials
    *     <p>example: 3x into 3 * x
    */
-  public List<String> cleanInput(@NonNull String[] list) {
+  private static List<String> cleanInput(@NonNull String[] list) {
 
     // create a stack that will hold the items that need to be processed
     Stack<String> processStack = new Stack<>();
@@ -217,7 +172,7 @@ public class Parser {
    * @return the abstract math part corresponding to the string
    *     <p>caution: if s is only white space or empty null is returned
    */
-  public AbstractMath getMappedPart(@NonNull String s) {
+  private AbstractMath getMappedPart(@NonNull String s) {
     // get rid of anything that is just white space
     if (s.matches("\\s+") || s.isEmpty()) {
       return null;
@@ -260,7 +215,7 @@ public class Parser {
    * @return double negatives are removed, and negated subtraction becomes addition
    *     <p>example: NEGATIVE NEGATIVE 5 -> 5 5 PLUS NEGATIVE 5 -> 5 MINUS 5
    */
-  public List<AbstractMath> removeMultipleNegatives(List<AbstractMath> l) {
+  private static List<AbstractMath> removeMultipleNegatives(List<AbstractMath> l) {
     List<AbstractMath> returnList = new LinkedList<>();
 
     // holds all plus and minus signs encountered that have not been processed yet
@@ -395,7 +350,7 @@ public class Parser {
    * @param tokens the tokens
    * @return post fix notation
    */
-  private static Queue<Wrapper> convertToPostFix(@NonNull List<AbstractMath> tokens) {
+  static Queue<Wrapper> convertToPostFix(@NonNull List<AbstractMath> tokens) {
     int numRightParenEncountered = 0;
     Queue<Wrapper> outputParts = new LinkedList<>();
     Negative negative = null;
@@ -546,63 +501,6 @@ public class Parser {
       }
     }
     return outputParts;
-  }
-
-  /**
-   * analyze the expression now that it is in reverse polish notation Steps: 1) if a number or
-   * variable push onto the stack 2) if an operator pop the correct number of terms from the stack
-   * (one or two) 3) set these as the children of the operator 4) push the operator back onto the
-   * stack 5) go until only one element on the stack
-   *
-   * @param outputParts the tokens in post fix order
-   * @return
-   */
-  private static Term evaluatePostfix(@NonNull Queue<Wrapper> outputParts) {
-
-    // used to built the parse tree
-    Stack<Term> parseTree = new Stack<>();
-
-    for (Wrapper w : outputParts) {
-
-      AbstractMath part = w.getAm();
-
-      // if it is a number push it onto the stack
-      if (part.getClass() == Num.class) {
-        parseTree.push(new Term(((Num) part).getNum()));
-      }
-
-      // if it is a variable push it onto the stack
-      else if (part.getClass() == Variable.class) {
-        parseTree.push((Variable) part);
-      }
-
-      // if it is a unary operator pop one element off of the stack
-      else if (part.getClass() == Function.class) {
-        Term operand = parseTree.pop();
-        parseTree.push(part.getTermFromOp(operand, null));
-      }
-
-      // it is an operand pop two items off of the stack
-      else {
-        Term operandOne = parseTree.pop(), operandTwo = parseTree.pop();
-        parseTree.push(part.getTermFromOp(operandOne, operandTwo));
-      }
-
-      // if necessary flip the sign of the top of the stack
-      if (w.getN() != null) {
-        parseTree.peek().flipSign();
-      }
-    }
-
-    Term root = parseTree.pop();
-
-    // if there is still something in the stack after popping the root there was an ERROR
-    if (!parseTree.empty()) {
-      throw new ParseError("Invalid Token Encountered: " + parseTree.peek());
-    }
-
-    // the last element of the stack is the root of the tree
-    return root;
   }
 
   public static void checkUnaryEnd(

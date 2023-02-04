@@ -4,7 +4,7 @@ package calculator.util.rules;
 import static calculator.util.rules.RuleFactory.makeAdditionRule;
 import static calculator.util.rules.RuleFactory.makeProductRule;
 
-import calculator.util.parse.Parser;
+import calculator.util.ast.Tokenizer;
 import calculator.util.terms.Term;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  *
  * <p>this is used when multiple terms are multiplied together.
  *
- * <p>This class supports a product rule of more than two terms but {@link Parser} will not
+ * <p>This class supports a product rule of more than two terms but {@link Tokenizer} will not
  * construct AST that have more than two kid
  */
 public final class ProductRule extends DerivationRule {
