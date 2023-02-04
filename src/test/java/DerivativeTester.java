@@ -17,11 +17,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ContextConfiguration(classes = TestingConfiguration.class)
-public class SingleVariableDerivativeTester {
+public class DerivativeTester {
 
   @Autowired private CalculatorService calculatorServiceImpl;
 
-  private static final int DOES_NOT_MATTER = 3;
+  private static final int DOES_NOT_AFFECT_DERIVATIVE_CALCULATION = 3;
 
   @DisplayName("Single Derivative Testing")
   @ParameterizedTest(name = "{0}")
@@ -35,31 +35,32 @@ public class SingleVariableDerivativeTester {
   private static Stream<Arguments> singleVariable() {
     return Stream.of(
         // first test the polynomials
-        Arguments.of("     1     ", createSingleList(DOES_NOT_MATTER), 0.0),
-        Arguments.of("            -     1 ", createSingleList(DOES_NOT_MATTER), 0.0),
-        Arguments.of("1", createSingleList(DOES_NOT_MATTER), 0.0),
-        Arguments.of("10", createSingleList(DOES_NOT_MATTER), 0.0),
-        Arguments.of("-100", createSingleList(DOES_NOT_MATTER), 0.0),
-        Arguments.of("1000 + 10000 - 1 + 0", createSingleList(DOES_NOT_MATTER), 0.0),
-        Arguments.of("0", createSingleList(DOES_NOT_MATTER), 0.0),
-        Arguments.of("x", createSingleList(DOES_NOT_MATTER), 1.0),
-        Arguments.of("- x", createSingleList(DOES_NOT_MATTER), -1.0),
-        Arguments.of("-100x", createSingleList(DOES_NOT_MATTER), -100),
-        Arguments.of("- x + x", createSingleList(DOES_NOT_MATTER), 0.0),
-        Arguments.of("-10x+5x", createSingleList(DOES_NOT_MATTER), -5.0),
-        Arguments.of("-10x*5x", createSingleList(DOES_NOT_MATTER), -300.0),
-        Arguments.of("0x", createSingleList(DOES_NOT_MATTER), 0.0),
-        Arguments.of("1x", createSingleList(DOES_NOT_MATTER), 1.0),
-        Arguments.of("2x", createSingleList(DOES_NOT_MATTER), 2.0),
-        Arguments.of("2 * x", createSingleList(DOES_NOT_MATTER), 2.0),
-        Arguments.of("2x - 3x", createSingleList(DOES_NOT_MATTER), -1.0),
-        Arguments.of("2x + 3x - 16", createSingleList(DOES_NOT_MATTER), 5.0),
-        Arguments.of("- 2x + 3x - 16", createSingleList(DOES_NOT_MATTER), 1.0),
-        Arguments.of("- 2x - - 3x", createSingleList(DOES_NOT_MATTER), 1.0),
+        Arguments.of("     1     ", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), 0.0),
+        Arguments.of("            -     1 ", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), 0.0),
+        Arguments.of("1", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), 0.0),
+        Arguments.of("10", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), 0.0),
+        Arguments.of("-100", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), 0.0),
+        Arguments.of("1000 + 10000 - 1 + 0", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), 0.0),
+        Arguments.of("0", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), 0.0),
+        Arguments.of("x", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), 1.0),
+        Arguments.of("- x", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), -1.0),
+        Arguments.of("-100x", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), -100),
+        Arguments.of("- x + x", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), 0.0),
+        Arguments.of("-10x+5x", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), -5.0),
+        Arguments.of("-10x*5x", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), -300.0),
+        Arguments.of("0x", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), 0.0),
+        Arguments.of("1x", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), 1.0),
+        Arguments.of("2x", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), 2.0),
+        Arguments.of("2 * x", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), 2.0),
+        Arguments.of("2x - 3x", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), -1.0),
+        Arguments.of("2x + 3x - 16", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), 5.0),
+        Arguments.of("- 2x + 3x - 16", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), 1.0),
+        Arguments.of("- 2x - - 3x", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), 1.0),
         Arguments.of("2x + 3x * 5x", createSingleList(1), 32.0),
         Arguments.of("2x * 3x * 5x", createSingleList(2), 360.0),
         Arguments.of("2x * 3x * 5x + x ^ 4", createSingleList(2), 392.0),
         Arguments.of("2x * 3x * 5x - x ^ 4", createSingleList(2), 328.0),
+        Arguments.of("5x - x ^ 4", createSingleList(2), -27.0),
         Arguments.of("x ^ 2", createSingleList(1), 2.0),
         Arguments.of("x ^ 2", createSingleList(-1), -2.0),
         Arguments.of("x ^ 3", createSingleList(5), 75.0),
@@ -67,6 +68,7 @@ public class SingleVariableDerivativeTester {
         Arguments.of("- x ^ 3 + x ^ 2 - 5", createSingleList(2), -8.0),
         Arguments.of("ln x", createSingleList(1), 1.0),
         Arguments.of("ln x", createSingleList(100), 1.0 / 100),
+        Arguments.of("- sin x", createSingleList(3), -1 * Math.cos(3.0)),
         Arguments.of("sin x", createSingleList(1), Math.cos(1.0)),
         Arguments.of("cos x", createSingleList(3), -1 * Math.sin(3)),
         Arguments.of("tan x", createSingleList(2), Math.pow(1.0 / Math.cos(2), 2)),
@@ -111,7 +113,20 @@ public class SingleVariableDerivativeTester {
         Arguments.of(
             "sin( x + -cos(x))",
             createSingleList(3),
-            (1 + Math.sin(3.0)) * Math.cos(Math.cos(3.0) - 3.0)));
+            (1 + Math.sin(3.0)) * Math.cos(Math.cos(3.0) - 3.0)),
+        Arguments.of(
+            "tan( x + -cos(x))",
+            createSingleList(3),
+            (1 + Math.sin(3.0)) * Math.pow(1.0 / Math.cos(Math.cos(3.0) - 3.0), 2)),
+        Arguments.of(
+                "14x^3 + 135x - sin x + cos(x^4)",
+                createSingleList(3),
+                (-4.0 * Math.pow(3.0, 3) * Math.sin(Math.pow(3.0, 4))) - Math.cos(3.0) + (42 * Math.pow(3.0, 2)) + 135),
+        Arguments.of(
+                "135x - sin x + cos(x^4)",
+                createSingleList(3),
+                (-4.0 * Math.pow(3.0, 3) * Math.sin(Math.pow(3.0, 4))) - Math.cos(3.0) + 135)
+    );
   }
 
   private static List<Integer> createSingleList(Integer xVal) {

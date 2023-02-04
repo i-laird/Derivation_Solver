@@ -4,7 +4,7 @@ package calculator.util.rules;
 import static calculator.util.rules.RuleFactory.makeAdditionRule;
 import static calculator.util.rules.RuleFactory.makeProductRule;
 
-import calculator.util.Parser;
+import calculator.util.parse.Parser;
 import calculator.util.terms.Term;
 import java.util.LinkedList;
 import java.util.List;

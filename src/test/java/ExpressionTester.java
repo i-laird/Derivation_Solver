@@ -31,6 +31,8 @@ public class ExpressionTester {
 
   private static Stream<Arguments> expression() {
     return Stream.of(
+        Arguments.of("1-1", 0.0),
+        Arguments.of("1-2", -1.0),
         Arguments.of("1+1", 2.0),
         Arguments.of("123*2", 246.0),
         Arguments.of("10", 10.0),

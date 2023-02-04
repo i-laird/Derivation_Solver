@@ -1,6 +1,7 @@
-package calculator.util;
+package calculator.util.parse;
 
 import calculator.exception.ParseError;
+import calculator.util.Wrapper;
 import calculator.util.terms.Term;
 import calculator.util.terms.Variable;
 import calculator.util.token.AbstractMath;
@@ -17,11 +18,14 @@ import lombok.NonNull;
 
 /**
  * @author Laird
+ *
  *     <p>Parsers an input line to create the operation/function tree.
+ *
  *     <p>STEPS: 1) Uses the shunting yard algorithm to convert mathematical expression from infix
  *     to postfix notation. -order of operations is taken into account when parsing -I had to modify
  *     the standard algorithm to account for unary operators (i.e. sin() cos()) 2) Creates AST from
  *     the postfix expression.
+ *
  *     <p>TO USE: 1) create the Parser using an input stream 2) Call get root to get the term at the
  *     base of the AST.
  *     <p>TO GET DERIVATIVE: call getDerivative on the term returned from getRoot()
@@ -91,13 +95,21 @@ public class Parser {
             .filter(Objects::nonNull)
             .collect(Collectors.toList());
 
+    // remove subtraction
+    // i.e. SUBTRACT becomes ADD NEGATIVE
+    List<AbstractMath> subtractionRemoved = removeSubtraction(mappedParts);
+
     // remove excessive negatives
     // i.e. NEGATIVE NEGATIVE 5 -> 5
-    List<AbstractMath> negativesRemoved = removeMultipleNegatives(mappedParts);
+    List<AbstractMath> negativesRemoved = removeMultipleNegatives(subtractionRemoved);
+
+    // remove negated variables
+    // i.e. -x becomes -1 * x
+    List<AbstractMath> negatedVariablesRemoved = removeNegatedVariables(negativesRemoved);
 
     // add parens after unary operators as necessary
     List<AbstractMath> unaryParensAdded =
-        addParenAfterUnary(new LinkedList<>(), negativesRemoved, 0, 0);
+        addParenAfterUnary(new LinkedList<>(), negatedVariablesRemoved, 0, 0);
     return unaryParensAdded;
   }
 
@@ -257,7 +269,7 @@ public class Parser {
 
       // IF the token being analyzed is not a minus or plus sign
       // it is time to clear out the queue of the unprocessed + and - signs
-      if (am.getClass() != Negative.class && am != Operator.SUBTRACT && am != Operator.ADD) {
+      if (am.getClass() != Negative.class && am != Operator.ADD) {
         if (!plusMinusToProcess.isEmpty()) {
           int minusCount = 0;
           AbstractMath topElem = plusMinusToProcess.peek();
@@ -265,14 +277,17 @@ public class Parser {
           // count the number of - signs (negative and subtraction)
           while (!plusMinusToProcess.isEmpty()) {
             AbstractMath toEval = plusMinusToProcess.remove();
-            if (toEval.getClass() == Negative.class || toEval == Operator.SUBTRACT) {
+            if (toEval.getClass() == Negative.class) {
               ++minusCount;
             }
           }
 
           // handle addition / subtraction case
-          if (topElem == Operator.SUBTRACT || topElem == Operator.ADD) {
-            returnList.add((minusCount % 2 == 1) ? Operator.SUBTRACT : Operator.ADD);
+          if (topElem == Operator.ADD) {
+            returnList.add(Operator.ADD);
+            if(minusCount % 2 == 1) {
+              returnList.add(new Negative());
+            }
           }
 
           // handle negation case
@@ -285,6 +300,36 @@ public class Parser {
         returnList.add(am);
       } else {
         plusMinusToProcess.add(am);
+      }
+    }
+    return returnList;
+  }
+
+  public List<AbstractMath> removeNegatedVariables(List<AbstractMath> tokenList) {
+    List<AbstractMath> returnList = new LinkedList<>();
+
+    for(int i = 0; i < tokenList.size(); i++){
+      if (i < tokenList.size() - 1 && tokenList.get(i).getClass() == Negative.class && tokenList.get(i + 1).getClass() == Variable.class){
+        returnList.add(new Num(-1));
+        returnList.add(Operator.MULTIPLY);
+        returnList.add(tokenList.get(i + 1));
+        ++i;
+      } else {
+        returnList.add(tokenList.get(i));
+      }
+    }
+    return returnList;
+  }
+
+  public List<AbstractMath> removeSubtraction(List<AbstractMath> tokenList) {
+    List<AbstractMath> returnList = new LinkedList<>();
+    for (AbstractMath am : tokenList) {
+      if (am == Operator.SUBTRACT) {
+        returnList.add(Operator.ADD);
+        returnList.add(new Negative());
+      }
+      else {
+        returnList.add(am);
       }
     }
     return returnList;
@@ -360,7 +405,7 @@ public class Parser {
 
     // used to find when to end the jurisdiction of unary operators
     // i.e. for sin(x) a mapping will be stored from sin to the end paren
-    Map<AbstractMath, List<Integer>> functionToLastAppliedTerm = new HashMap<>();
+    Map<Wrapper, List<Integer>> functionToLastAppliedTerm = new HashMap<>();
 
     Stack<Wrapper> stack = new Stack<>();
 
@@ -412,8 +457,11 @@ public class Parser {
             next = iter2.next();
           }
         }
-        functionToLastAppliedTerm.putIfAbsent(am, new LinkedList<>());
-        List<Integer> valueList = functionToLastAppliedTerm.get(am);
+        Wrapper wrapped = new Wrapper(am, negative);
+        negative = null;
+        // TODO when would this be absent?
+        functionToLastAppliedTerm.putIfAbsent(wrapped, new LinkedList<>());
+        List<Integer> valueList = functionToLastAppliedTerm.get(wrapped);
         valueList.add(numRightParenEncountered + tempRightParenCount);
       }
 
@@ -434,7 +482,7 @@ public class Parser {
             outputParts.add(stack.pop());
           }
 
-          // get rid of this left paran
+          // get rid of the left paran that matches up with this right paren
           stack.pop();
 
           AbstractMath toRemove = null;
@@ -558,18 +606,18 @@ public class Parser {
   }
 
   public static void checkUnaryEnd(
-      @NonNull Map<AbstractMath, List<Integer>> functionToLastAppliedTerm,
+      @NonNull Map<Wrapper, List<Integer>> functionToLastAppliedTerm,
       int numRightParenEncountered,
       @NonNull Queue<Wrapper> outputParts) {
-    AbstractMath toRemove = null;
+    Wrapper toRemove = null;
 
     // see if a unary operator ended at this point
-    for (Map.Entry<AbstractMath, List<Integer>> k : functionToLastAppliedTerm.entrySet()) {
+    for (Map.Entry<Wrapper, List<Integer>> k : functionToLastAppliedTerm.entrySet()) {
       List<Integer> valueList = k.getValue();
       for (int i = 0; i < valueList.size(); i++) {
         Integer val = valueList.get(i);
         if (val == numRightParenEncountered) {
-          outputParts.add(new Wrapper(k.getKey()));
+          outputParts.add(k.getKey());
           valueList.remove(i);
           if (valueList.isEmpty()) {
             toRemove = k.getKey();

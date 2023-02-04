@@ -3,7 +3,7 @@ package calculator.service.impl;
 
 import calculator.DTO.DerivativeResponse;
 import calculator.service.CalculatorService;
-import calculator.util.Parser;
+import calculator.util.parse.Parser;
 import calculator.util.StringToStream;
 import calculator.util.terms.Term;
 import java.util.List;
