@@ -3,25 +3,31 @@ package calculator.service.impl;
 
 import calculator.DTO.DerivativeResponse;
 import calculator.service.CalculatorService;
-import calculator.util.Parser;
+import calculator.util.ast.AbstractSyntaxTree;
 import calculator.util.StringToStream;
 import calculator.util.terms.Term;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
+/**
+ * TO USE: 1) create the Parser using an input stream 2) Call get root to get the term at the
+ * base of the AST.
+ *
+ * <p>TO GET DERIVATIVE: call getDerivative on the term returned from getRoot()
+ */
 @Service
 public class CalculatorServiceImpl implements CalculatorService {
   @Override
   public DerivativeResponse evaluateDerivative(String expression, List<Integer> evalPoints) {
-    Parser parser = new Parser(StringToStream.convertStringToStream(expression));
-    Term derivative = parser.getDeriv();
+    AbstractSyntaxTree abstractSyntaxTree = new AbstractSyntaxTree(StringToStream.convertStringToStream(expression));
+    Term derivative = abstractSyntaxTree.getDeriv();
     return new DerivativeResponse(derivative.toString(), derivative.evaluate(evalPoints));
   }
 
   @Override
   public double evaluateExpression(String expression) {
-    Parser parser = new Parser(StringToStream.convertStringToStream(expression));
-    Term root = parser.getRoot();
+    AbstractSyntaxTree abstractSyntaxTree = new AbstractSyntaxTree(StringToStream.convertStringToStream(expression));
+    Term root = abstractSyntaxTree.getRoot();
     return root.evaluate(null);
   }
 }
