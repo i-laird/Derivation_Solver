@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-
   private static final String ROLE_PREFIX = "ROLE_";
 
   @Autowired UserRepository userRepository;
@@ -39,7 +38,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         org.springframework.security.core.userdetails.User.withUsername(username);
     // set the password of the user
     userBuilder.password(user.get().getPassword());
-
     userBuilder.roles(user.get().getRole());
 
     // build the user
