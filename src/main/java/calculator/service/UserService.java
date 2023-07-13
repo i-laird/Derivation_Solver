@@ -9,25 +9,18 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
-
   @Autowired private PasswordEncoder passwordEncoder;
-
   @Autowired private UserRepository userRepository;
 
   public User register(String email, String password, String role) {
-
-    // see if the user already exists
     Optional<User> optionalUser = userRepository.findById(email);
-
     if (optionalUser.isPresent()) {
       throw new RuntimeException("User Exists");
     }
-
     User newUser = new User();
     newUser.setUsername(email);
     newUser.setPassword(passwordEncoder.encode(password));
     newUser.setRole(role);
-
     return userRepository.save(newUser);
   }
 }

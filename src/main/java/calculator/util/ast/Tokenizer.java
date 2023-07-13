@@ -32,107 +32,63 @@ public class Tokenizer {
   /**
    * tokenize the expression
    *
-   * @param expression the expression to tokenize
-   * @return in order syntax and numbers
+   * @param expression the expression to tokenize.
+   * @return in order syntax and numbers.
    */
   List<AbstractMath> tokenizeExpression(@NonNull String expression) {
-
-    // split line by white space
-    String[] parts = expression.split("\\s+");
-
-    // this step further splits if the string does not delimit by white space
-    List<String> cleanedInput = cleanInput(parts);
-
-    // map each token to its associated mathematical operation
-    List<AbstractMath> mappedParts =
-        cleanedInput.stream()
-            .map(this::getMappedPart) // converts to syntax enum i.e. sin -> SIN
-            .filter(Objects::nonNull)
-            .collect(Collectors.toList());
-
-    // remove subtraction
-    // i.e. SUBTRACT becomes ADD NEGATIVE
-    List<AbstractMath> subtractionRemoved = removeSubtraction(mappedParts);
-
-    // remove excessive negatives
-    // i.e. NEGATIVE NEGATIVE 5 -> 5
-    List<AbstractMath> negativesRemoved = removeMultipleNegatives(subtractionRemoved);
-
-    // remove negated variables
-    // i.e. -x becomes -1 * x
-    List<AbstractMath> negatedVariablesRemoved = removeNegatedVariables(negativesRemoved);
-
-    // add parens after unary operators as necessary
-    List<AbstractMath> unaryParensAdded =
-        addParenAfterUnary(new LinkedList<>(), negatedVariablesRemoved, 0, 0);
-    return unaryParensAdded;
-  }
-
-  /**
-   * @param list an array of strings to be cleaned
-   * @return splits monomials
-   *     <p>example: 3x into 3 * x
-   */
-  private static List<String> cleanInput(@NonNull String[] list) {
-
-    // create a stack that will hold the items that need to be processed
+    String [] tokens = expression.split("\\s+");
     Stack<String> processStack = new Stack<>();
-
-    for (int i = list.length - 1; i >= 0; i--) {
-      processStack.push(list[i]);
+    for (int i = tokens.length - 1; i >= 0; i--) {
+      processStack.push(tokens[i]);
     }
-
     List<String> returnList = new LinkedList<>();
-
-    // one at a time evaluate the elements of the stack to see if they can be further subdivided
+    // Stack contains tokens which are checked to see if they can be subdivided.
+    // If a token is able to be split, all the new tokens are added to the stack.
+    // If a token is unable to be split, it is added to the return list.
     // for example 5+ should become 5 +
     //             5x should become 5 * x
-    // once the token is split push all the subtokens on the stack where they will be checked for
-    // further splits
-    // loop stops when there are no more tokens left to evaluate
     while (!processStack.isEmpty()) {
       String s = processStack.pop();
       String[] parsedParts = null;
-
-      // add space before parentheses
-      if (splitByRegex(s, null, "((?<=[\\(\\)\\*\\^])|(?=[\\(\\)\\*\\^]))", processStack, null)) {
+      // Split by opening/closing parens.
+      if (splitByRegex(s, 0, "((?<=[\\(\\)\\*\\^])|(?=[\\(\\)\\*\\^]))", processStack, null)) {
         continue;
       }
-
-      // turn something like 3x into 3 * x
+      // Split monomials. I.e. 3x turns into 3 * x
       if (s.matches(".*[0-9][a-z].*")) {
         splitByRegex(s, 2, "(?=[a-z])", processStack, "*");
         continue;
       }
-
-      // add space NEGATIVE signs
-      if (splitByRegex(s, null, "((?=-)|(?<=-))", processStack, null)) {
+      // Split by negative signs.
+      if (splitByRegex(s, 0, "((?=-)|(?<=-))", processStack, null)) {
         continue;
       }
-
-      // add space before ADD signs
-      if (splitByRegex(s, null, "((?=\\+)|(?<=\\+))", processStack, null)) {
+      // Split by addition signs.
+      if (splitByRegex(s, 0, "((?=\\+)|(?<=\\+))", processStack, null)) {
         continue;
       }
-
-      // add space before MULTIPLY signs
-      if (splitByRegex(s, null, "((?=\\*)|(?<=\\*))", processStack, null)) {
+      // Split by multiplication signs.
+      if (splitByRegex(s, 0, "((?=\\*)|(?<=\\*))", processStack, null)) {
         continue;
       }
-
-      // add space before DIVIDE signs
-      if (splitByRegex(s, null, "((?=/)|(?<=/))", processStack, null)) {
+      // Split by division signs.
+      if (splitByRegex(s, 0, "((?=/)|(?<=/))", processStack, null)) {
         continue;
       }
-
       returnList.add(s);
     }
-    return returnList;
+    List<AbstractMath> mappedParts =
+        returnList.stream()
+            .map(this::getMappedPart) // converts to syntax enum i.e. sin -> SIN
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .collect(Collectors.toList());
+    return addParenAfterUnary(new LinkedList<>(), removeNegatedVariables(removeMultipleNegatives(removeSubtraction(mappedParts))), 0,0);
   }
 
   /**
    * @param toSplit the string to split
-   * @param splitLimit maximum number of substring to create from the base string
+   * @param splitLimit The maximum number of substring to create from the base string.
    * @param regex regular expression to use for splitting
    * @param processStack holds the items that need to be processed
    * @param separator if a non empty string is pushed between every element that is added to the
@@ -143,17 +99,11 @@ public class Tokenizer {
    */
   private static boolean splitByRegex(
       @NonNull String toSplit,
-      Integer splitLimit,
+      @NonNull Integer splitLimit,
       @NonNull String regex,
       @NonNull Stack<String> processStack,
       String separator) {
-    if (Objects.nonNull(splitLimit) && splitLimit < 1) {
-      return false;
-    }
-    String[] parsedParts =
-        Objects.nonNull(splitLimit) ? toSplit.split(regex, splitLimit) : toSplit.split(regex);
-
-    // if number of substring is more than 1 then push all substrings to the stack with separator
+    String[] parsedParts = toSplit.split(regex, splitLimit);
     if (parsedParts.length > 1) {
       for (int i = parsedParts.length - 1; i >= 0; i--) {
         processStack.push(parsedParts[i]);
@@ -172,28 +122,25 @@ public class Tokenizer {
    * @return the abstract math part corresponding to the string
    *     <p>caution: if s is only white space or empty null is returned
    */
-  private AbstractMath getMappedPart(@NonNull String s) {
-    // get rid of anything that is just white space
+  private Optional<AbstractMath> getMappedPart(@NonNull String s) {
     if (s.matches("\\s+") || s.isEmpty()) {
-      return null;
+      return Optional.empty();
     }
     if (s.matches("\\(")) {
       operatorOrFunctionSeen = true;
-      return Paren.LEFT_PAREN;
+      return Optional.of(Paren.LEFT_PAREN);
     }
     if (s.matches("\\)")) {
-      return Paren.RIGHT_PAREN;
+      return Optional.of(Paren.RIGHT_PAREN);
     }
     AbstractMath returnThing = null;
-    // see if it is an integer
     if (s.matches("[+-]?\\d+")) {
       operatorOrFunctionSeen = false;
-      return new Num(Integer.parseInt(s));
+      return Optional.of(new Num(Integer.parseInt(s)));
     }
-    // see if it is a negative sign
     if (operatorOrFunctionSeen && s.equals("-")) {
       operatorOrFunctionSeen = false;
-      return new Negative();
+      return Optional.of(new Negative());
     }
     returnThing = Operator.getOp(s);
     if (returnThing == null) {
@@ -201,34 +148,32 @@ public class Tokenizer {
     }
     if (returnThing != null) {
       operatorOrFunctionSeen = true;
-      return returnThing;
+      return Optional.of(returnThing);
     }
     if (s.length() != 1) {
       throw new ParseError("Invalid term seen: " + s);
     }
     operatorOrFunctionSeen = false;
-    return new Variable(s.charAt(0));
+    return Optional.of(new Variable(s.charAt(0)));
   }
 
   /**
    * @param l the list of math terms in order
    * @return double negatives are removed, and negated subtraction becomes addition
-   *     <p>example: NEGATIVE NEGATIVE 5 -> 5 5 PLUS NEGATIVE 5 -> 5 MINUS 5
+   *
+   * <p>example: NEGATIVE NEGATIVE 5 -> 5 5 PLUS NEGATIVE 5 -> 5 MINUS 5
    */
   private static List<AbstractMath> removeMultipleNegatives(List<AbstractMath> l) {
     List<AbstractMath> returnList = new LinkedList<>();
-
     // holds all plus and minus signs encountered that have not been processed yet
     Queue<AbstractMath> plusMinusToProcess = new LinkedList<>();
     for (AbstractMath am : l) {
-
       // IF the token being analyzed is not a minus or plus sign
       // it is time to clear out the queue of the unprocessed + and - signs
       if (am.getClass() != Negative.class && am != Operator.ADD) {
         if (!plusMinusToProcess.isEmpty()) {
           int minusCount = 0;
           AbstractMath topElem = plusMinusToProcess.peek();
-
           // count the number of - signs (negative and subtraction)
           while (!plusMinusToProcess.isEmpty()) {
             AbstractMath toEval = plusMinusToProcess.remove();
@@ -236,17 +181,12 @@ public class Tokenizer {
               ++minusCount;
             }
           }
-
-          // handle addition / subtraction case
           if (topElem == Operator.ADD) {
             returnList.add(Operator.ADD);
             if(minusCount % 2 == 1) {
               returnList.add(new Negative());
             }
-          }
-
-          // handle negation case
-          else if (topElem.getClass() == Negative.class) {
+          } else if (topElem.getClass() == Negative.class) {
             if (minusCount % 2 == 1) {
               returnList.add(new Negative());
             }
@@ -262,7 +202,6 @@ public class Tokenizer {
 
   public List<AbstractMath> removeNegatedVariables(List<AbstractMath> tokenList) {
     List<AbstractMath> returnList = new LinkedList<>();
-
     for(int i = 0; i < tokenList.size(); i++){
       if (i < tokenList.size() - 1 && tokenList.get(i).getClass() == Negative.class && tokenList.get(i + 1).getClass() == Variable.class){
         returnList.add(new Num(-1));
@@ -306,17 +245,12 @@ public class Tokenizer {
     while (index < l.size()) {
       AbstractMath current = l.get(index);
       returnList.add(current);
-
-      // if a unary operator
       if (current.getClass() == Function.class) {
         index++;
         AbstractMath next = l.get(index);
-
-        // if not a left paren
         if (!(next.getClass() == Paren.class && next == Paren.LEFT_PAREN)) {
           returnList.add(Paren.LEFT_PAREN);
-
-          // finding where to put the closing parenthesis
+          // finding where to put the closing parentheses.
           while (true) {
             returnList.add(next);
             if (next.getClass() == Negative.class) {
@@ -354,20 +288,13 @@ public class Tokenizer {
     int numRightParenEncountered = 0;
     Queue<Wrapper> outputParts = new LinkedList<>();
     Negative negative = null;
-
-    // used to iterate over the tokens
     ListIterator<AbstractMath> iter = tokens.listIterator();
-
     // used to find when to end the jurisdiction of unary operators
-    // i.e. for sin(x) a mapping will be stored from sin to the end paren
+    // i.e. for sin(x) a mapping will be stored from sin to the end paren.
     Map<Wrapper, List<Integer>> functionToLastAppliedTerm = new HashMap<>();
-
     Stack<Wrapper> stack = new Stack<>();
-
     while (iter.hasNext()) {
       AbstractMath am = iter.next();
-
-      // if this is a NEGATIVE remember it and go to next token
       if (am.getClass() == Negative.class) {
         if (Objects.nonNull(negative)) {
           throw new ParseError("Double negative encountered after token simplification");
@@ -375,25 +302,17 @@ public class Tokenizer {
         negative = (Negative) am;
         continue;
       }
-
-      // if token is a constant or a variable
-      // negate if necessary and then output to output queue
       if (am.getClass() == Num.class || am.getClass() == Variable.class) {
-
         outputParts.add(new Wrapper(am, negative));
         negative = null;
       }
-
-      // if it is a unary operator figure out when the operator stops applying
+      // if it is a unary operator figure out when the operator stops applying.
       else if (am.getClass() == Function.class) {
         int tempRightParenCount = 0;
         ListIterator<AbstractMath> iter2 = tokens.listIterator(iter.nextIndex());
-
         AbstractMath next = iter2.next();
-
         // if the immediate following is an OPEN PAREN look for CLOSE PAREN
         if (next.getClass() == Paren.class && next == Paren.LEFT_PAREN) {
-
           // stores the number of OPEN PAREN seen
           int leftParenCount = 0;
           while (true) {
@@ -419,29 +338,18 @@ public class Tokenizer {
         List<Integer> valueList = functionToLastAppliedTerm.get(wrapped);
         valueList.add(numRightParenEncountered + tempRightParenCount);
       }
-
-      // if the token is a paren
       else if (am.getClass() == Paren.class) {
-
-        // if it is an opening paren push it onto the stack
         if (am == Paren.LEFT_PAREN) {
           stack.push(new Wrapper(am));
         }
-
-        // if it is a RIGHT paren
         else {
           ++numRightParenEncountered;
-
-          //  keep popping from the stack until a LEFT paren is encountered
           while ((stack.peek()).getAm() != Paren.LEFT_PAREN) {
             outputParts.add(stack.pop());
           }
-
-          // get rid of the left paran that matches up with this right paren
+          // get rid of the left paran that matches up with this right paren.
           stack.pop();
-
           AbstractMath toRemove = null;
-
           // check if any unary operators domain ends here
           checkUnaryEnd(functionToLastAppliedTerm, numRightParenEncountered, outputParts);
         }
@@ -449,13 +357,11 @@ public class Tokenizer {
 
       // if an operator
       else {
-
         while (true) {
           if (stack.empty()) {
             break;
           }
           try {
-
             // shunting yard algorithm stuff
             if ((stack.peek()).getAm().getClass() == Paren.class
                 || ((((Operator) (stack.peek()).getAm())).precedence < ((Operator) am).precedence)
@@ -464,7 +370,6 @@ public class Tokenizer {
                         == Operator.Associativity.LEFT) {
               break;
             }
-
             // account for natural log being weird
             // TODO check to see if this works
             if (am == Operator.NAT_LOG) {
@@ -508,7 +413,6 @@ public class Tokenizer {
       int numRightParenEncountered,
       @NonNull Queue<Wrapper> outputParts) {
     Wrapper toRemove = null;
-
     // see if a unary operator ended at this point
     for (Map.Entry<Wrapper, List<Integer>> k : functionToLastAppliedTerm.entrySet()) {
       List<Integer> valueList = k.getValue();
