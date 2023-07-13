@@ -2,20 +2,20 @@ The current Github Actions are Listed here
 
 ## [CodeQL](https://codeql.github.com/)
 
-- Runs only on pull requests into Master
-- Analyzes master branch upon modification
+- Runs only on pull requests into Main
+- Analyzes main branch upon modification
 - Pass Override allowed with discretion
 
 ## [Dependency Review](https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-dependency-review)
 
 - Runs on All PRs
-- Analyzes master branch upon modification
+- Analyzes main branch upon modification
 - Pass Override allowed with discretion
 
 ## Junit
 
-- Runs on All PRs into Master
-- Analyzes master branch upon modification
+- Runs on All PRs into Main
+- Analyzes main branch upon modification
 - Pass Override not allowed
 
 ## [Linting](https://github.com/github/super-linter)

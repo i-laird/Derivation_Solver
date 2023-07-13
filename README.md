@@ -24,9 +24,9 @@ Automated Testing is currently performed on the repository using [GitHub Actions
 There are plans to deploy the application automatically to the cloud using GitHub Actions.
 
 Actions are defined in the `.github/workflows` folder. These tests are required to pass in
-order to merge a pull request into master.
+order to merge a pull request into main.
 
-Note: the only approved way to contribute to master is by a [squash merge](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/about-pull-request-merges#squash-and-merge-your-commits).
+Note: the only approved way to contribute to main is by a [squash merge](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/about-pull-request-merges#squash-and-merge-your-commits).
 
 ------------------------------------------------------------------------
 
