@@ -6,6 +6,5 @@ import lombok.NonNull;
 
 @Data
 public class ApiError {
-
   @NonNull public String message;
 }

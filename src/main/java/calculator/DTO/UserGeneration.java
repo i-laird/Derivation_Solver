@@ -13,10 +13,7 @@ import lombok.Data;
     message = "Passwords do not match!")
 @Data
 public class UserGeneration {
-
   @NotBlank @Email private String email;
-
   @Password private String password;
-
   private String confirmPassword;
 }

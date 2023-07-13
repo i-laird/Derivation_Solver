@@ -16,12 +16,10 @@ import java.util.Scanner;
 import java.util.Stack;
 
 public class AbstractSyntaxTree {
-
-    // the root of the AST (populated by constructor)
     Term root = null;
 
     /**
-     * @return the derivative of the expression
+     * @return the derivative of the expression located at root.
      */
     public Term getDeriv() {
         return this.root.getDerivative();
@@ -35,28 +33,20 @@ public class AbstractSyntaxTree {
     }
 
     /**
-     * @author Laird
      * @param in the inputstream from which the mathematical expression to be parsed is contained in
-     *     infix notation return: none
+     *     infix notation
      *
-     * <p>creates the tree and stores it in root
+     * @return: none
+     *
+     * <p>creates the tree and stores it in root.
      */
     public AbstractSyntaxTree(@NonNull InputStream in) {
-
         Scanner inputScan = new Scanner(new BufferedInputStream(in));
         String line = inputScan.nextLine();
         Tokenizer tokenizer = new Tokenizer();
-
-        // tokenize the expression
-        // performs some sanitizing such as removing excess negatives
-        // and adding parens as necessary
         List<AbstractMath> tokenized = tokenizer.tokenizeExpression(line);
-
-        // convert the expression to postfix notation
-        Queue<Wrapper> outputParts = Tokenizer.convertToPostFix(tokenized);
-
-        // evaluate the post fix expression
-        root = evaluatePostfix(outputParts);
+        Queue<Wrapper> outputPartsInPostFixNotation = Tokenizer.convertToPostFix(tokenized);
+        root = evaluatePostfix(outputPartsInPostFixNotation);
     }
 
     /**
@@ -69,50 +59,28 @@ public class AbstractSyntaxTree {
      * @return
      */
     private static Term evaluatePostfix(@NonNull Queue<Wrapper> outputParts) {
-
-        // used to built the parse tree
         Stack<Term> parseTree = new Stack<>();
-
         for (Wrapper w : outputParts) {
-
             AbstractMath part = w.getAm();
-
-            // if it is a number push it onto the stack
             if (part.getClass() == Num.class) {
                 parseTree.push(new Term(((Num) part).getNum()));
-            }
-
-            // if it is a variable push it onto the stack
-            else if (part.getClass() == Variable.class) {
+            } else if (part.getClass() == Variable.class) {
                 parseTree.push((Variable) part);
-            }
-
-            // if it is a unary operator pop one element off of the stack
-            else if (part.getClass() == Function.class) {
+            } else if (part.getClass() == Function.class) {
                 Term operand = parseTree.pop();
                 parseTree.push(part.getTermFromOp(operand, null));
-            }
-
-            // it is an operand pop two items off of the stack
-            else {
+            } else {
                 Term operandOne = parseTree.pop(), operandTwo = parseTree.pop();
                 parseTree.push(part.getTermFromOp(operandOne, operandTwo));
             }
-
-            // if necessary flip the sign of the top of the stack
             if (w.getN() != null) {
                 parseTree.peek().flipSign();
             }
         }
-
         Term root = parseTree.pop();
-
-        // if there is still something in the stack after popping the root there was an ERROR
         if (!parseTree.empty()) {
             throw new ParseError("Invalid Token Encountered: " + parseTree.peek());
         }
-
-        // the last element of the stack is the root of the tree
         return root;
     }
 

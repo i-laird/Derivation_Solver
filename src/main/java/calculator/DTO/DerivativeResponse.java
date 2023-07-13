@@ -6,11 +6,10 @@ package calculator.DTO;
  * @author Ian Laird
  */
 public class DerivativeResponse {
-
-  // the calculated antiderivative
+  // the calculated antiderivative.
   public String antiderivative;
 
-  // the antiderivative value when evaluated
+  // the antiderivative value when evaluated.
   public Double result;
 
   public DerivativeResponse(String antiderivative, Double result) {
