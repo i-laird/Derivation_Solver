@@ -11,12 +11,14 @@
     <properties>
         <java.version>20</java.version>
         <junit.version>5.10.1</junit.version>
-        <spring.version>3.2.0</spring.version>
+        <spring.version>2.7.18</spring.version>
         <maven.compiler.plugin.version>3.10.1</maven.compiler.plugin.version>
         <mysql.connector.version>8.0.33</mysql.connector.version>
         <lombok.version>1.18.30</lombok.version>
         <passay.version>1.6.4</passay.version>
-        <jjwt.version>0.12.3</jjwt.version>
+        <javax.validation.version>2.0.1.Final</javax.validation.version>
+        <javax.persistance.version>2.2</javax.persistance.version>
+        <jjwt.version>0.9.1</jjwt.version>
         <jackson.version>2.16.0</jackson.version>
         <!--be very careful when changing jakarta version it will break-->
         <jakarta.version>2.3.3</jakarta.version>
@@ -86,6 +88,18 @@
             <groupId>org.passay</groupId>
             <artifactId>passay</artifactId>
             <version>${passay.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/javax.validation/validation-api -->
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>${javax.validation.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/javax.persistence/javax.persistence-api -->
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>javax.persistence-api</artifactId>
+            <version>${javax.persistance.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
