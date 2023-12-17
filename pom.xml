@@ -8,6 +8,15 @@
     <artifactId>DerivationSolver</artifactId>
     <version>2.1-SNAPSHOT</version>
 
+    <distributionManagement>
+        <repository>
+            <id>internal.repo</id>
+            <name>Internal repo</name>
+            <url>file://${user.home}/.m2/repository</url>
+        </repository>
+    </distributionManagement>
+
+
     <properties>
         <java.version>20</java.version>
         <junit.version>5.10.1</junit.version>
@@ -18,7 +27,7 @@
         <passay.version>1.6.4</passay.version>
         <javax.validation.version>2.0.1.Final</javax.validation.version>
         <javax.persistance.version>2.2</javax.persistance.version>
-        <jjwt.version>0.9.1</jjwt.version>
+        <jjwt.version>0.12.3</jjwt.version>
         <jackson.version>2.16.0</jackson.version>
         <!--be very careful when changing jakarta version it will break-->
         <jakarta.version>2.3.3</jakarta.version>
@@ -145,6 +154,17 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>calculator.Application</mainClass>
+                    <layout>JAR</layout>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <version>${spring.version}</version>
             </plugin>
             <plugin>

@@ -1,5 +1,6 @@
 package calculator.controller;
 
+import calculator.DTO.DerivativeRequest;
 import calculator.DTO.DerivativeResponse;
 import calculator.service.CalculatorService;
 import java.time.LocalTime;
@@ -22,8 +23,8 @@ public class CalculatorController {
   @GetMapping(value = "/derivative")
   @ResponseStatus(HttpStatus.OK)
   public DerivativeResponse generateDerivative(
-      @RequestParam("expression") String expression, @RequestParam("points") List<Integer> points) {
-    return calculatorServiceImpl.evaluateDerivative(expression, points);
+          @RequestBody DerivativeRequest request) {
+    return calculatorServiceImpl.evaluateDerivative(request.expression, request.points);
   }
 
   @GetMapping(value = "/expression")
