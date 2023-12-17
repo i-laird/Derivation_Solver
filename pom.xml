@@ -9,21 +9,19 @@
     <version>2.1-SNAPSHOT</version>
 
     <properties>
-        <java.version>19</java.version>
-        <junit.version>5.9.0</junit.version>
-        <spring.version>2.7.4</spring.version>
-        <spring.security.version>5.7.3</spring.security.version>
+        <java.version>20</java.version>
+        <junit.version>5.10.1</junit.version>
+        <spring.version>3.2.0</spring.version>
         <maven.compiler.plugin.version>3.10.1</maven.compiler.plugin.version>
-        <mysql.connector.version>8.0.30</mysql.connector.version>
-        <lombok.version>1.18.24</lombok.version>
-        <passay.version>1.6.2</passay.version>
-        <javax.version>3.0.2</javax.version>
-        <jjwt.version>0.9.1</jjwt.version>
-        <jackson.version>2.13.4.2</jackson.version>
+        <mysql.connector.version>8.0.33</mysql.connector.version>
+        <lombok.version>1.18.30</lombok.version>
+        <passay.version>1.6.4</passay.version>
+        <jjwt.version>0.12.3</jjwt.version>
+        <jackson.version>2.16.0</jackson.version>
         <!--be very careful when changing jakarta version it will break-->
         <jakarta.version>2.3.3</jakarta.version>
-        <spotless.maven>2.27.2</spotless.maven>
-        <maven.surefire>3.0.0-M7</maven.surefire>
+        <spotless.maven>2.41.1</spotless.maven>
+        <maven.surefire>3.2.3</maven.surefire>
     </properties>
 
     <dependencies>
