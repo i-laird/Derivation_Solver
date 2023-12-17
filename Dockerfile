@@ -1,6 +1,6 @@
 
 # stage 1
-FROM maven:3.8.5-openjdk-18-slim as build
+FROM maven:3.9.1-amazoncorretto-20-debian-bullseye as build
 
 MAINTAINER Ian Laird
 
@@ -12,7 +12,7 @@ COPY ./src ./src
 
 RUN mvn package
 
-FROM openjdk:18.0-jdk as run
+FROM openjdk:20-jdk as run
 
 WORKDIR /run
 
@@ -20,4 +20,4 @@ COPY --from=build /build/target/DerivationSolver-*.jar ./
 
 EXPOSE 8080
 
-CMD ["java", "-jar", "./DerivationSolver-2.0-SNAPSHOT.jar"]
+CMD ["java", "-jar", "./DerivationSolver-2.1-SNAPSHOT.jar"]
