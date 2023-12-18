@@ -32,6 +32,10 @@ Note: the only approved way to contribute to main is by a [squash merge](https:/
 
 ## Run Steps
 
+## Make sure Docker is Running
+
+If you have not already installed [Docker](https://www.docker.com/products/docker-desktop/), do so now and make sure it is running.
+
 ## Database
 
 This application requires a MYSQL database to be running on port 3306 in order to start. While there are many ways to
