@@ -136,7 +136,7 @@ Download Postman to send test API calls to the service. Open the workspace
 
 ## Linting
 
-Proper code format is super important! There is a GitHub action that will fail if the code is not formatted 
+Proper code format is super important! There is a GitHub action that will fail if the code is not formatted
 properly.
 
 You can test Super Linter with the following command.
