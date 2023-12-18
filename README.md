@@ -100,6 +100,11 @@ To run the docker container
 docker run -p 8080:8080 -d derivation_solver
 ```
 
+## PostMan
+
+Download Postman to send test API calls to the service. Open the workspace
+[here](https://dark-capsule-103483.postman.co/workspace/Team-Workspace~113860f3-c1f0-458b-87eb-65444adb8f74/collection/5427748-fde05af8-b065-4de5-b6d4-39b1dc0a9a79?action=share&creator=5427748).
+
 ## Linting
 Proper code format is super important! There is a GitHub action that will fail if the code is not formatted to Google
 Java Standard. Luckily it is super easy to check if the code is compliant with the required style for this project.

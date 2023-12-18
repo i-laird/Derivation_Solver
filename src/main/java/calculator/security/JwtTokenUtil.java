@@ -10,19 +10,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-import org.springframework.beans.factory.annotation.Value;
+import javax.crypto.SecretKey;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-
-import javax.crypto.SecretKey;
 
 @Component
 public class JwtTokenUtil implements Serializable {
   private static final long serialVersionUID = 8562677648L;
   public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
 
-  @Value("${jwt.secret}")
-  private String secret;
+  private static SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 
   public String getUsernameFromToken(String token) {
     return getClaimFromToken(token, Claims::getSubject);
@@ -39,7 +36,7 @@ public class JwtTokenUtil implements Serializable {
 
   private Claims getAllClaimsFromToken(String token) {
     SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
-    return Jwts.parser().setSigningKey(key).build().parseSignedClaims(token).getBody();
+    return Jwts.parser().setSigningKey(SECRET_KEY).build().parseSignedClaims(token).getBody();
   }
 
   private Boolean isTokenExpired(String token) {
@@ -64,7 +61,7 @@ public class JwtTokenUtil implements Serializable {
         .setSubject(subject)
         .setIssuedAt(new Date(System.currentTimeMillis()))
         .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
-        .signWith(SignatureAlgorithm.HS512, secret)
+        .signWith(SECRET_KEY)
         .compact();
   }
 
