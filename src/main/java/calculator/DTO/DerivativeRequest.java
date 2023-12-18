@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DerivativeRequest implements Serializable {
-    private static final long serialVersionUID = 6778676666L;
-    public String expression;
-    public List<Integer> points;
+  private static final long serialVersionUID = 6778676666L;
+  public String expression;
+  public List<Integer> points;
 }
