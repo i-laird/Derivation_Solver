@@ -28,6 +28,12 @@ jobs:
           # list of changed files within `super-linter`
           fetch-depth: 0
 
+      - name: Setup Java JDK
+        uses: actions/setup-java@v3.4.1
+        with:
+          distribution: 'corretto'
+          java-version: '20'
+
       ################################
       # Run Linter against code base #
       ################################
@@ -35,5 +41,6 @@ jobs:
         uses: github/super-linter@v4
         env:
           VALIDATE_ALL_CODEBASE: false
+          VALIDATE_JAVA: false
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

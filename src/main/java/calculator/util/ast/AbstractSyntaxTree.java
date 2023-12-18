@@ -19,20 +19,6 @@ public class AbstractSyntaxTree {
     Term root = null;
 
     /**
-     * @return the derivative of the expression located at root.
-     */
-    public Term getDeriv() {
-        return this.root.getDerivative();
-    }
-
-    /**
-     * @return the root of the mathematical expression tree
-     */
-    public Term getRoot() {
-        return this.root;
-    }
-
-    /**
      * @param in the inputstream from which the mathematical expression to be parsed is contained in
      *     infix notation
      *
@@ -82,6 +68,20 @@ public class AbstractSyntaxTree {
             throw new ParseError("Invalid Token Encountered: " + parseTree.peek());
         }
         return root;
+    }
+
+    /**
+     * @return the derivative of the expression located at root.
+     */
+    public Term getDeriv() {
+        return this.root.getDerivative();
+    }
+
+    /**
+     * @return the root of the mathematical expression tree
+     */
+    public Term getRoot() {
+        return this.root;
     }
 
 }

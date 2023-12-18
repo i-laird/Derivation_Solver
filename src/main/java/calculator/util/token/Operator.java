@@ -16,14 +16,8 @@ public enum Operator implements AbstractMath {
   LOG(3, Associativity.RIGHT),
   NAT_LOG(3, Associativity.RIGHT);
 
-  public enum Associativity {
-    RIGHT,
-    LEFT
-  }
-
   public int precedence;
   public Associativity associativity;
-
   Operator(int p, Associativity a) {
     precedence = p;
     associativity = a;
@@ -106,5 +100,10 @@ public enum Operator implements AbstractMath {
       toReturn = makeChainRule(toReturn, two);
     }
     return toReturn;
+  }
+
+  public enum Associativity {
+    RIGHT,
+    LEFT
   }
 }

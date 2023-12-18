@@ -4,8 +4,8 @@ package calculator.util.rules;
 import static calculator.util.rules.RuleFactory.*;
 
 import calculator.util.terms.Term;
+import com.google.common.collect.ImmutableList;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * QUOTIENT RULE
@@ -21,6 +21,10 @@ public final class QuotientRule extends DerivationRule {
   public static final int DENOM_POS = 0;
 
   // NUMERATOR is the second term and DENOMINATOR is the first
+
+  QuotientRule(LinkedList<Term> l) {
+    super(l);
+  }
 
   /**
    * d/dx( f(x) / g(x) ) = (f'(x)g(x) - g'(x)f(x)) / (g(x))^2
@@ -46,12 +50,8 @@ public final class QuotientRule extends DerivationRule {
     return makeFracRule(denom, numerator);
   }
 
-  QuotientRule(LinkedList<Term> l) {
-    super(l);
-  }
-
   @Override
-  public double getResult(List<Integer> dims) {
+  public double getResult(ImmutableList<Integer> dims) {
     double numeratorEvaluated = this.terms.get(NUMERATOR_POS).evaluate(dims);
     double denominatorEvaluated = this.terms.get(DENOM_POS).evaluate(dims);
     return numeratorEvaluated / denominatorEvaluated;

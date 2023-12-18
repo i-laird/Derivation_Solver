@@ -3,8 +3,8 @@ package calculator.util.rules;
 import static calculator.util.rules.RuleFactory.*;
 
 import calculator.util.terms.Term;
+import com.google.common.collect.ImmutableList;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Log Rule
@@ -37,7 +37,7 @@ public final class LogRule extends DerivationRule {
   }
 
   @Override
-  public double getResult(List<Integer> dims) {
+  public double getResult(ImmutableList<Integer> dims) {
     return Math.log(this.terms.get(BASE_INDEX).evaluate(dims))
         / Math.log(this.terms.get(ARGUMENT_INDEX).evaluate(dims));
   }

@@ -3,8 +3,8 @@ package calculator.util.rules;
 import static calculator.util.rules.RuleFactory.*;
 
 import calculator.util.terms.Term;
+import com.google.common.collect.ImmutableList;
 import java.util.LinkedList;
-import java.util.List;
 
 public final class CotRule extends TrigRule {
 
@@ -24,7 +24,7 @@ public final class CotRule extends TrigRule {
   }
 
   @Override
-  public double getResult(List<Integer> dims) {
+  public double getResult(ImmutableList<Integer> dims) {
     return 1.0 / Math.tan(this.t.evaluate(dims));
   }
 }
