@@ -21,7 +21,8 @@ public class CalculatorController {
 
   @GetMapping(value = "/derivative")
   @ResponseStatus(HttpStatus.OK)
-  public DerivativeResponse generateDerivative(@RequestBody DerivativeRequest request) {
+  public DerivativeResponse generateDerivative(
+          @RequestBody DerivativeRequest request) {
     return calculatorServiceImpl.evaluateDerivative(request.expression, request.points);
   }
 

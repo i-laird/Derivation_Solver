@@ -35,7 +35,6 @@ public class JwtTokenUtil implements Serializable {
   }
 
   private Claims getAllClaimsFromToken(String token) {
-    SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
     return Jwts.parser().setSigningKey(SECRET_KEY).build().parseSignedClaims(token).getBody();
   }
 
