@@ -23,8 +23,6 @@ public class UserController {
 
   @Autowired private AuthenticationManager authenticationManager;
 
-  @Autowired private JwtTokenUtil jwtTokenUtil;
-
   @Autowired private UserDetailsService userDetailsService;
 
   @Autowired private UserService userService;
@@ -41,7 +39,7 @@ public class UserController {
     authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
     final UserDetails userDetails =
         userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-    final String token = jwtTokenUtil.generateToken(userDetails);
+    final String token = JwtTokenUtil.generateToken(userDetails);
     return ResponseEntity.ok(new JwtResponse(token));
   }
 
