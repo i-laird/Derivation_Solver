@@ -3,8 +3,8 @@ package calculator.util.rules;
 import static calculator.util.rules.RuleFactory.makeAdditionRule;
 
 import calculator.util.terms.Term;
+import com.google.common.collect.ImmutableList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -15,6 +15,10 @@ import java.util.stream.Collectors;
  *     <p>d/dx(x + y) = d/dx(x) + d/dx(y
  */
 public final class AdditionRule extends DerivationRule {
+
+  AdditionRule(LinkedList<Term> l) {
+    super(l);
+  }
 
   /**
    * d/dx(x + y) = d/dx(x) + d/dx(y)
@@ -27,10 +31,6 @@ public final class AdditionRule extends DerivationRule {
         terms.stream()
             .map(x -> x.getDerivative())
             .collect(Collectors.toCollection(LinkedList::new)));
-  }
-
-  AdditionRule(LinkedList<Term> l) {
-    super(l);
   }
 
   /**
@@ -50,7 +50,7 @@ public final class AdditionRule extends DerivationRule {
    * @param dims the variable values to use when evaulating
    * @return the result
    */
-  public double getResult(List<Integer> dims) {
+  public double getResult(ImmutableList<Integer> dims) {
     return this.terms.stream().map(x -> x.evaluate(dims)).reduce(0.0, Double::sum);
   }
 
