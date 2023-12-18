@@ -12,6 +12,7 @@ COPY ./src ./src
 
 RUN mvn package
 
+# stage 2
 FROM openjdk:20-jdk as run
 
 WORKDIR /run
@@ -19,5 +20,7 @@ WORKDIR /run
 COPY --from=build /build/target/DerivationSolver-*.jar ./
 
 EXPOSE 8080
+
+ENV SPRING_PROFILES_ACTIVE=prod
 
 CMD ["java", "-jar", "./DerivationSolver-2.1-SNAPSHOT.jar"]

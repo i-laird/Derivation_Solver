@@ -18,7 +18,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
   @Autowired private UserDetailsService jwtUserDetailsService;
-  @Autowired private JwtTokenUtil jwtTokenUtil;
 
   @Override
   protected void doFilterInternal(
@@ -33,7 +32,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
       jwtToken = requestTokenHeader.substring(7);
       try {
-        username = jwtTokenUtil.getUsernameFromToken(jwtToken);
+        username = JwtTokenUtil.getUsernameFromToken(jwtToken);
       } catch (IllegalArgumentException e) {
         System.out.println("Unable to get JWT Token");
       } catch (ExpiredJwtException e) {
@@ -48,7 +47,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
       UserDetails userDetails = this.jwtUserDetailsService.loadUserByUsername(username);
       // if token is valid configure Spring Security to manually set
       // authentication
-      if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
+      if (JwtTokenUtil.validateToken(jwtToken, userDetails)) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
             new UsernamePasswordAuthenticationToken(
                 userDetails, null, userDetails.getAuthorities());
