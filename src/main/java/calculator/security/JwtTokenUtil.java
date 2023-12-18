@@ -14,36 +14,51 @@ import javax.crypto.SecretKey;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+/**
+ * Util method for JWT tokens.
+ */
 @Component
-public class JwtTokenUtil implements Serializable {
+public final class JwtTokenUtil implements Serializable {
   private static final long serialVersionUID = 8562677648L;
   public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
 
-  private static SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+  private static final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 
-  public String getUsernameFromToken(String token) {
+  /**
+   * Gets the username from a JWT.
+   */
+  public static String getUsernameFromToken(String token) {
     return getClaimFromToken(token, Claims::getSubject);
   }
 
-  public Date getExpirationDateFromToken(String token) {
+  /**
+   * Gets the expiration date for a token.
+   */
+  public static Date getExpirationDateFromToken(String token) {
     return getClaimFromToken(token, Claims::getExpiration);
   }
 
-  public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
+  /**
+   * Gets all claims for a token.
+   */
+  public static <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
     final Claims claims = getAllClaimsFromToken(token);
     return claimsResolver.apply(claims);
   }
 
-  private Claims getAllClaimsFromToken(String token) {
+  private static Claims getAllClaimsFromToken(String token) {
     return Jwts.parser().setSigningKey(SECRET_KEY).build().parseSignedClaims(token).getBody();
   }
 
-  private Boolean isTokenExpired(String token) {
+  private static Boolean isTokenExpired(String token) {
     final Date expiration = getExpirationDateFromToken(token);
     return expiration.before(new Date());
   }
 
-  public String generateToken(UserDetails userDetails) {
+  /**
+   * Generates a JWT.
+   */
+  public static String generateToken(UserDetails userDetails) {
     Map<String, Object> claims = new HashMap<>();
     return doGenerateToken(claims, userDetails.getUsername());
   }
@@ -54,7 +69,7 @@ public class JwtTokenUtil implements Serializable {
   // 3. According to JWS Compact
   // Serialization(https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-41#section-3.1)
   //   compaction of the JWT to a URL-safe string
-  private String doGenerateToken(Map<String, Object> claims, String subject) {
+  private static String doGenerateToken(Map<String, Object> claims, String subject) {
     return Jwts.builder()
         .setClaims(claims)
         .setSubject(subject)
@@ -65,7 +80,7 @@ public class JwtTokenUtil implements Serializable {
   }
 
   // validate token
-  public Boolean validateToken(String token, UserDetails userDetails) {
+  public static Boolean validateToken(String token, UserDetails userDetails) {
     final String username = getUsernameFromToken(token);
     return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
   }
