@@ -4,8 +4,8 @@ package calculator.util.rules;
 import static calculator.util.rules.RuleFactory.*;
 
 import calculator.util.terms.Term;
+import com.google.common.collect.ImmutableList;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * QUOTIENT RULE
@@ -51,7 +51,7 @@ public final class QuotientRule extends DerivationRule {
   }
 
   @Override
-  public double getResult(List<Integer> dims) {
+  public double getResult(ImmutableList<Integer> dims) {
     double numeratorEvaluated = this.terms.get(NUMERATOR_POS).evaluate(dims);
     double denominatorEvaluated = this.terms.get(DENOM_POS).evaluate(dims);
     return numeratorEvaluated / denominatorEvaluated;

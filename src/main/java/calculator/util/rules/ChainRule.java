@@ -2,8 +2,8 @@
 package calculator.util.rules;
 
 import calculator.util.terms.Term;
+import com.google.common.collect.ImmutableList;
 import java.util.LinkedList;
-import java.util.List;
 
 public final class ChainRule extends DerivationRule {
 
@@ -26,7 +26,7 @@ public final class ChainRule extends DerivationRule {
   }
 
   @Override
-  public double getResult(List<Integer> dims) {
+  public double getResult(ImmutableList<Integer> dims) {
     return this.terms.get(0).evaluate(dims);
   }
 

@@ -1,6 +1,6 @@
 package calculator.util.terms;
 
-import java.util.List;
+import com.google.common.collect.ImmutableList;
 
 public class Term {
   private int num;
@@ -52,7 +52,7 @@ public class Term {
    * @param dims evaluation dims
    * @return the evaluated expression
    */
-  public double evaluate(List<Integer> dims) {
+  public double evaluate(ImmutableList<Integer> dims) {
     return this.getNum();
   }
 

@@ -6,8 +6,8 @@ import static calculator.util.rules.RuleFactory.makeProductRule;
 
 import calculator.util.ast.Tokenizer;
 import calculator.util.terms.Term;
+import com.google.common.collect.ImmutableList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -58,7 +58,7 @@ public final class ProductRule extends DerivationRule {
   }
 
   @Override
-  public double getResult(List<Integer> dims) {
+  public double getResult(ImmutableList<Integer> dims) {
     return this.terms.stream().map(x -> x.evaluate(dims)).reduce((x, y) -> x * y).get();
   }
 

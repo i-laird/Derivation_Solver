@@ -4,8 +4,8 @@ package calculator.util.rules;
 import static calculator.util.rules.RuleFactory.*;
 
 import calculator.util.terms.Term;
+import com.google.common.collect.ImmutableList;
 import java.util.LinkedList;
-import java.util.List;
 
 public final class NaturalLogRule extends DerivationRule {
   public static final int ARGUMENT_INDEX = 0;
@@ -27,7 +27,7 @@ public final class NaturalLogRule extends DerivationRule {
   }
 
   @Override
-  public double getResult(List<Integer> dims) {
+  public double getResult(ImmutableList<Integer> dims) {
     return Math.log(this.terms.get(ARGUMENT_INDEX).evaluate(dims));
   }
 

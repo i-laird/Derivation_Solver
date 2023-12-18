@@ -20,12 +20,15 @@ import org.springframework.stereotype.Component;
 @Component
 public final class JwtTokenUtil implements Serializable {
   private static final long serialVersionUID = 8562677648L;
-  public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
+  public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60 * 1000;
 
   private static final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 
   /**
    * Gets the username from a JWT.
+   *
+   * @param token JWT token.
+   * @return the username.
    */
   public static String getUsernameFromToken(String token) {
     return getClaimFromToken(token, Claims::getSubject);
@@ -33,6 +36,9 @@ public final class JwtTokenUtil implements Serializable {
 
   /**
    * Gets the expiration date for a token.
+   *
+   * @param token JWT token.
+   * @return the expiration date of the token.
    */
   public static Date getExpirationDateFromToken(String token) {
     return getClaimFromToken(token, Claims::getExpiration);
@@ -40,6 +46,10 @@ public final class JwtTokenUtil implements Serializable {
 
   /**
    * Gets all claims for a token.
+   *
+   * @param token JWT token.
+   * @param claimsResolver claimsResolver
+   * @return the claims for the token.
    */
   public static <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
     final Claims claims = getAllClaimsFromToken(token);
@@ -57,8 +67,11 @@ public final class JwtTokenUtil implements Serializable {
 
   /**
    * Generates a JWT.
+   *
+   * @param userDetails the users login credentials.
+   * @return JWT token.
    */
-  public static String generateToken(UserDetails userDetails) {
+  public static String generateToken(final UserDetails userDetails) {
     Map<String, Object> claims = new HashMap<>();
     return doGenerateToken(claims, userDetails.getUsername());
   }
@@ -74,7 +87,8 @@ public final class JwtTokenUtil implements Serializable {
         .setClaims(claims)
         .setSubject(subject)
         .setIssuedAt(new Date(System.currentTimeMillis()))
-        .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
+        .setExpiration(
+                new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY))
         .signWith(SECRET_KEY)
         .compact();
   }

@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * A request for a mathematical expression.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

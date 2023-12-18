@@ -3,8 +3,8 @@ package calculator.util.rules;
 import static calculator.util.rules.RuleFactory.*;
 
 import calculator.util.terms.Term;
+import com.google.common.collect.ImmutableList;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * POWER RULE
@@ -45,7 +45,7 @@ public final class PowerRule extends DerivationRule {
   }
 
   @Override
-  public double getResult(List<Integer> dims) {
+  public double getResult(ImmutableList<Integer> dims) {
     return Math.pow(this.terms.get(1).evaluate(dims), this.terms.get(0).evaluate(dims));
   }
 

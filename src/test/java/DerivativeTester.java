@@ -1,8 +1,8 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import calculator.service.CalculatorService;
+import com.google.common.collect.ImmutableList;
 import java.util.Collections;
-import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +26,7 @@ public class DerivativeTester {
   @DisplayName("Single Derivative Testing")
   @ParameterizedTest(name = "{0}")
   @MethodSource("singleVariable")
-  public void test1(String inputString, List<Integer> evaluationPoints, double expected) {
+  public void test1(String inputString, ImmutableList<Integer> evaluationPoints, double expected) {
     double result =
         (calculatorServiceImpl.evaluateDerivative(inputString, evaluationPoints)).result;
     assertEquals(expected, result);
@@ -36,11 +36,13 @@ public class DerivativeTester {
     return Stream.of(
         // first test the polynomials
         Arguments.of("     1     ", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), 0.0),
-        Arguments.of("            -     1 ", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), 0.0),
+        Arguments.of(
+            "            -     1 ", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), 0.0),
         Arguments.of("1", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), 0.0),
         Arguments.of("10", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), 0.0),
         Arguments.of("-100", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), 0.0),
-        Arguments.of("1000 + 10000 - 1 + 0", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), 0.0),
+        Arguments.of(
+            "1000 + 10000 - 1 + 0", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), 0.0),
         Arguments.of("0", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), 0.0),
         Arguments.of("x", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), 1.0),
         Arguments.of("- x", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), -1.0),
@@ -54,7 +56,8 @@ public class DerivativeTester {
         Arguments.of("2 * x", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), 2.0),
         Arguments.of("2x - 3x", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), -1.0),
         Arguments.of("2x + 3x - 16", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), 5.0),
-        Arguments.of("- 2x + 3x - 16", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), 1.0),
+        Arguments.of(
+            "- 2x + 3x - 16", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), 1.0),
         Arguments.of("- 2x - - 3x", createSingleList(DOES_NOT_AFFECT_DERIVATIVE_CALCULATION), 1.0),
         Arguments.of("2x + 3x * 5x", createSingleList(1), 32.0),
         Arguments.of("2x * 3x * 5x", createSingleList(2), 360.0),
@@ -119,17 +122,19 @@ public class DerivativeTester {
             createSingleList(3),
             (1 + Math.sin(3.0)) * Math.pow(1.0 / Math.cos(Math.cos(3.0) - 3.0), 2)),
         Arguments.of(
-                "14x^3 + 135x - sin x + cos(x^4)",
-                createSingleList(3),
-                (-4.0 * Math.pow(3.0, 3) * Math.sin(Math.pow(3.0, 4))) - Math.cos(3.0) + (42 * Math.pow(3.0, 2)) + 135),
+            "14x^3 + 135x - sin x + cos(x^4)",
+            createSingleList(3),
+            (-4.0 * Math.pow(3.0, 3) * Math.sin(Math.pow(3.0, 4)))
+                - Math.cos(3.0)
+                + (42 * Math.pow(3.0, 2))
+                + 135),
         Arguments.of(
-                "135x - sin x + cos(x^4)",
-                createSingleList(3),
-                (-4.0 * Math.pow(3.0, 3) * Math.sin(Math.pow(3.0, 4))) - Math.cos(3.0) + 135)
-    );
+            "135x - sin x + cos(x^4)",
+            createSingleList(3),
+            (-4.0 * Math.pow(3.0, 3) * Math.sin(Math.pow(3.0, 4))) - Math.cos(3.0) + 135));
   }
 
-  private static List<Integer> createSingleList(Integer xVal) {
-    return Collections.singletonList(xVal);
+  private static ImmutableList<Integer> createSingleList(Integer xVal) {
+    return ImmutableList.copyOf(Collections.singletonList(xVal));
   }
 }
