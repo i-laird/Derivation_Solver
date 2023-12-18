@@ -30,63 +30,6 @@ public class Tokenizer {
   private boolean operatorOrFunctionSeen = true;
 
   /**
-   * tokenize the expression
-   *
-   * @param expression the expression to tokenize.
-   * @return in order syntax and numbers.
-   */
-  List<AbstractMath> tokenizeExpression(@NonNull String expression) {
-    String [] tokens = expression.split("\\s+");
-    Stack<String> processStack = new Stack<>();
-    for (int i = tokens.length - 1; i >= 0; i--) {
-      processStack.push(tokens[i]);
-    }
-    List<String> returnList = new LinkedList<>();
-    // Stack contains tokens which are checked to see if they can be subdivided.
-    // If a token is able to be split, all the new tokens are added to the stack.
-    // If a token is unable to be split, it is added to the return list.
-    // for example 5+ should become 5 +
-    //             5x should become 5 * x
-    while (!processStack.isEmpty()) {
-      String s = processStack.pop();
-      String[] parsedParts = null;
-      // Split by opening/closing parens.
-      if (splitByRegex(s, 0, "((?<=[\\(\\)\\*\\^])|(?=[\\(\\)\\*\\^]))", processStack, null)) {
-        continue;
-      }
-      // Split monomials. I.e. 3x turns into 3 * x
-      if (s.matches(".*[0-9][a-z].*")) {
-        splitByRegex(s, 2, "(?=[a-z])", processStack, "*");
-        continue;
-      }
-      // Split by negative signs.
-      if (splitByRegex(s, 0, "((?=-)|(?<=-))", processStack, null)) {
-        continue;
-      }
-      // Split by addition signs.
-      if (splitByRegex(s, 0, "((?=\\+)|(?<=\\+))", processStack, null)) {
-        continue;
-      }
-      // Split by multiplication signs.
-      if (splitByRegex(s, 0, "((?=\\*)|(?<=\\*))", processStack, null)) {
-        continue;
-      }
-      // Split by division signs.
-      if (splitByRegex(s, 0, "((?=/)|(?<=/))", processStack, null)) {
-        continue;
-      }
-      returnList.add(s);
-    }
-    List<AbstractMath> mappedParts =
-        returnList.stream()
-            .map(this::getMappedPart) // converts to syntax enum i.e. sin -> SIN
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .collect(Collectors.toList());
-    return addParenAfterUnary(new LinkedList<>(), removeNegatedVariables(removeMultipleNegatives(removeSubtraction(mappedParts))), 0,0);
-  }
-
-  /**
    * @param toSplit the string to split
    * @param splitLimit The maximum number of substring to create from the base string.
    * @param regex regular expression to use for splitting
@@ -114,47 +57,6 @@ public class Tokenizer {
       return true;
     }
     return false;
-  }
-
-  /**
-   * @author laird
-   * @param s the string to be evaluated
-   * @return the abstract math part corresponding to the string
-   *     <p>caution: if s is only white space or empty null is returned
-   */
-  private Optional<AbstractMath> getMappedPart(@NonNull String s) {
-    if (s.matches("\\s+") || s.isEmpty()) {
-      return Optional.empty();
-    }
-    if (s.matches("\\(")) {
-      operatorOrFunctionSeen = true;
-      return Optional.of(Paren.LEFT_PAREN);
-    }
-    if (s.matches("\\)")) {
-      return Optional.of(Paren.RIGHT_PAREN);
-    }
-    AbstractMath returnThing = null;
-    if (s.matches("[+-]?\\d+")) {
-      operatorOrFunctionSeen = false;
-      return Optional.of(new Num(Integer.parseInt(s)));
-    }
-    if (operatorOrFunctionSeen && s.equals("-")) {
-      operatorOrFunctionSeen = false;
-      return Optional.of(new Negative());
-    }
-    returnThing = Operator.getOp(s);
-    if (returnThing == null) {
-      returnThing = Function.getFunc(s);
-    }
-    if (returnThing != null) {
-      operatorOrFunctionSeen = true;
-      return Optional.of(returnThing);
-    }
-    if (s.length() != 1) {
-      throw new ParseError("Invalid term seen: " + s);
-    }
-    operatorOrFunctionSeen = false;
-    return Optional.of(new Variable(s.charAt(0)));
   }
 
   /**
@@ -195,35 +97,6 @@ public class Tokenizer {
         returnList.add(am);
       } else {
         plusMinusToProcess.add(am);
-      }
-    }
-    return returnList;
-  }
-
-  public List<AbstractMath> removeNegatedVariables(List<AbstractMath> tokenList) {
-    List<AbstractMath> returnList = new LinkedList<>();
-    for(int i = 0; i < tokenList.size(); i++){
-      if (i < tokenList.size() - 1 && tokenList.get(i).getClass() == Negative.class && tokenList.get(i + 1).getClass() == Variable.class){
-        returnList.add(new Num(-1));
-        returnList.add(Operator.MULTIPLY);
-        returnList.add(tokenList.get(i + 1));
-        ++i;
-      } else {
-        returnList.add(tokenList.get(i));
-      }
-    }
-    return returnList;
-  }
-
-  public List<AbstractMath> removeSubtraction(List<AbstractMath> tokenList) {
-    List<AbstractMath> returnList = new LinkedList<>();
-    for (AbstractMath am : tokenList) {
-      if (am == Operator.SUBTRACT) {
-        returnList.add(Operator.ADD);
-        returnList.add(new Negative());
-      }
-      else {
-        returnList.add(am);
       }
     }
     return returnList;
@@ -429,5 +302,132 @@ public class Tokenizer {
       }
     }
     functionToLastAppliedTerm.remove(toRemove);
+  }
+
+  /**
+   * tokenize the expression
+   *
+   * @param expression the expression to tokenize.
+   * @return in order syntax and numbers.
+   */
+  List<AbstractMath> tokenizeExpression(@NonNull String expression) {
+    String [] tokens = expression.split("\\s+");
+    Stack<String> processStack = new Stack<>();
+    for (int i = tokens.length - 1; i >= 0; i--) {
+      processStack.push(tokens[i]);
+    }
+    List<String> returnList = new LinkedList<>();
+    // Stack contains tokens which are checked to see if they can be subdivided.
+    // If a token is able to be split, all the new tokens are added to the stack.
+    // If a token is unable to be split, it is added to the return list.
+    // for example 5+ should become 5 +
+    //             5x should become 5 * x
+    while (!processStack.isEmpty()) {
+      String s = processStack.pop();
+      String[] parsedParts = null;
+      // Split by opening/closing parens.
+      if (splitByRegex(s, 0, "((?<=[\\(\\)\\*\\^])|(?=[\\(\\)\\*\\^]))", processStack, null)) {
+        continue;
+      }
+      // Split monomials. I.e. 3x turns into 3 * x
+      if (s.matches(".*[0-9][a-z].*")) {
+        splitByRegex(s, 2, "(?=[a-z])", processStack, "*");
+        continue;
+      }
+      // Split by negative signs.
+      if (splitByRegex(s, 0, "((?=-)|(?<=-))", processStack, null)) {
+        continue;
+      }
+      // Split by addition signs.
+      if (splitByRegex(s, 0, "((?=\\+)|(?<=\\+))", processStack, null)) {
+        continue;
+      }
+      // Split by multiplication signs.
+      if (splitByRegex(s, 0, "((?=\\*)|(?<=\\*))", processStack, null)) {
+        continue;
+      }
+      // Split by division signs.
+      if (splitByRegex(s, 0, "((?=/)|(?<=/))", processStack, null)) {
+        continue;
+      }
+      returnList.add(s);
+    }
+    List<AbstractMath> mappedParts =
+        returnList.stream()
+            .map(this::getMappedPart) // converts to syntax enum i.e. sin -> SIN
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .collect(Collectors.toList());
+    return addParenAfterUnary(new LinkedList<>(), removeNegatedVariables(removeMultipleNegatives(removeSubtraction(mappedParts))), 0,0);
+  }
+
+  /**
+   * @author laird
+   * @param s the string to be evaluated
+   * @return the abstract math part corresponding to the string
+   *     <p>caution: if s is only white space or empty null is returned
+   */
+  private Optional<AbstractMath> getMappedPart(@NonNull String s) {
+    if (s.matches("\\s+") || s.isEmpty()) {
+      return Optional.empty();
+    }
+    if (s.matches("\\(")) {
+      operatorOrFunctionSeen = true;
+      return Optional.of(Paren.LEFT_PAREN);
+    }
+    if (s.matches("\\)")) {
+      return Optional.of(Paren.RIGHT_PAREN);
+    }
+    AbstractMath returnThing = null;
+    if (s.matches("[+-]?\\d+")) {
+      operatorOrFunctionSeen = false;
+      return Optional.of(new Num(Integer.parseInt(s)));
+    }
+    if (operatorOrFunctionSeen && s.equals("-")) {
+      operatorOrFunctionSeen = false;
+      return Optional.of(new Negative());
+    }
+    returnThing = Operator.getOp(s);
+    if (returnThing == null) {
+      returnThing = Function.getFunc(s);
+    }
+    if (returnThing != null) {
+      operatorOrFunctionSeen = true;
+      return Optional.of(returnThing);
+    }
+    if (s.length() != 1) {
+      throw new ParseError("Invalid term seen: " + s);
+    }
+    operatorOrFunctionSeen = false;
+    return Optional.of(new Variable(s.charAt(0)));
+  }
+
+  public List<AbstractMath> removeNegatedVariables(List<AbstractMath> tokenList) {
+    List<AbstractMath> returnList = new LinkedList<>();
+    for(int i = 0; i < tokenList.size(); i++){
+      if (i < tokenList.size() - 1 && tokenList.get(i).getClass() == Negative.class && tokenList.get(i + 1).getClass() == Variable.class){
+        returnList.add(new Num(-1));
+        returnList.add(Operator.MULTIPLY);
+        returnList.add(tokenList.get(i + 1));
+        ++i;
+      } else {
+        returnList.add(tokenList.get(i));
+      }
+    }
+    return returnList;
+  }
+
+  public List<AbstractMath> removeSubtraction(List<AbstractMath> tokenList) {
+    List<AbstractMath> returnList = new LinkedList<>();
+    for (AbstractMath am : tokenList) {
+      if (am == Operator.SUBTRACT) {
+        returnList.add(Operator.ADD);
+        returnList.add(new Negative());
+      }
+      else {
+        returnList.add(am);
+      }
+    }
+    return returnList;
   }
 }

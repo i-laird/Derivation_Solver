@@ -7,6 +7,10 @@ import java.util.LinkedList;
 
 public final class ChainRule extends DerivationRule {
 
+  ChainRule(LinkedList<Term> l) {
+    super(l);
+  }
+
   @Override
   public Term getDerivative() {
     if (this.terms.size() != 2) {
@@ -19,10 +23,6 @@ public final class ChainRule extends DerivationRule {
       toReturn.flipSign();
     }
     return toReturn;
-  }
-
-  ChainRule(LinkedList<Term> l) {
-    super(l);
   }
 
   @Override

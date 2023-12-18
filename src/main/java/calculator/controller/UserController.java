@@ -18,9 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Controller for user management.
- */
+/** Controller for user management. */
 @RestController
 public final class UserController {
 
@@ -32,6 +30,7 @@ public final class UserController {
 
   /**
    * Registers a user.
+   *
    * @param u the user to register.
    * @return JWT for the registered user.
    * @throws Exception if the user already exists.
@@ -44,6 +43,7 @@ public final class UserController {
 
   /**
    * Logins in a user.
+   *
    * @param authenticationRequest the users login credentials.
    * @return JWT for the logged in user.
    * @throws Exception If login fails.

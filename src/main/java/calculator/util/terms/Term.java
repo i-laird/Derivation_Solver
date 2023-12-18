@@ -3,8 +3,14 @@ package calculator.util.terms;
 import com.google.common.collect.ImmutableList;
 
 public class Term {
-  private int num;
   protected boolean negative = false;
+  private int num;
+
+  public Term(int num) {
+    this.num = num;
+  }
+
+  public Term() {}
 
   public int getNum() {
     return num * (negative ? -1 : 1);
@@ -19,12 +25,6 @@ public class Term {
     this.num = num;
     this.negative = false;
   }
-
-  public Term(int num) {
-    this.num = num;
-  }
-
-  public Term() {}
 
   /**
    * Calculates the antiderivative of the given expression.

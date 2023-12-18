@@ -15,9 +15,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-/**
- * Handles JWT tokens.
- */
+/** Handles JWT tokens. */
 @Component
 public final class JwtRequestFilter extends OncePerRequestFilter {
   @Autowired private UserDetailsService jwtUserDetailsService;
@@ -46,24 +44,19 @@ public final class JwtRequestFilter extends OncePerRequestFilter {
     }
 
     // Once we get the token validate it.
-    if (username != null &&
-            SecurityContextHolder.getContext().getAuthentication() == null) {
-      UserDetails userDetails =
-            this.jwtUserDetailsService.loadUserByUsername(username);
+    if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+      UserDetails userDetails = this.jwtUserDetailsService.loadUserByUsername(username);
       // if token is valid configure Spring Security to manually set
       // authentication
       if (JwtTokenUtil.validateToken(jwtToken, userDetails)) {
         UsernamePasswordAuthenticationToken authenticationToken =
             new UsernamePasswordAuthenticationToken(
                 userDetails, null, userDetails.getAuthorities());
-        authenticationToken.setDetails(
-            new WebAuthenticationDetailsSource().buildDetails(request));
+        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         // After setting the Authentication in the context, we specify
         // that the current user is authenticated. So it passes the
         // Spring Security Configurations successfully.
-        SecurityContextHolder
-                .getContext()
-                .setAuthentication(authenticationToken);
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
       }
     }
     chain.doFilter(request, response);

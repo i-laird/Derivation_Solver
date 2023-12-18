@@ -20,6 +20,10 @@ import java.util.stream.Collectors;
  */
 public final class ProductRule extends DerivationRule {
 
+  ProductRule(LinkedList<Term> l) {
+    super(l);
+  }
+
   /** d/dx( f(x) * g(x) ) = f(x) * g'(x) + f'(x) * g(x) */
   @Override
   public Term getDerivative() {
@@ -40,10 +44,6 @@ public final class ProductRule extends DerivationRule {
       toReturn.flipSign();
     }
     return toReturn;
-  }
-
-  ProductRule(LinkedList<Term> l) {
-    super(l);
   }
 
   /**

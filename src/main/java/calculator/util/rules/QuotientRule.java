@@ -22,6 +22,10 @@ public final class QuotientRule extends DerivationRule {
 
   // NUMERATOR is the second term and DENOMINATOR is the first
 
+  QuotientRule(LinkedList<Term> l) {
+    super(l);
+  }
+
   /**
    * d/dx( f(x) / g(x) ) = (f'(x)g(x) - g'(x)f(x)) / (g(x))^2
    *
@@ -44,10 +48,6 @@ public final class QuotientRule extends DerivationRule {
     Term denom = makePowerRule(new Term(2), this.terms.get(DENOM_POS));
 
     return makeFracRule(denom, numerator);
-  }
-
-  QuotientRule(LinkedList<Term> l) {
-    super(l);
   }
 
   @Override

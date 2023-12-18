@@ -136,18 +136,21 @@ Download Postman to send test API calls to the service. Open the workspace
 
 ## Linting
 
-Proper code format is super important! There is a GitHub action that will fail if the code is not formatted to Google
-Java Standard. Luckily it is super easy to check if the code is compliant with the required style for this project.
+Proper code format is super important! There is a GitHub action that will fail if the code is not formatted 
+properly.
+
+You can test Super Linter with the following command.
 
 ```shell
-mvn spotless:check
+docker run \
+  -e ACTIONS_RUNNER_DEBUG=true \
+  -e RUN_LOCAL=true \
+  -v /path/to/local/codebase:/tmp/lint \
+  ghcr.io/super-linter/super-linter:latest
 ```
 
-If you want an automated way of applying the desired choice execute the following:
-
-```shell
-mvn spotless:apply
-```
+You can have IntelliJ automatically enforce Google Java Style by following these
+[instructions](https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-config).
 
 ## Author
 [Ian Laird](https://www.linkedin.com/in/ian-laird-b9846198/)

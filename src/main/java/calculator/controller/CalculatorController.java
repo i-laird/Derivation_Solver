@@ -30,7 +30,6 @@ public final class CalculatorController {
    * point.
    *
    * @param request The request.
-   *
    * @return the anti-derivative and result at a specific point.
    */
   @GetMapping(value = "/derivative")
@@ -44,9 +43,8 @@ public final class CalculatorController {
    * Evaluates a mathematical expression.
    *
    * @param request the request.
-   *
    * @return The evaluation of a mathametical expression at specific points.
-   * */
+   */
   @GetMapping(value = "/expression")
   @ResponseStatus(HttpStatus.OK)
   public double evaluateExpression(@RequestBody DerivativeRequest request) {

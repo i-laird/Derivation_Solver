@@ -16,6 +16,10 @@ import java.util.stream.Collectors;
  */
 public final class AdditionRule extends DerivationRule {
 
+  AdditionRule(LinkedList<Term> l) {
+    super(l);
+  }
+
   /**
    * d/dx(x + y) = d/dx(x) + d/dx(y)
    *
@@ -27,10 +31,6 @@ public final class AdditionRule extends DerivationRule {
         terms.stream()
             .map(x -> x.getDerivative())
             .collect(Collectors.toCollection(LinkedList::new)));
-  }
-
-  AdditionRule(LinkedList<Term> l) {
-    super(l);
   }
 
   /**
