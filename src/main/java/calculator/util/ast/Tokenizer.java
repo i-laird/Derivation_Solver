@@ -11,8 +11,11 @@ import calculator.util.token.Num;
 import calculator.util.token.Operator;
 import calculator.util.token.Paren;
 import java.util.*;
-import java.util.stream.Collectors;
+
+import com.google.common.collect.ImmutableList;
 import lombok.NonNull;
+
+import static com.google.common.collect.ImmutableList.toImmutableList;
 
 /**
  * @author Laird
@@ -34,18 +37,18 @@ public class Tokenizer {
    * @param splitLimit The maximum number of substring to create from the base string.
    * @param regex regular expression to use for splitting
    * @param processStack holds the items that need to be processed
-   * @param separator if a non empty string is pushed between every element that is added to the
-   *     stack
+   * @param separator if non-empty, this string is pushed between every element that is added to the
+   *     stack.
    * @return if the string was split into at least two substrings
    *     <p>ASSUMPTION: if a split is not possible (i.e. after using regex there is still only one
    *     string) then nothing is added to the process stack and false is returned
    */
   private static boolean splitByRegex(
-      @NonNull String toSplit,
-      @NonNull Integer splitLimit,
-      @NonNull String regex,
-      @NonNull Stack<String> processStack,
-      String separator) {
+          @NonNull String toSplit,
+          @NonNull Integer splitLimit,
+          @NonNull String regex,
+          @NonNull Stack<String> processStack,
+          String separator) {
     String[] parsedParts = toSplit.split(regex, splitLimit);
     if (parsedParts.length > 1) {
       for (int i = parsedParts.length - 1; i >= 0; i--) {
@@ -65,41 +68,39 @@ public class Tokenizer {
    *
    * <p>example: NEGATIVE NEGATIVE 5 -> 5 5 PLUS NEGATIVE 5 -> 5 MINUS 5
    */
-  private static List<AbstractMath> removeMultipleNegatives(List<AbstractMath> l) {
-    List<AbstractMath> returnList = new LinkedList<>();
-    // holds all plus and minus signs encountered that have not been processed yet
-    Queue<AbstractMath> plusMinusToProcess = new LinkedList<>();
+  private static ImmutableList<AbstractMath> removeMultipleNegatives(@NonNull ImmutableList<AbstractMath> l) {
+    ImmutableList.Builder<AbstractMath> returnList = ImmutableList.builder();
+    boolean operatorisNegated = false;
+    Optional<AbstractMath> operator = Optional.empty();
     for (AbstractMath am : l) {
-      // IF the token being analyzed is not a minus or plus sign
-      // it is time to clear out the queue of the unprocessed + and - signs
-      if (am.getClass() != Negative.class && am != Operator.ADD) {
-        if (!plusMinusToProcess.isEmpty()) {
-          int minusCount = 0;
-          AbstractMath topElem = plusMinusToProcess.peek();
-          // count the number of - signs (negative and subtraction)
-          while (!plusMinusToProcess.isEmpty()) {
-            AbstractMath toEval = plusMinusToProcess.remove();
-            if (toEval.getClass() == Negative.class) {
-              ++minusCount;
-            }
-          }
-          if (topElem == Operator.ADD) {
+      if (am.getClass() == Negative.class) {
+        if (operator.isEmpty()) {
+          operator = Optional.of(new Negative());
+        } else {
+          operatorisNegated = !operatorisNegated;
+        }
+      } else if (am == Operator.ADD) {
+        if (operator.isEmpty()) {
+          operator = Optional.of(Operator.ADD);
+        }
+      }
+      else {
+        if (operator.isPresent()) {
+          if (operator.get() == Operator.ADD) {
             returnList.add(Operator.ADD);
-            if(minusCount % 2 == 1) {
+            if(operatorisNegated) {
               returnList.add(new Negative());
             }
-          } else if (topElem.getClass() == Negative.class) {
-            if (minusCount % 2 == 1) {
-              returnList.add(new Negative());
-            }
+          } else if (!operatorisNegated){
+            returnList.add(new Negative());
           }
+          operator = Optional.empty();
+          operatorisNegated = false;
         }
         returnList.add(am);
-      } else {
-        plusMinusToProcess.add(am);
       }
     }
-    return returnList;
+    return returnList.build();
   }
 
   /**
@@ -111,10 +112,10 @@ public class Tokenizer {
    *     and including index index
    */
   public static List<AbstractMath> addParenAfterUnary(
-      @NonNull List<AbstractMath> returnList,
-      @NonNull List<AbstractMath> l,
-      int index,
-      int rightParenToAdd) {
+          @NonNull List<AbstractMath> returnList,
+          @NonNull List<AbstractMath> l,
+          int index,
+          int rightParenToAdd) {
     while (index < l.size()) {
       AbstractMath current = l.get(index);
       returnList.add(current);
@@ -237,10 +238,10 @@ public class Tokenizer {
           try {
             // shunting yard algorithm stuff
             if ((stack.peek()).getAm().getClass() == Paren.class
-                || ((((Operator) (stack.peek()).getAm())).precedence < ((Operator) am).precedence)
-                || (((Operator) (stack.peek()).getAm()).precedence == ((Operator) am).precedence)
+                    || ((((Operator) (stack.peek()).getAm())).precedence < ((Operator) am).precedence)
+                    || (((Operator) (stack.peek()).getAm()).precedence == ((Operator) am).precedence)
                     && ((Operator) (stack.peek()).getAm()).associativity
-                        == Operator.Associativity.LEFT) {
+                    == Operator.Associativity.LEFT) {
               break;
             }
             // account for natural log being weird
@@ -281,10 +282,10 @@ public class Tokenizer {
     return outputParts;
   }
 
-  public static void checkUnaryEnd(
-      @NonNull Map<Wrapper, List<Integer>> functionToLastAppliedTerm,
-      int numRightParenEncountered,
-      @NonNull Queue<Wrapper> outputParts) {
+  private static void checkUnaryEnd(
+          @NonNull Map<Wrapper, List<Integer>> functionToLastAppliedTerm,
+          int numRightParenEncountered,
+          @NonNull Queue<Wrapper> outputParts) {
     Wrapper toRemove = null;
     // see if a unary operator ended at this point
     for (Map.Entry<Wrapper, List<Integer>> k : functionToLastAppliedTerm.entrySet()) {
@@ -317,14 +318,15 @@ public class Tokenizer {
       processStack.push(tokens[i]);
     }
     List<String> returnList = new LinkedList<>();
-    // Stack contains tokens which are checked to see if they can be subdivided.
-    // If a token is able to be split, all the new tokens are added to the stack.
-    // If a token is unable to be split, it is added to the return list.
+    // The stack contains elements which have not yet been checked to see
+    // if they are able to be subdivided. If an element can be subdivided,
+    // it is and then all the new tokens are added to the stack to be checked.
+    // If an element is not able to be subdivided, it is added to the return list.
+    // This is repeated until the stack is empty.
     // for example 5+ should become 5 +
     //             5x should become 5 * x
     while (!processStack.isEmpty()) {
       String s = processStack.pop();
-      String[] parsedParts = null;
       // Split by opening/closing parens.
       if (splitByRegex(s, 0, "((?<=[\\(\\)\\*\\^])|(?=[\\(\\)\\*\\^]))", processStack, null)) {
         continue;
@@ -352,12 +354,12 @@ public class Tokenizer {
       }
       returnList.add(s);
     }
-    List<AbstractMath> mappedParts =
-        returnList.stream()
-            .map(this::getMappedPart) // converts to syntax enum i.e. sin -> SIN
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .collect(Collectors.toList());
+    ImmutableList<AbstractMath> mappedParts =
+            returnList.stream()
+                    .map(this::convertStringToAbstractMath) // converts to syntax enum i.e. sin -> SIN
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .collect(toImmutableList());
     return addParenAfterUnary(new LinkedList<>(), removeNegatedVariables(removeMultipleNegatives(removeSubtraction(mappedParts))), 0,0);
   }
 
@@ -365,20 +367,19 @@ public class Tokenizer {
    * @author laird
    * @param s the string to be evaluated
    * @return the abstract math part corresponding to the string
-   *     <p>caution: if s is only white space or empty null is returned
+   *     <p>caution: if s is only white space or empty empty is returned.
    */
-  private Optional<AbstractMath> getMappedPart(@NonNull String s) {
+  private Optional<AbstractMath> convertStringToAbstractMath(@NonNull String s) {
     if (s.matches("\\s+") || s.isEmpty()) {
       return Optional.empty();
     }
-    if (s.matches("\\(")) {
+    if (s.equals("(")) {
       operatorOrFunctionSeen = true;
       return Optional.of(Paren.LEFT_PAREN);
     }
-    if (s.matches("\\)")) {
+    if (s.equals(")")) {
       return Optional.of(Paren.RIGHT_PAREN);
     }
-    AbstractMath returnThing = null;
     if (s.matches("[+-]?\\d+")) {
       operatorOrFunctionSeen = false;
       return Optional.of(new Num(Integer.parseInt(s)));
@@ -387,7 +388,7 @@ public class Tokenizer {
       operatorOrFunctionSeen = false;
       return Optional.of(new Negative());
     }
-    returnThing = Operator.getOp(s);
+    AbstractMath returnThing = Operator.getOp(s);
     if (returnThing == null) {
       returnThing = Function.getFunc(s);
     }
@@ -402,10 +403,11 @@ public class Tokenizer {
     return Optional.of(new Variable(s.charAt(0)));
   }
 
-  public List<AbstractMath> removeNegatedVariables(List<AbstractMath> tokenList) {
-    List<AbstractMath> returnList = new LinkedList<>();
+  private ImmutableList<AbstractMath> removeNegatedVariables(ImmutableList<AbstractMath> tokenList) {
+    ImmutableList.Builder<AbstractMath> returnList = ImmutableList.builder();
     for(int i = 0; i < tokenList.size(); i++){
-      if (i < tokenList.size() - 1 && tokenList.get(i).getClass() == Negative.class && tokenList.get(i + 1).getClass() == Variable.class){
+      AbstractMath token = tokenList.get(i);
+      if (token.getClass() == Negative.class && i < tokenList.size() - 1 && tokenList.get(i + 1).getClass() == Variable.class){
         returnList.add(new Num(-1));
         returnList.add(Operator.MULTIPLY);
         returnList.add(tokenList.get(i + 1));
@@ -414,11 +416,11 @@ public class Tokenizer {
         returnList.add(tokenList.get(i));
       }
     }
-    return returnList;
+    return returnList.build();
   }
 
-  public List<AbstractMath> removeSubtraction(List<AbstractMath> tokenList) {
-    List<AbstractMath> returnList = new LinkedList<>();
+  private ImmutableList<AbstractMath> removeSubtraction(ImmutableList<AbstractMath> tokenList) {
+    ImmutableList.Builder<AbstractMath> returnList = ImmutableList.builder();
     for (AbstractMath am : tokenList) {
       if (am == Operator.SUBTRACT) {
         returnList.add(Operator.ADD);
@@ -428,6 +430,6 @@ public class Tokenizer {
         returnList.add(am);
       }
     }
-    return returnList;
+    return returnList.build();
   }
 }

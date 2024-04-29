@@ -20,10 +20,8 @@ public class AbstractSyntaxTree {
 
     /**
      * @param in the inputstream from which the mathematical expression to be parsed is contained in
-     *     infix notation
-     *
-     * @return: none
-     *
+     *     infix notation.
+     **
      * <p>creates the tree and stores it in root.
      */
     public AbstractSyntaxTree(@NonNull InputStream in) {
