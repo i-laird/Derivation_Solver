@@ -1,6 +1,7 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import calculator.service.CalculatorService;
+import com.google.common.collect.ImmutableList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
@@ -25,7 +26,7 @@ public class ExpressionTester {
   @ParameterizedTest(name = "{0}")
   @MethodSource("expression")
   public void test(String inputString, double expected) {
-    double result = calculatorServiceImpl.evaluateExpression(inputString);
+    double result = calculatorServiceImpl.evaluateExpression(inputString, ImmutableList.of());
     assertEquals(result, expected);
   }
 

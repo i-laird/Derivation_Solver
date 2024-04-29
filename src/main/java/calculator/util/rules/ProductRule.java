@@ -6,8 +6,8 @@ import static calculator.util.rules.RuleFactory.makeProductRule;
 
 import calculator.util.ast.Tokenizer;
 import calculator.util.terms.Term;
+import com.google.common.collect.ImmutableList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -19,6 +19,10 @@ import java.util.stream.Collectors;
  * construct AST that have more than two kid
  */
 public final class ProductRule extends DerivationRule {
+
+  ProductRule(LinkedList<Term> l) {
+    super(l);
+  }
 
   /** d/dx( f(x) * g(x) ) = f(x) * g'(x) + f'(x) * g(x) */
   @Override
@@ -42,10 +46,6 @@ public final class ProductRule extends DerivationRule {
     return toReturn;
   }
 
-  ProductRule(LinkedList<Term> l) {
-    super(l);
-  }
-
   /**
    * Adds a term to the product Rule
    *
@@ -58,7 +58,7 @@ public final class ProductRule extends DerivationRule {
   }
 
   @Override
-  public double getResult(List<Integer> dims) {
+  public double getResult(ImmutableList<Integer> dims) {
     return this.terms.stream().map(x -> x.evaluate(dims)).reduce((x, y) -> x * y).get();
   }
 

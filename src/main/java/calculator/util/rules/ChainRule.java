@@ -2,10 +2,14 @@
 package calculator.util.rules;
 
 import calculator.util.terms.Term;
+import com.google.common.collect.ImmutableList;
 import java.util.LinkedList;
-import java.util.List;
 
 public final class ChainRule extends DerivationRule {
+
+  ChainRule(LinkedList<Term> l) {
+    super(l);
+  }
 
   @Override
   public Term getDerivative() {
@@ -21,12 +25,8 @@ public final class ChainRule extends DerivationRule {
     return toReturn;
   }
 
-  ChainRule(LinkedList<Term> l) {
-    super(l);
-  }
-
   @Override
-  public double getResult(List<Integer> dims) {
+  public double getResult(ImmutableList<Integer> dims) {
     return this.terms.get(0).evaluate(dims);
   }
 

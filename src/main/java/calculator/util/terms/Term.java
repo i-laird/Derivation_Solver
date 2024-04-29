@@ -1,10 +1,16 @@
 package calculator.util.terms;
 
-import java.util.List;
+import com.google.common.collect.ImmutableList;
 
 public class Term {
-  private int num;
   protected boolean negative = false;
+  private int num;
+
+  public Term(int num) {
+    this.num = num;
+  }
+
+  public Term() {}
 
   public int getNum() {
     return num * (negative ? -1 : 1);
@@ -19,12 +25,6 @@ public class Term {
     this.num = num;
     this.negative = false;
   }
-
-  public Term(int num) {
-    this.num = num;
-  }
-
-  public Term() {}
 
   /**
    * Calculates the antiderivative of the given expression.
@@ -52,7 +52,7 @@ public class Term {
    * @param dims evaluation dims
    * @return the evaluated expression
    */
-  public double evaluate(List<Integer> dims) {
+  public double evaluate(ImmutableList<Integer> dims) {
     return this.getNum();
   }
 

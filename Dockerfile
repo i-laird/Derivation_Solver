@@ -2,7 +2,7 @@
 # stage 1
 FROM maven:3.9.1-amazoncorretto-20-debian-bullseye as build
 
-MAINTAINER Ian Laird
+LABEL maintainer = "Ian Laird"
 
 WORKDIR /build
 

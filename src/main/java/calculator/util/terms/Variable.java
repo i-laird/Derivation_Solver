@@ -2,7 +2,7 @@
 package calculator.util.terms;
 
 import calculator.util.token.AbstractMath;
-import java.util.List;
+import com.google.common.collect.ImmutableList;
 
 public class Variable extends Term implements AbstractMath {
 
@@ -23,7 +23,7 @@ public class Variable extends Term implements AbstractMath {
     return this;
   }
 
-  public double evaluate(List<Integer> dims) {
+  public double evaluate(ImmutableList<Integer> dims) {
     return (this.negative ? dims.get(0) * -1 : dims.get(0));
   }
 
