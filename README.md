@@ -32,6 +32,7 @@ configure your machine.
 + Docker
 
 ## GitHub Actions
+
 Current Actions are Described [here](actions.md)
 
 Automated Testing is currently performed on the repository using [GitHub Actions](https://github.com/features/actions).
@@ -40,7 +41,8 @@ There are plans to deploy the application automatically to the cloud using GitHu
 Actions are defined in the `.github/workflows` folder. These tests are required to pass in
 order to merge a pull request into main.
 
-Note: the only approved way to contribute to main is by a [squash merge](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/about-pull-request-merges#squash-and-merge-your-commits).
+Note: the only approved way to contribute to main is by
+a [squash merge](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/about-pull-request-merges#squash-and-merge-your-commits).
 
 ------------------------------------------------------------------------
 
@@ -48,7 +50,8 @@ Note: the only approved way to contribute to main is by a [squash merge](https:/
 
 ## Make sure Docker is Running
 
-If you have not already installed [Docker](https://www.docker.com/products/docker-desktop/), do so now and make sure it is running.
+If you have not already installed [Docker](https://www.docker.com/products/docker-desktop/), do so now and make sure it
+is running.
 
 ## MYSQL Database
 
@@ -107,7 +110,9 @@ mysql -h localhost -u root -p
 ```
 
 ## Running Application
-There are two ways to run the application. The first way is using the spring maven plugin and the second is by spinning up a docker container.
+
+There are two ways to run the application. The first way is using the spring maven plugin and the second is by spinning
+up a docker container.
 
 ### Spring Maven Plugin
 
@@ -115,7 +120,7 @@ There are two ways to run the application. The first way is using the spring mav
 mvn spring-boot:run
 ```
 
-## Docker Container
+### Docker Container
 
 To build the Docker container
 
@@ -153,10 +158,14 @@ You can have IntelliJ automatically enforce Google Java Style by following these
 [instructions](https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-config).
 
 ## Author
+
 [Ian Laird](https://www.linkedin.com/in/ian-laird-b9846198/)
 
 ## Debugging
-If you attempt to connect a Schema that does not match the JPA generated schema you will get a bug that looks something like this `Error creating bean with name 'userRepository'`.
 
-Easiest way to fix this is not delete the old schema and let JPA recreate it for you (this only works if you do not care about any information in your db).
+If you attempt to connect a Schema that does not match the JPA generated schema you will get a bug that looks something
+like this `Error creating bean with name 'userRepository'`.
+
+Easiest way to fix this is not delete the old schema and let JPA recreate it for you (this only works if you do not care
+about any information in your db).
 If not you will need to do a schema migration. If you do this please update the documentation.

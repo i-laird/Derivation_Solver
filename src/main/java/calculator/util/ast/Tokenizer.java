@@ -13,6 +13,7 @@ import calculator.util.token.Paren;
 import java.util.*;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import lombok.NonNull;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
@@ -306,18 +307,16 @@ public class Tokenizer {
   }
 
   /**
-   * tokenize the expression
+   * Tokenizes a string expression and represents it as a list of Math Tokens.
    *
    * @param expression the expression to tokenize.
-   * @return in order syntax and numbers.
+   * @return The tokenized expression.
    */
   List<AbstractMath> tokenizeExpression(@NonNull String expression) {
-    String [] tokens = expression.split("\\s+");
     Stack<String> processStack = new Stack<>();
-    for (int i = tokens.length - 1; i >= 0; i--) {
-      processStack.push(tokens[i]);
-    }
-    List<String> returnList = new LinkedList<>();
+    Lists.reverse(ImmutableList.copyOf(expression.split("\\s+"))).forEach(processStack::push);
+
+    ImmutableList.Builder<String> returnList = ImmutableList.builder();
     // The stack contains elements which have not yet been checked to see
     // if they are able to be subdivided. If an element can be subdivided,
     // it is and then all the new tokens are added to the stack to be checked.
@@ -328,39 +327,37 @@ public class Tokenizer {
     while (!processStack.isEmpty()) {
       String s = processStack.pop();
       // Split by opening/closing parens.
-      if (splitByRegex(s, 0, "((?<=[\\(\\)\\*\\^])|(?=[\\(\\)\\*\\^]))", processStack, null)) {
+      if (splitByRegex(s, /*splitLimit=*/ 0, "((?<=[\\(\\)\\*\\^])|(?=[\\(\\)\\*\\^]))", processStack, null)) {
         continue;
       }
       // Split monomials. I.e. 3x turns into 3 * x
       if (s.matches(".*[0-9][a-z].*")) {
-        splitByRegex(s, 2, "(?=[a-z])", processStack, "*");
+        splitByRegex(s, /*splitLimit=*/ 2, "(?=[a-z])", processStack, "*");
         continue;
       }
       // Split by negative signs.
-      if (splitByRegex(s, 0, "((?=-)|(?<=-))", processStack, null)) {
+      if (splitByRegex(s, /*splitLimit=*/ 0, "((?=-)|(?<=-))", processStack, null)) {
         continue;
       }
       // Split by addition signs.
-      if (splitByRegex(s, 0, "((?=\\+)|(?<=\\+))", processStack, null)) {
+      if (splitByRegex(s, /*splitLimit=*/ 0, "((?=\\+)|(?<=\\+))", processStack, null)) {
         continue;
       }
       // Split by multiplication signs.
-      if (splitByRegex(s, 0, "((?=\\*)|(?<=\\*))", processStack, null)) {
+      if (splitByRegex(s, /*splitLimit=*/ 0, "((?=\\*)|(?<=\\*))", processStack, null)) {
         continue;
       }
       // Split by division signs.
-      if (splitByRegex(s, 0, "((?=/)|(?<=/))", processStack, null)) {
+      if (splitByRegex(s, /*splitLimit=*/ 0, "((?=/)|(?<=/))", processStack, null)) {
         continue;
       }
       returnList.add(s);
     }
-    ImmutableList<AbstractMath> mappedParts =
-            returnList.stream()
-                    .map(this::convertStringToAbstractMath) // converts to syntax enum i.e. sin -> SIN
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
-                    .collect(toImmutableList());
-    return addParenAfterUnary(new LinkedList<>(), removeNegatedVariables(removeMultipleNegatives(removeSubtraction(mappedParts))), 0,0);
+    return addParenAfterUnary(new LinkedList<>(), removeNegatedVariables(removeMultipleNegatives(removeSubtraction(returnList.build().stream()
+            .map(this::convertStringToAbstractMath) // converts to syntax enum i.e. sin -> SIN
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .collect(toImmutableList())))), 0,0);
   }
 
   /**
