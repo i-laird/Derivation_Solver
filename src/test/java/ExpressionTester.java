@@ -27,7 +27,7 @@ public class ExpressionTester {
   @MethodSource("expression")
   public void test(String inputString, double expected) {
     double result = calculatorServiceImpl.evaluateExpression(inputString, ImmutableList.of());
-    assertEquals(result, expected);
+    assertEquals(expected, result);
   }
 
   private static Stream<Arguments> expression() {

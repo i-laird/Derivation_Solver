@@ -3,6 +3,7 @@ package calculator.security;
 
 import calculator.UserRepository;
 import calculator.model.User;
+
 import java.util.Objects;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
