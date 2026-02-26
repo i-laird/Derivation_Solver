@@ -1,6 +1,7 @@
 package calculator.security;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Serializable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Serializable {
-  private static final long serialVersionUID = 9777364535L;
+  @Serial private static final long serialVersionUID = 9777364535L;
 
   @Override
   public void commence(

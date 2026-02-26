@@ -5,6 +5,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Component;
 @Component
 public final class JwtTokenUtil implements Serializable {
   public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60 * 1000;
-  private static final long serialVersionUID = 8562677648L;
+  @Serial private static final long serialVersionUID = 8562677648L;
   private static final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 
   /**

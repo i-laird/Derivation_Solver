@@ -52,11 +52,7 @@ public final class RuleFactory {
   }
 
   public static AdditionRule makeAdditionRule(List<Term> t) {
-    LinkedList<Term> ts = new LinkedList<Term>();
-    for (Term term : t) {
-      ts.add(term);
-    }
-    return new AdditionRule(ts);
+    return new AdditionRule(new LinkedList<>(t));
   }
 
   public static SinRule makeSinRule(Term inside) {

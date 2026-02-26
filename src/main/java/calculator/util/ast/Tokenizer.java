@@ -224,7 +224,6 @@ public class Tokenizer {
           }
           // get rid of the left paran that matches up with this right paren.
           stack.pop();
-          AbstractMath toRemove = null;
           // check if any unary operators domain ends here
           checkUnaryEnd(functionToLastAppliedTerm, numRightParenEncountered, outputParts);
         }
@@ -271,11 +270,8 @@ public class Tokenizer {
     while (!stack.empty()) {
       Wrapper part = stack.pop();
       if (part.getAm().getClass() != Paren.class) {
-        try {
-          if (part.getAm() == Operator.NAT_LOG) {
-            outputParts.add(new Wrapper(new Num(1)));
-          }
-        } catch (ClassCastException e) {
+        if (part.getAm() == Operator.NAT_LOG) {
+          outputParts.add(new Wrapper(new Num(1)));
         }
         outputParts.add(part);
       }

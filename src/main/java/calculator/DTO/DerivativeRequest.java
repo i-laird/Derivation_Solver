@@ -1,5 +1,6 @@
 package calculator.DTO;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DerivativeRequest implements Serializable {
-  private static final long serialVersionUID = 6778676666L;
+  @Serial private static final long serialVersionUID = 6778676666L;
   private String expression;
   private List<Integer> points;
 }
