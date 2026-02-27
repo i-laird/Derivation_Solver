@@ -4,7 +4,6 @@ package calculator.security;
 import calculator.UserRepository;
 import calculator.model.User;
 
-import java.util.Objects;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,8 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-  private static final String ROLE_PREFIX = "ROLE_";
-
   @Autowired UserRepository userRepository;
 
   /**
@@ -30,7 +27,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
   @Transactional
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     Optional<User> user = userRepository.findById(username);
-    if (Objects.isNull(user)) {
+    if (user.isEmpty()) {
       throw new UsernameNotFoundException("Username not found");
     }
 

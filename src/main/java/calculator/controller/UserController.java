@@ -33,10 +33,12 @@ public final class UserController {
    *
    * @param u the user to register.
    * @return JWT for the registered user.
-   * @throws Exception if the user already exists.
+   * @throws DisabledException if the user account is disabled.
+   * @throws BadCredentialsException if the credentials are invalid.
    */
   @PostMapping("/register")
-  public ResponseEntity<?> registerUser(@RequestBody @Valid UserGeneration u) throws Exception {
+  public ResponseEntity<?> registerUser(@RequestBody @Valid UserGeneration u)
+      throws DisabledException, BadCredentialsException {
     userService.register(u.getEmail(), u.getPassword(), "STANDARD");
     return createAuthenticationToken(new JwtRequest(u.getEmail(), u.getPassword()));
   }
@@ -46,11 +48,12 @@ public final class UserController {
    *
    * @param authenticationRequest the users login credentials.
    * @return JWT for the logged in user.
-   * @throws Exception If login fails.
+   * @throws DisabledException if the user account is disabled.
+   * @throws BadCredentialsException if the credentials are invalid.
    */
   @PostMapping("/authenticate")
   public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest)
-      throws Exception {
+      throws DisabledException, BadCredentialsException {
     authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
     final UserDetails userDetails =
         userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
@@ -58,14 +61,9 @@ public final class UserController {
     return ResponseEntity.ok(new JwtResponse(token));
   }
 
-  private void authenticate(String username, String password) throws Exception {
-    try {
-      authenticationManager.authenticate(
-          new UsernamePasswordAuthenticationToken(username, password));
-    } catch (DisabledException e) {
-      throw new Exception("USER_DISABLED", e);
-    } catch (BadCredentialsException e) {
-      throw new Exception("INVALID_CREDENTIALS", e);
-    }
+  private void authenticate(String username, String password)
+      throws DisabledException, BadCredentialsException {
+    authenticationManager.authenticate(
+        new UsernamePasswordAuthenticationToken(username, password));
   }
 }

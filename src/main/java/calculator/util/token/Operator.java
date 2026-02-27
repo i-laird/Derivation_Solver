@@ -91,7 +91,7 @@ public enum Operator implements AbstractMath {
         specialCase = true;
         break;
       default:
-        throw new RuntimeException("Invalid DerivationSolver.Enums.Operator");
+        throw new IllegalStateException("Invalid DerivationSolver.Enums.Operator");
     }
     // see if the rule needs to be wrapped in a chain rule
     // if it is just one variable inside there is no need for the chain rule because of the implied

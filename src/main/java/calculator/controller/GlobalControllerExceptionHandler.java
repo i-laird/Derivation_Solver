@@ -2,6 +2,7 @@ package calculator.controller;
 
 import calculator.DTO.ApiError;
 import calculator.exception.ParseError;
+import calculator.exception.UserAlreadyExistsException;
 import calculator.exception.UserNotFound;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,5 +34,19 @@ class GlobalControllerExceptionHandler {
   @ExceptionHandler(UserNotFound.class)
   public void handleNotFound() {
     // Nothing to do
+  }
+
+  @ExceptionHandler(UserAlreadyExistsException.class)
+  public ResponseEntity<ApiError> handleUserAlreadyExists(UserAlreadyExistsException e) {
+    return ResponseEntity.status(HttpStatus.CONFLICT)
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(new ApiError("User already exists"));
+  }
+
+  @ExceptionHandler(Exception.class)
+  public ResponseEntity<ApiError> handleException(Exception e) {
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(new ApiError("An internal server error occurred"));
   }
 }

@@ -1,19 +1,19 @@
 package calculator.DTO;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 /**
  * Response DTO
  *
  * @author Ian Laird
  */
+@Data
+@AllArgsConstructor
 public class DerivativeResponse {
   // the calculated antiderivative.
-  public String antiderivative;
+  private String antiderivative;
 
   // the antiderivative value when evaluated.
-  public Double result;
-
-  public DerivativeResponse(String antiderivative, Double result) {
-    this.antiderivative = antiderivative;
-    this.result = result;
-  }
+  private Double result;
 }

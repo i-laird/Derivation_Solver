@@ -5,6 +5,7 @@ import calculator.DTO.DerivativeResponse;
 import calculator.service.CalculatorService;
 import com.google.common.collect.ImmutableList;
 import java.time.LocalTime;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +35,7 @@ public final class CalculatorController {
    */
   @GetMapping(value = "/derivative")
   @ResponseStatus(HttpStatus.OK)
-  public DerivativeResponse generateDerivative(@RequestBody DerivativeRequest request) {
+  public DerivativeResponse generateDerivative(@Valid @RequestBody DerivativeRequest request) {
     return calculatorServiceImpl.evaluateDerivative(
         request.getExpression(), ImmutableList.copyOf(request.getPoints()));
   }
@@ -47,7 +48,7 @@ public final class CalculatorController {
    */
   @GetMapping(value = "/expression")
   @ResponseStatus(HttpStatus.OK)
-  public double evaluateExpression(@RequestBody DerivativeRequest request) {
+  public double evaluateExpression(@Valid @RequestBody DerivativeRequest request) {
     return calculatorServiceImpl.evaluateExpression(
         request.getExpression(), ImmutableList.copyOf(request.getPoints()));
   }

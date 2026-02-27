@@ -12,6 +12,7 @@ import calculator.util.token.Operator;
 import calculator.util.token.Paren;
 import java.util.*;
 
+import lombok.extern.slf4j.Slf4j;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import lombok.NonNull;
@@ -30,6 +31,7 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
  *
  * @see Term
  */
+@Slf4j
 public class Tokenizer {
   private boolean operatorOrFunctionSeen = true;
 
@@ -250,7 +252,7 @@ public class Tokenizer {
               outputParts.add(new Wrapper(new Num(1)));
             }
           } catch (ClassCastException e) {
-            System.err.println(e);
+            log.error("Unexpected ClassCastException during operator processing", e);
           }
           outputParts.add(stack.pop());
         }

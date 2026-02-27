@@ -1,6 +1,7 @@
 package calculator.service;
 
 import calculator.UserRepository;
+import calculator.exception.UserAlreadyExistsException;
 import calculator.model.User;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ public class UserService {
   public User register(String email, String password, String role) {
     Optional<User> optionalUser = userRepository.findById(email);
     if (optionalUser.isPresent()) {
-      throw new RuntimeException("User Exists");
+      throw new UserAlreadyExistsException("User Exists");
     }
     User newUser = new User();
     newUser.setUsername(email);
