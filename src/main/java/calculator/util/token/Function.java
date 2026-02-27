@@ -116,16 +116,16 @@ public enum Function implements AbstractMath {
         toReturn = makeArcTanRule(one);
         break;
       case ARCSEC:
-        toReturn = null; // TODO
+        toReturn = null; // Derivative rule not yet implemented
         break;
       case ARCCSC:
-        toReturn = null; // TODO
+        toReturn = null; // Derivative rule not yet implemented
         break;
       case ARCCOT:
         toReturn = makeArcCotRule(one);
         break;
       default:
-        throw new RuntimeException("Invalid DerivationSolver.Enums function");
+        throw new IllegalStateException("Invalid DerivationSolver.Enums function");
     }
     if (one.getClass() != Variable.class) {
       toReturn = makeChainRule(toReturn, one);
