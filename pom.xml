@@ -22,7 +22,7 @@
         <junit.version>5.10.1</junit.version>
         <spring.version>3.3.4</spring.version>
         <maven.compiler.plugin.version>3.10.1</maven.compiler.plugin.version>
-        <mysql.connector.version>8.0.33</mysql.connector.version>
+        <mysql.connector.version>8.2.0</mysql.connector.version>
         <lombok.version>1.18.38</lombok.version>
         <passay.version>1.6.4</passay.version>
         <jjwt.version>0.12.3</jjwt.version>
