@@ -1,7 +1,7 @@
 package calculator.annotation;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.beans.BeanWrapperImpl;
 
 public class FieldsMatchValidator implements ConstraintValidator<FieldsMatch, Object> {
