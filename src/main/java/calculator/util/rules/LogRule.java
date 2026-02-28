@@ -28,7 +28,6 @@ public final class LogRule extends DerivationRule {
   @Override
   public Term getDerivative() {
 
-    int base = this.terms.get(BASE_INDEX).getNum();
     Term argument = this.terms.get(ARGUMENT_INDEX);
 
     Term denominator = makeProductRule(argument, makeNaturalLogRule(this.terms.get(BASE_INDEX)));

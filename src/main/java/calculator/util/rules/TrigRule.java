@@ -20,7 +20,9 @@ public abstract sealed class TrigRule extends Rule
         ArcSinRule,
         ArcCosRule,
         ArcTanRule,
-        ArcCotRule {
+        ArcCotRule,
+        ArcSecRule,
+        ArcCscRule {
 
   protected Term t;
 

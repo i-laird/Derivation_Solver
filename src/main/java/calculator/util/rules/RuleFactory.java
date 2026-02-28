@@ -118,4 +118,12 @@ public final class RuleFactory {
   public static ArcCotRule makeArcCotRule(Term inside) {
     return new ArcCotRule(new LinkedList<>(Collections.singletonList(inside)));
   }
+
+  public static ArcSecRule makeArcSecRule(Term inside) {
+    return new ArcSecRule(new LinkedList<>(Collections.singletonList(inside)));
+  }
+
+  public static ArcCscRule makeArcCscRule(Term inside) {
+    return new ArcCscRule(new LinkedList<>(Collections.singletonList(inside)));
+  }
 }
