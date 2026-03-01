@@ -23,7 +23,7 @@ public final class ArcSecRule extends TrigRule {
         makeProductRule(
             this.t,
             makePowerFracRule(
-                makeAdditionRule(makePowerRule(this.t, new Term(2)), new Term(1).flipSign()),
+                makeAdditionRule(makePowerRule(new Term(2), this.t), new Term(1).flipSign()),
                 new Term(1),
                 new Term(2))),
         new Term(1));
