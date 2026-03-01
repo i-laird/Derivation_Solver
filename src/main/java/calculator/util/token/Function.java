@@ -116,9 +116,11 @@ public enum Function implements AbstractMath {
         toReturn = makeArcTanRule(one);
         break;
       case ARCSEC:
-        throw new UnsupportedOperationException("Derivative of " + this.name() + " is not yet implemented");
+        toReturn = makeArcSecRule(one);
+        break;
       case ARCCSC:
-        throw new UnsupportedOperationException("Derivative of " + this.name() + " is not yet implemented");
+        toReturn = makeArcCscRule(one);
+        break;
       case ARCCOT:
         toReturn = makeArcCotRule(one);
         break;

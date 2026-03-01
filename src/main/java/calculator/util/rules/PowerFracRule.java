@@ -29,7 +29,10 @@ public final class PowerFracRule extends DerivationRule {
 
   @Override
   public double getResult(ImmutableList<Integer> dims) {
-    return 0;
+    double base = this.terms.get(0).evaluate(dims);
+    int topPow = this.terms.get(1).getNum();
+    int bottomPow = this.terms.get(2).getNum();
+    return Math.pow(base, (double) topPow / bottomPow);
   }
 
   @Override

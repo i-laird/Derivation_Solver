@@ -6,20 +6,20 @@ import calculator.util.terms.Term;
 import com.google.common.collect.ImmutableList;
 import java.util.LinkedList;
 
-public final class ArcCosRule extends TrigRule {
+public final class ArcCscRule extends TrigRule {
 
-  ArcCosRule(LinkedList<Term> l) {
+  ArcCscRule(LinkedList<Term> l) {
     super(l);
   }
 
   @Override
   public String functionName() {
-    return "cos-1";
+    return "csc-1";
   }
 
   @Override
   public Term getDerivPart() {
-    return makeArcSinRule(this.t).getDerivPart().flipSign();
+    return makeArcSecRule(this.t).getDerivPart().flipSign();
   }
 
   @Override

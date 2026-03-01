@@ -22,7 +22,7 @@ public final class ArcSinRule extends TrigRule {
     return makeFracRule(
         new Term(1),
         makePowerFracRule(
-            makeAdditionRule(new Term(1), makePowerRule(this.t, new Term(2)).flipSign()),
+            makeAdditionRule(new Term(1), makePowerRule(new Term(2), this.t).flipSign()),
             new Term(1),
             new Term(2)));
   }
