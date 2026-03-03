@@ -1,0 +1,14 @@
+{
+  "threshold": 5,
+  "minLines": 10,
+  "minTokens": 100,
+  "ignore": [
+    "**/target/**",
+    "**/test/**",
+    "**/*.json",
+    "**/generated/**"
+  ],
+  "absolute": false,
+  "mode": "mild",
+  "format": ["java"]
+}

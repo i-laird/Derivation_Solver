@@ -32,15 +32,15 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'corretto'
-          java-version: '21'
+          java-version: '25'
 
       ################################
       # Run Linter against code base #
       ################################
       - name: Lint Code Base
-        uses: github/super-linter@v7
+        uses: super-linter/super-linter
         env:
           VALIDATE_ALL_CODEBASE: false
-          VALIDATE_JAVA: false
+          VALIDATE_JAVA: true
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
