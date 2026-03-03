@@ -49,11 +49,6 @@ class CalculatorControllerTest {
   @MockBean private PasswordEncoder passwordEncoder;
 
   @Test
-  void should_return200_when_healthCheckCalled() throws Exception {
-    mockMvc.perform(get("/health")).andExpect(status().isOk());
-  }
-
-  @Test
   void should_return200_when_validDerivativeRequest() throws Exception {
     DerivativeResponse mockResponse = new DerivativeResponse("x", 1.0);
     when(calculatorServiceImpl.evaluateDerivative(anyString(), any())).thenReturn(mockResponse);
