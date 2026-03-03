@@ -20,8 +20,7 @@ public final class CothRule extends TrigRule {
 
   @Override
   public Term getDerivPart() {
-    return makeAdditionRule(
-        new Term(1), makePowerRule(makeCothRule(this.t), new Term(2)).flipSign());
+    return makePowerRule(new Term(2), makeCschRule(this.t)).flipSign();
   }
 
   @Override

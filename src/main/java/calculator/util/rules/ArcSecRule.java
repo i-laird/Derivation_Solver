@@ -31,6 +31,6 @@ public final class ArcSecRule extends TrigRule {
 
   @Override
   public double getResult(ImmutableList<Integer> dims) {
-    return 0;
+    return Math.acos(1.0 / this.t.evaluate(dims));
   }
 }

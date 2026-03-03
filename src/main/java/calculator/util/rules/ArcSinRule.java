@@ -20,15 +20,15 @@ public final class ArcSinRule extends TrigRule {
   @Override
   public Term getDerivPart() {
     return makeFracRule(
-        new Term(1),
         makePowerFracRule(
             makeAdditionRule(new Term(1), makePowerRule(new Term(2), this.t).flipSign()),
             new Term(1),
-            new Term(2)));
+            new Term(2)),
+        new Term(1));
   }
 
   @Override
   public double getResult(ImmutableList<Integer> dims) {
-    return 0;
+    return Math.asin(this.t.evaluate(dims));
   }
 }
