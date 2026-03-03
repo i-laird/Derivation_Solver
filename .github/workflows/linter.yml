@@ -54,3 +54,4 @@ jobs:
           JAVA_FORMATTER: google-java-format
           VALIDATE_JSCPD: true
           VALIDATE_CHECKOV: true
+          JAVA_CHECKSTYLE_CONFIG_FILE: .github/linters/checkstyle.xml
