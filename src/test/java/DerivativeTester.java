@@ -170,10 +170,7 @@ public class DerivativeTester {
         Arguments.of("arccsc( x^2 )", createSingleList(2), -1.0 / Math.sqrt(15.0)),
         // combined with polynomial: d/dx(arcsec(x) + x^2) = 1/(x*sqrt(x^2-1)) + 2x
         // at x=2: 1/(2*sqrt(3)) + 4
-        Arguments.of(
-            "arcsec x + x ^ 2",
-            createSingleList(2),
-            1.0 / (2.0 * Math.sqrt(3.0)) + 4.0));
+        Arguments.of("arcsec x + x ^ 2", createSingleList(2), 1.0 / (2.0 * Math.sqrt(3.0)) + 4.0));
   }
 
   private static ImmutableList<Integer> createSingleList(Integer xVal) {

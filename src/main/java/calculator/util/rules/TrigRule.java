@@ -1,7 +1,6 @@
 package calculator.util.rules;
 
 import calculator.util.terms.Term;
-
 import java.util.LinkedList;
 
 public abstract sealed class TrigRule extends Rule

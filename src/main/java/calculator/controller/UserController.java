@@ -63,7 +63,6 @@ public final class UserController {
 
   private void authenticate(String username, String password)
       throws DisabledException, BadCredentialsException {
-    authenticationManager.authenticate(
-        new UsernamePasswordAuthenticationToken(username, password));
+    authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
   }
 }

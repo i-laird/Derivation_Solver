@@ -18,6 +18,7 @@ public enum Operator implements AbstractMath {
 
   public int precedence;
   public Associativity associativity;
+
   Operator(int p, Associativity a) {
     precedence = p;
     associativity = a;

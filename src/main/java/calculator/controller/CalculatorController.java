@@ -4,8 +4,8 @@ import calculator.DTO.DerivativeRequest;
 import calculator.DTO.DerivativeResponse;
 import calculator.service.CalculatorService;
 import com.google.common.collect.ImmutableList;
-import java.time.LocalTime;
 import jakarta.validation.Valid;
+import java.time.LocalTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,13 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 public final class CalculatorController {
 
   @Autowired private CalculatorService calculatorServiceImpl;
-
-  /** Health check for the calculator. */
-  @GetMapping("/health")
-  @ResponseStatus(HttpStatus.OK)
-  public String healthCheck() {
-    return LocalTime.now().toString();
-  }
 
   /**
    * Calculates the anti-derivative of a mathematical expression and then evaluates it at a specific

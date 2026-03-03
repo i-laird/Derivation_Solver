@@ -1,10 +1,10 @@
 /* (C)2022 */
 package calculator.annotation;
 
-import java.util.Arrays;
-import java.util.List;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import java.util.Arrays;
+import java.util.List;
 import org.passay.CharacterRule;
 import org.passay.EnglishCharacterData;
 import org.passay.LengthRule;

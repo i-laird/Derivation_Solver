@@ -32,6 +32,7 @@ public final class ChainRule extends DerivationRule {
 
   @Override
   public String toString() {
-    return ""; // ChainRule is an intermediate wrapper; its terms handle their own string representation
+    return ""; // ChainRule is an intermediate wrapper; its terms handle their own string
+    // representation
   }
 }

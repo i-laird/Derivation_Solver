@@ -1,5 +1,7 @@
 package calculator.util.ast;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
+
 import calculator.exception.ParseError;
 import calculator.util.Wrapper;
 import calculator.util.terms.Term;
@@ -10,25 +12,19 @@ import calculator.util.token.Negative;
 import calculator.util.token.Num;
 import calculator.util.token.Operator;
 import calculator.util.token.Paren;
-import java.util.*;
-
-import lombok.extern.slf4j.Slf4j;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import java.util.*;
 import lombok.NonNull;
-
-import static com.google.common.collect.ImmutableList.toImmutableList;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Laird
- *
  *     <p>Tokenizes an input line to create the operation/function tree.
- *
  *     <p>STEPS: 1) Uses the shunting yard algorithm to convert mathematical expression from infix
  *     to postfix notation. -order of operations is taken into account when parsing -I had to modify
  *     the standard algorithm to account for unary operators (i.e. sin() cos()) 2) Creates AST from
  *     the postfix expression.
- *
  * @see Term
  */
 @Slf4j
@@ -47,11 +43,11 @@ public class Tokenizer {
    *     string) then nothing is added to the process stack and false is returned
    */
   private static boolean splitByRegex(
-          @NonNull String toSplit,
-          @NonNull Integer splitLimit,
-          @NonNull String regex,
-          @NonNull Stack<String> processStack,
-          String separator) {
+      @NonNull String toSplit,
+      @NonNull Integer splitLimit,
+      @NonNull String regex,
+      @NonNull Stack<String> processStack,
+      String separator) {
     String[] parsedParts = toSplit.split(regex, splitLimit);
     if (parsedParts.length > 1) {
       for (int i = parsedParts.length - 1; i >= 0; i--) {
@@ -68,10 +64,10 @@ public class Tokenizer {
   /**
    * @param l the list of math terms in order
    * @return double negatives are removed, and negated subtraction becomes addition
-   *
-   * <p>example: NEGATIVE NEGATIVE 5 -> 5 5 PLUS NEGATIVE 5 -> 5 MINUS 5
+   *     <p>example: NEGATIVE NEGATIVE 5 -> 5 5 PLUS NEGATIVE 5 -> 5 MINUS 5
    */
-  private static ImmutableList<AbstractMath> removeMultipleNegatives(@NonNull ImmutableList<AbstractMath> l) {
+  private static ImmutableList<AbstractMath> removeMultipleNegatives(
+      @NonNull ImmutableList<AbstractMath> l) {
     ImmutableList.Builder<AbstractMath> returnList = ImmutableList.builder();
     boolean operatorisNegated = false;
     Optional<AbstractMath> operator = Optional.empty();
@@ -86,15 +82,14 @@ public class Tokenizer {
         if (operator.isEmpty()) {
           operator = Optional.of(Operator.ADD);
         }
-      }
-      else {
+      } else {
         if (operator.isPresent()) {
           if (operator.get() == Operator.ADD) {
             returnList.add(Operator.ADD);
-            if(operatorisNegated) {
+            if (operatorisNegated) {
               returnList.add(new Negative());
             }
-          } else if (!operatorisNegated){
+          } else if (!operatorisNegated) {
             returnList.add(new Negative());
           }
           operator = Optional.empty();
@@ -115,10 +110,10 @@ public class Tokenizer {
    *     and including index index
    */
   public static List<AbstractMath> addParenAfterUnary(
-          @NonNull List<AbstractMath> returnList,
-          @NonNull List<AbstractMath> l,
-          int index,
-          int rightParenToAdd) {
+      @NonNull List<AbstractMath> returnList,
+      @NonNull List<AbstractMath> l,
+      int index,
+      int rightParenToAdd) {
     while (index < l.size()) {
       AbstractMath current = l.get(index);
       returnList.add(current);
@@ -214,12 +209,10 @@ public class Tokenizer {
         functionToLastAppliedTerm.putIfAbsent(wrapped, new LinkedList<>());
         List<Integer> valueList = functionToLastAppliedTerm.get(wrapped);
         valueList.add(numRightParenEncountered + tempRightParenCount);
-      }
-      else if (am.getClass() == Paren.class) {
+      } else if (am.getClass() == Paren.class) {
         if (am == Paren.LEFT_PAREN) {
           stack.push(new Wrapper(am));
-        }
-        else {
+        } else {
           ++numRightParenEncountered;
           while ((stack.peek()).getAm() != Paren.LEFT_PAREN) {
             outputParts.add(stack.pop());
@@ -240,10 +233,10 @@ public class Tokenizer {
           try {
             // shunting yard algorithm stuff
             if ((stack.peek()).getAm().getClass() == Paren.class
-                    || ((((Operator) (stack.peek()).getAm())).precedence < ((Operator) am).precedence)
-                    || (((Operator) (stack.peek()).getAm()).precedence == ((Operator) am).precedence)
+                || ((((Operator) (stack.peek()).getAm())).precedence < ((Operator) am).precedence)
+                || (((Operator) (stack.peek()).getAm()).precedence == ((Operator) am).precedence)
                     && ((Operator) (stack.peek()).getAm()).associativity
-                    == Operator.Associativity.LEFT) {
+                        == Operator.Associativity.LEFT) {
               break;
             }
             // account for natural log being weird
@@ -282,9 +275,9 @@ public class Tokenizer {
   }
 
   private static void checkUnaryEnd(
-          @NonNull Map<Wrapper, List<Integer>> functionToLastAppliedTerm,
-          int numRightParenEncountered,
-          @NonNull Queue<Wrapper> outputParts) {
+      @NonNull Map<Wrapper, List<Integer>> functionToLastAppliedTerm,
+      int numRightParenEncountered,
+      @NonNull Queue<Wrapper> outputParts) {
     Wrapper toRemove = null;
     // see if a unary operator ended at this point
     for (Map.Entry<Wrapper, List<Integer>> k : functionToLastAppliedTerm.entrySet()) {
@@ -325,37 +318,46 @@ public class Tokenizer {
     while (!processStack.isEmpty()) {
       String s = processStack.pop();
       // Split by opening/closing parens.
-      if (splitByRegex(s, /*splitLimit=*/ 0, "((?<=[\\(\\)\\*\\^])|(?=[\\(\\)\\*\\^]))", processStack, null)) {
+      if (splitByRegex(
+          s, /* splitLimit= */ 0, "((?<=[\\(\\)\\*\\^])|(?=[\\(\\)\\*\\^]))", processStack, null)) {
         continue;
       }
       // Split monomials. I.e. 3x turns into 3 * x
       if (s.matches(".*[0-9][a-z].*")) {
-        splitByRegex(s, /*splitLimit=*/ 2, "(?=[a-z])", processStack, "*");
+        splitByRegex(s, /* splitLimit= */ 2, "(?=[a-z])", processStack, "*");
         continue;
       }
       // Split by negative signs.
-      if (splitByRegex(s, /*splitLimit=*/ 0, "((?=-)|(?<=-))", processStack, null)) {
+      if (splitByRegex(s, /* splitLimit= */ 0, "((?=-)|(?<=-))", processStack, null)) {
         continue;
       }
       // Split by addition signs.
-      if (splitByRegex(s, /*splitLimit=*/ 0, "((?=\\+)|(?<=\\+))", processStack, null)) {
+      if (splitByRegex(s, /* splitLimit= */ 0, "((?=\\+)|(?<=\\+))", processStack, null)) {
         continue;
       }
       // Split by multiplication signs.
-      if (splitByRegex(s, /*splitLimit=*/ 0, "((?=\\*)|(?<=\\*))", processStack, null)) {
+      if (splitByRegex(s, /* splitLimit= */ 0, "((?=\\*)|(?<=\\*))", processStack, null)) {
         continue;
       }
       // Split by division signs.
-      if (splitByRegex(s, /*splitLimit=*/ 0, "((?=/)|(?<=/))", processStack, null)) {
+      if (splitByRegex(s, /* splitLimit= */ 0, "((?=/)|(?<=/))", processStack, null)) {
         continue;
       }
       returnList.add(s);
     }
-    return addParenAfterUnary(new LinkedList<>(), removeNegatedVariables(removeMultipleNegatives(removeSubtraction(returnList.build().stream()
-            .map(this::convertStringToAbstractMath) // converts to syntax enum i.e. sin -> SIN
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .collect(toImmutableList())))), 0,0);
+    return addParenAfterUnary(
+        new LinkedList<>(),
+        removeNegatedVariables(
+            removeMultipleNegatives(
+                removeSubtraction(
+                    returnList.build().stream()
+                        .map(this::convertStringToAbstractMath) // converts to syntax enum i.e. sin
+                        // -> SIN
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .collect(toImmutableList())))),
+        0,
+        0);
   }
 
   /**
@@ -398,11 +400,14 @@ public class Tokenizer {
     return Optional.of(new Variable(s.charAt(0)));
   }
 
-  private ImmutableList<AbstractMath> removeNegatedVariables(ImmutableList<AbstractMath> tokenList) {
+  private ImmutableList<AbstractMath> removeNegatedVariables(
+      ImmutableList<AbstractMath> tokenList) {
     ImmutableList.Builder<AbstractMath> returnList = ImmutableList.builder();
-    for(int i = 0; i < tokenList.size(); i++){
+    for (int i = 0; i < tokenList.size(); i++) {
       AbstractMath token = tokenList.get(i);
-      if (token.getClass() == Negative.class && i < tokenList.size() - 1 && tokenList.get(i + 1).getClass() == Variable.class){
+      if (token.getClass() == Negative.class
+          && i < tokenList.size() - 1
+          && tokenList.get(i + 1).getClass() == Variable.class) {
         returnList.add(new Num(-1));
         returnList.add(Operator.MULTIPLY);
         returnList.add(tokenList.get(i + 1));
@@ -420,8 +425,7 @@ public class Tokenizer {
       if (am == Operator.SUBTRACT) {
         returnList.add(Operator.ADD);
         returnList.add(new Negative());
-      }
-      else {
+      } else {
         returnList.add(am);
       }
     }
