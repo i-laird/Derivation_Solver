@@ -4,7 +4,11 @@
 #################################
 #################################
 name: "Linting"
-on: push
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 ###############
 # Set the Job #
@@ -38,9 +42,12 @@ jobs:
       # Run Linter against code base #
       ################################
       - name: Lint Code Base
-        uses: super-linter/super-linter
+        uses: super-linter/super-linter/slim@v7
         env:
           VALIDATE_ALL_CODEBASE: false
-          VALIDATE_JAVA: true
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_JAVA: true
+          VALIDATE_JSCPD: true
+          VALIDATE_CHECKOV: true
+          LINTER_RULES_PATH: /
