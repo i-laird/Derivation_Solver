@@ -50,10 +50,8 @@ public class WebSecurityConfig {
                     .permitAll()
                     .anyRequest()
                     .authenticated())
-        .exceptionHandling(
-            ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint))
-        .sessionManagement(
-            sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint))
+        .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
     httpSecurity.authenticationProvider(authenticationProvider());
     httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);

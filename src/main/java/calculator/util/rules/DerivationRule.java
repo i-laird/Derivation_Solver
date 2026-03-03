@@ -1,8 +1,7 @@
 package calculator.util.rules;
 
-import java.util.LinkedList;
-
 import calculator.util.terms.Term;
+import java.util.LinkedList;
 
 /**
  * DerivationRule
