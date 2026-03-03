@@ -50,4 +50,3 @@ jobs:
           VALIDATE_JAVA: true
           VALIDATE_JSCPD: true
           VALIDATE_CHECKOV: true
-          LINTER_RULES_PATH: /
