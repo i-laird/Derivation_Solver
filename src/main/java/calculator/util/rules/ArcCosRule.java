@@ -24,6 +24,6 @@ public final class ArcCosRule extends TrigRule {
 
   @Override
   public double getResult(ImmutableList<Integer> dims) {
-    return 0;
+    return Math.acos(this.t.evaluate(dims));
   }
 }

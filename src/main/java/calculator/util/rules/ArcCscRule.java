@@ -24,6 +24,6 @@ public final class ArcCscRule extends TrigRule {
 
   @Override
   public double getResult(ImmutableList<Integer> dims) {
-    return 0;
+    return Math.asin(1.0 / this.t.evaluate(dims));
   }
 }

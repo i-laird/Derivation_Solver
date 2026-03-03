@@ -20,11 +20,11 @@ public final class ArcTanRule extends TrigRule {
   @Override
   public Term getDerivPart() {
     return makeFracRule(
-        new Term(1), makeAdditionRule(new Term(1), makePowerRule(new Term(2), this.t)));
+        makeAdditionRule(new Term(1), makePowerRule(new Term(2), this.t)), new Term(1));
   }
 
   @Override
   public double getResult(ImmutableList<Integer> dims) {
-    return 0;
+    return Math.atan(this.t.evaluate(dims));
   }
 }

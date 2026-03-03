@@ -24,6 +24,6 @@ public final class ArcCotRule extends TrigRule {
 
   @Override
   public double getResult(ImmutableList<Integer> dims) {
-    return 0;
+    return Math.PI / 2.0 - Math.atan(this.t.evaluate(dims));
   }
 }

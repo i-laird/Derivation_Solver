@@ -131,7 +131,49 @@ public class DerivativeTester {
         Arguments.of(
             "135x - sin x + cos(x^4)",
             createSingleList(3),
-            (-4.0 * Math.pow(3.0, 3) * Math.sin(Math.pow(3.0, 4))) - Math.cos(3.0) + 135));
+            (-4.0 * Math.pow(3.0, 3) * Math.sin(Math.pow(3.0, 4))) - Math.cos(3.0) + 135),
+
+        // d/dx(arcsin(x)) = 1/sqrt(1-x^2); domain |x|<1 so only x=0 works with integers
+        // at x=0: 1/sqrt(1) = 1.0
+        Arguments.of("arcsin x", createSingleList(0), 1.0),
+        // d/dx(arccos(x)) = -1/sqrt(1-x^2)
+        // at x=0: -1/sqrt(1) = -1.0
+        Arguments.of("arccos x", createSingleList(0), -1.0),
+        // d/dx(arctan(x)) = 1/(1+x^2)
+        // at x=0: 1/1 = 1.0
+        Arguments.of("arctan x", createSingleList(0), 1.0),
+        // at x=1: 1/2 = 0.5
+        Arguments.of("arctan x", createSingleList(1), 0.5),
+        // d/dx(arccot(x)) = -1/(1+x^2)
+        // at x=0: -1/1 = -1.0
+        Arguments.of("arccot x", createSingleList(0), -1.0),
+        // at x=1: -1/2 = -0.5
+        Arguments.of("arccot x", createSingleList(1), -0.5),
+        // d/dx(arcsec(x)) = 1/(x*sqrt(x^2-1))
+        // at x=2: 1/(2*sqrt(3))
+        Arguments.of("arcsec x", createSingleList(2), 1.0 / (2.0 * Math.sqrt(3.0))),
+        // at x=3: 1/(3*sqrt(8))
+        Arguments.of("arcsec x", createSingleList(3), 1.0 / (3.0 * Math.sqrt(8.0))),
+        // d/dx(arccsc(x)) = -1/(x*sqrt(x^2-1))
+        // at x=2: -1/(2*sqrt(3))
+        Arguments.of("arccsc x", createSingleList(2), -1.0 / (2.0 * Math.sqrt(3.0))),
+        // at x=3: -1/(3*sqrt(8))
+        Arguments.of("arccsc x", createSingleList(3), -1.0 / (3.0 * Math.sqrt(8.0))),
+        // chain rule: d/dx(arcsec(x^2)) = 2x/(x^2*sqrt(x^4-1)) = 2/(x*sqrt(x^4-1))
+        // at x=2: 4/(4*sqrt(15)) = 1/sqrt(15)
+        Arguments.of(
+            "arcsec( x^2 )",
+            createSingleList(2),
+            2.0 * 2.0 / (Math.pow(2.0, 2) * Math.sqrt(Math.pow(2.0, 4) - 1))),
+        // chain rule: d/dx(arccsc(x^2)) = -2x/(x^2*sqrt(x^4-1)) = -2/(x*sqrt(x^4-1))
+        // at x=2: -2/(2*sqrt(15)) = -1/sqrt(15)
+        Arguments.of("arccsc( x^2 )", createSingleList(2), -1.0 / Math.sqrt(15.0)),
+        // combined with polynomial: d/dx(arcsec(x) + x^2) = 1/(x*sqrt(x^2-1)) + 2x
+        // at x=2: 1/(2*sqrt(3)) + 4
+        Arguments.of(
+            "arcsec x + x ^ 2",
+            createSingleList(2),
+            1.0 / (2.0 * Math.sqrt(3.0)) + 4.0));
   }
 
   private static ImmutableList<Integer> createSingleList(Integer xVal) {
