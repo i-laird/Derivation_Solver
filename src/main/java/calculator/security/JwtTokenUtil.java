@@ -5,9 +5,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import jakarta.annotation.PostConstruct;
-import java.io.Serial;
-import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,17 +16,12 @@ import org.springframework.stereotype.Component;
 
 /** Util method for JWT tokens. */
 @Component
-public final class JwtTokenUtil implements Serializable {
+public final class JwtTokenUtil {
   public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60 * 1000;
-  @Serial private static final long serialVersionUID = 8562677648L;
-  private static SecretKey SECRET_KEY;
+  private final SecretKey secretKey;
 
-  @Value("${jwt.secret}")
-  private String jwtSecret;
-
-  @PostConstruct
-  private void initSecretKey() {
-    SECRET_KEY = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
+  public JwtTokenUtil(@Value("${jwt.secret}") String jwtSecret) {
+    this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
   }
 
   /**
@@ -38,7 +30,7 @@ public final class JwtTokenUtil implements Serializable {
    * @param token JWT token.
    * @return the username.
    */
-  public static String getUsernameFromToken(String token) {
+  public String getUsernameFromToken(String token) {
     return getClaimFromToken(token, Claims::getSubject);
   }
 
@@ -48,7 +40,7 @@ public final class JwtTokenUtil implements Serializable {
    * @param token JWT token.
    * @return the expiration date of the token.
    */
-  public static Date getExpirationDateFromToken(String token) {
+  public Date getExpirationDateFromToken(String token) {
     return getClaimFromToken(token, Claims::getExpiration);
   }
 
@@ -59,16 +51,16 @@ public final class JwtTokenUtil implements Serializable {
    * @param claimsResolver claimsResolver
    * @return the claims for the token.
    */
-  public static <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
+  public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
     final Claims claims = getAllClaimsFromToken(token);
     return claimsResolver.apply(claims);
   }
 
-  private static Claims getAllClaimsFromToken(String token) {
-    return Jwts.parser().setSigningKey(SECRET_KEY).build().parseSignedClaims(token).getBody();
+  private Claims getAllClaimsFromToken(String token) {
+    return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload();
   }
 
-  private static Boolean isTokenExpired(String token) {
+  private Boolean isTokenExpired(String token) {
     final Date expiration = getExpirationDateFromToken(token);
     return expiration.before(new Date());
   }
@@ -79,7 +71,7 @@ public final class JwtTokenUtil implements Serializable {
    * @param userDetails the users login credentials.
    * @return JWT token.
    */
-  public static String generateToken(final UserDetails userDetails) {
+  public String generateToken(final UserDetails userDetails) {
     Map<String, Object> claims = new HashMap<>();
     return doGenerateToken(claims, userDetails.getUsername());
   }
@@ -90,18 +82,18 @@ public final class JwtTokenUtil implements Serializable {
   // 3. According to JWS Compact
   // Serialization(https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-41#section-3.1)
   //   compaction of the JWT to a URL-safe string
-  private static String doGenerateToken(Map<String, Object> claims, String subject) {
+  private String doGenerateToken(Map<String, Object> claims, String subject) {
     return Jwts.builder()
-        .setClaims(claims)
-        .setSubject(subject)
-        .setIssuedAt(new Date(System.currentTimeMillis()))
-        .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY))
-        .signWith(SECRET_KEY)
+        .claims(claims)
+        .subject(subject)
+        .issuedAt(new Date(System.currentTimeMillis()))
+        .expiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY))
+        .signWith(secretKey)
         .compact();
   }
 
   // validate token
-  public static Boolean validateToken(String token, UserDetails userDetails) {
+  public Boolean validateToken(String token, UserDetails userDetails) {
     final String username = getUsernameFromToken(token);
     return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
   }

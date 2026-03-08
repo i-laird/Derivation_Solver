@@ -6,7 +6,6 @@ import calculator.service.CalculatorService;
 import com.google.common.collect.ImmutableList;
 import jakarta.validation.Valid;
 import java.time.LocalTime;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public final class CalculatorController {
 
-  @Autowired private CalculatorService calculatorServiceImpl;
+  private final CalculatorService calculatorServiceImpl;
+
+  public CalculatorController(CalculatorService calculatorServiceImpl) {
+    this.calculatorServiceImpl = calculatorServiceImpl;
+  }
 
   /**
    * Calculates the anti-derivative of a mathematical expression and then evaluates it at a specific

@@ -18,7 +18,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
         "jwt.secret=dGVzdC1zZWNyZXQta2V5LWZvci11bml0LXRlc3RpbmctcHVycG9zZXMtb25seS1iYXNlNjQ=")
 class JwtTokenUtilTest {
 
-  /** Autowired to trigger @PostConstruct, which initializes the static SECRET_KEY. */
   @Autowired JwtTokenUtil jwtTokenUtil;
 
   private static UserDetails testUser() {
@@ -30,7 +29,7 @@ class JwtTokenUtilTest {
 
   @Test
   void should_generateNonEmptyToken_when_userProvided() {
-    String token = JwtTokenUtil.generateToken(testUser());
+    String token = jwtTokenUtil.generateToken(testUser());
     assertNotNull(token);
     assertFalse(token.isBlank());
   }
@@ -38,14 +37,14 @@ class JwtTokenUtilTest {
   @Test
   void should_returnCorrectUsername_when_tokenGenerated() {
     UserDetails user = testUser();
-    String token = JwtTokenUtil.generateToken(user);
-    assertEquals("testuser@example.com", JwtTokenUtil.getUsernameFromToken(token));
+    String token = jwtTokenUtil.generateToken(user);
+    assertEquals("testuser@example.com", jwtTokenUtil.getUsernameFromToken(token));
   }
 
   @Test
   void should_validateToken_when_userMatches() {
     UserDetails user = testUser();
-    String token = JwtTokenUtil.generateToken(user);
-    assertTrue(JwtTokenUtil.validateToken(token, user));
+    String token = jwtTokenUtil.generateToken(user);
+    assertTrue(jwtTokenUtil.validateToken(token, user));
   }
 }

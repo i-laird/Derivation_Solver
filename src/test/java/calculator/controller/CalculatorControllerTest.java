@@ -13,12 +13,12 @@ import calculator.security.JwtRequestFilter;
 import calculator.security.JwtTokenUtil;
 import calculator.security.WebSecurityConfig;
 import calculator.service.CalculatorService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -42,11 +42,11 @@ class CalculatorControllerTest {
 
   @Autowired private ObjectMapper objectMapper;
 
-  @MockBean private CalculatorService calculatorServiceImpl;
+  @MockitoBean private CalculatorService calculatorServiceImpl;
 
-  @MockBean private UserDetailsService jwtUserDetailsService;
+  @MockitoBean private UserDetailsService jwtUserDetailsService;
 
-  @MockBean private PasswordEncoder passwordEncoder;
+  @MockitoBean private PasswordEncoder passwordEncoder;
 
   @Test
   void should_return200_when_validDerivativeRequest() throws Exception {
