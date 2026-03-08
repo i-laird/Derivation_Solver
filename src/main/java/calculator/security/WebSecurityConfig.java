@@ -1,6 +1,5 @@
 package calculator.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,10 +19,21 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {
 
-  @Autowired private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-  @Autowired private UserDetailsService jwtUserDetailsService;
-  @Autowired private JwtRequestFilter jwtRequestFilter;
-  @Autowired private PasswordEncoder passwordEncoder;
+  private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+  private final UserDetailsService jwtUserDetailsService;
+  private final JwtRequestFilter jwtRequestFilter;
+  private final PasswordEncoder passwordEncoder;
+
+  public WebSecurityConfig(
+      JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
+      UserDetailsService jwtUserDetailsService,
+      JwtRequestFilter jwtRequestFilter,
+      PasswordEncoder passwordEncoder) {
+    this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+    this.jwtUserDetailsService = jwtUserDetailsService;
+    this.jwtRequestFilter = jwtRequestFilter;
+    this.passwordEncoder = passwordEncoder;
+  }
 
   @Bean
   public DaoAuthenticationProvider authenticationProvider() {

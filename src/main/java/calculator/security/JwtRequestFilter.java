@@ -6,7 +6,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,7 +19,13 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public final class JwtRequestFilter extends OncePerRequestFilter {
   private static final String BEARER_PREFIX = "Bearer ";
 
-  @Autowired private UserDetailsService jwtUserDetailsService;
+  private final UserDetailsService jwtUserDetailsService;
+  private final JwtTokenUtil jwtTokenUtil;
+
+  public JwtRequestFilter(UserDetailsService jwtUserDetailsService, JwtTokenUtil jwtTokenUtil) {
+    this.jwtUserDetailsService = jwtUserDetailsService;
+    this.jwtTokenUtil = jwtTokenUtil;
+  }
 
   @Override
   protected void doFilterInternal(
@@ -35,7 +40,7 @@ public final class JwtRequestFilter extends OncePerRequestFilter {
     if (requestTokenHeader != null && requestTokenHeader.startsWith(BEARER_PREFIX)) {
       jwtToken = requestTokenHeader.substring(BEARER_PREFIX.length());
       try {
-        username = JwtTokenUtil.getUsernameFromToken(jwtToken);
+        username = jwtTokenUtil.getUsernameFromToken(jwtToken);
       } catch (IllegalArgumentException e) {
         logger.warn("Unable to get JWT Token");
       } catch (ExpiredJwtException e) {
@@ -50,7 +55,7 @@ public final class JwtRequestFilter extends OncePerRequestFilter {
       UserDetails userDetails = this.jwtUserDetailsService.loadUserByUsername(username);
       // if token is valid configure Spring Security to manually set
       // authentication
-      if (JwtTokenUtil.validateToken(jwtToken, userDetails)) {
+      if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
         UsernamePasswordAuthenticationToken authenticationToken =
             new UsernamePasswordAuthenticationToken(
                 userDetails, null, userDetails.getAuthorities());

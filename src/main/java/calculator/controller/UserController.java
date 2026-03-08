@@ -6,7 +6,6 @@ import calculator.DTO.UserGeneration;
 import calculator.security.JwtTokenUtil;
 import calculator.service.UserService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -22,11 +21,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public final class UserController {
 
-  @Autowired private AuthenticationManager authenticationManager;
+  private final AuthenticationManager authenticationManager;
+  private final UserDetailsService userDetailsService;
+  private final UserService userService;
+  private final JwtTokenUtil jwtTokenUtil;
 
-  @Autowired private UserDetailsService userDetailsService;
-
-  @Autowired private UserService userService;
+  public UserController(
+      AuthenticationManager authenticationManager,
+      UserDetailsService userDetailsService,
+      UserService userService,
+      JwtTokenUtil jwtTokenUtil) {
+    this.authenticationManager = authenticationManager;
+    this.userDetailsService = userDetailsService;
+    this.userService = userService;
+    this.jwtTokenUtil = jwtTokenUtil;
+  }
 
   /**
    * Registers a user.
@@ -57,7 +66,7 @@ public final class UserController {
     authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
     final UserDetails userDetails =
         userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-    final String token = JwtTokenUtil.generateToken(userDetails);
+    final String token = jwtTokenUtil.generateToken(userDetails);
     return ResponseEntity.ok(new JwtResponse(token));
   }
 
