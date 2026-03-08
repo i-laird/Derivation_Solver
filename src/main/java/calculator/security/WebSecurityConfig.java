@@ -37,8 +37,7 @@ public class WebSecurityConfig {
 
   @Bean
   public DaoAuthenticationProvider authenticationProvider() {
-    DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-    provider.setUserDetailsService(jwtUserDetailsService);
+    DaoAuthenticationProvider provider = new DaoAuthenticationProvider(jwtUserDetailsService);
     provider.setPasswordEncoder(passwordEncoder);
     return provider;
   }
