@@ -63,9 +63,9 @@ public final class UserController {
   @PostMapping("/authenticate")
   public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest)
       throws DisabledException, BadCredentialsException {
-    authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
+    authenticate(authenticationRequest.username(), authenticationRequest.password());
     final UserDetails userDetails =
-        userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+        userDetailsService.loadUserByUsername(authenticationRequest.username());
     final String token = jwtTokenUtil.generateToken(userDetails);
     return ResponseEntity.ok(new JwtResponse(token));
   }

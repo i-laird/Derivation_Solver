@@ -15,8 +15,8 @@ import calculator.util.token.Paren;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.util.*;
-import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Laird
@@ -27,8 +27,8 @@ import lombok.extern.slf4j.Slf4j;
  *     the postfix expression.
  * @see Term
  */
-@Slf4j
 public class Tokenizer {
+  private static final Logger log = LoggerFactory.getLogger(Tokenizer.class);
   private boolean operatorOrFunctionSeen = true;
 
   /**
@@ -43,10 +43,10 @@ public class Tokenizer {
    *     string) then nothing is added to the process stack and false is returned
    */
   private static boolean splitByRegex(
-      @NonNull String toSplit,
-      @NonNull Integer splitLimit,
-      @NonNull String regex,
-      @NonNull Stack<String> processStack,
+      String toSplit,
+      Integer splitLimit,
+      String regex,
+      Stack<String> processStack,
       String separator) {
     String[] parsedParts = toSplit.split(regex, splitLimit);
     if (parsedParts.length > 1) {
@@ -67,7 +67,7 @@ public class Tokenizer {
    *     <p>example: NEGATIVE NEGATIVE 5 -> 5 5 PLUS NEGATIVE 5 -> 5 MINUS 5
    */
   private static ImmutableList<AbstractMath> removeMultipleNegatives(
-      @NonNull ImmutableList<AbstractMath> l) {
+      ImmutableList<AbstractMath> l) {
     ImmutableList.Builder<AbstractMath> returnList = ImmutableList.builder();
     boolean operatorisNegated = false;
     Optional<AbstractMath> operator = Optional.empty();
@@ -110,8 +110,8 @@ public class Tokenizer {
    *     and including index index
    */
   public static List<AbstractMath> addParenAfterUnary(
-      @NonNull List<AbstractMath> returnList,
-      @NonNull List<AbstractMath> l,
+      List<AbstractMath> returnList,
+      List<AbstractMath> l,
       int index,
       int rightParenToAdd) {
     while (index < l.size()) {
@@ -156,7 +156,7 @@ public class Tokenizer {
    * @param tokens the tokens
    * @return post fix notation
    */
-  static Queue<Wrapper> convertToPostFix(@NonNull List<AbstractMath> tokens) {
+  static Queue<Wrapper> convertToPostFix(List<AbstractMath> tokens) {
     int numRightParenEncountered = 0;
     Queue<Wrapper> outputParts = new LinkedList<>();
     Negative negative = null;
@@ -275,9 +275,9 @@ public class Tokenizer {
   }
 
   private static void checkUnaryEnd(
-      @NonNull Map<Wrapper, List<Integer>> functionToLastAppliedTerm,
+      Map<Wrapper, List<Integer>> functionToLastAppliedTerm,
       int numRightParenEncountered,
-      @NonNull Queue<Wrapper> outputParts) {
+      Queue<Wrapper> outputParts) {
     Wrapper toRemove = null;
     // see if a unary operator ended at this point
     for (Map.Entry<Wrapper, List<Integer>> k : functionToLastAppliedTerm.entrySet()) {
@@ -303,7 +303,7 @@ public class Tokenizer {
    * @param expression the expression to tokenize.
    * @return The tokenized expression.
    */
-  List<AbstractMath> tokenizeExpression(@NonNull String expression) {
+  List<AbstractMath> tokenizeExpression(String expression) {
     Stack<String> processStack = new Stack<>();
     Lists.reverse(ImmutableList.copyOf(expression.split("\\s+"))).forEach(processStack::push);
 
@@ -366,7 +366,7 @@ public class Tokenizer {
    * @return the abstract math part corresponding to the string
    *     <p>caution: if s is only white space or empty empty is returned.
    */
-  private Optional<AbstractMath> convertStringToAbstractMath(@NonNull String s) {
+  private Optional<AbstractMath> convertStringToAbstractMath(String s) {
     if (s.matches("\\s+") || s.isEmpty()) {
       return Optional.empty();
     }
