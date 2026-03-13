@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Scanner;
 import java.util.Stack;
-import lombok.NonNull;
 
 public class AbstractSyntaxTree {
   Term root = null;
@@ -23,7 +22,7 @@ public class AbstractSyntaxTree {
    *     infix notation. *
    *     <p>creates the tree and stores it in root.
    */
-  public AbstractSyntaxTree(@NonNull InputStream in) {
+  public AbstractSyntaxTree(InputStream in) {
     Scanner inputScan = new Scanner(new BufferedInputStream(in));
     String line = inputScan.nextLine();
     Tokenizer tokenizer = new Tokenizer();
@@ -41,7 +40,7 @@ public class AbstractSyntaxTree {
    * @param outputParts the tokens in post fix order
    * @return
    */
-  private static Term evaluatePostfix(@NonNull Queue<Wrapper> outputParts) {
+  private static Term evaluatePostfix(Queue<Wrapper> outputParts) {
     Stack<Term> parseTree = new Stack<>();
     for (Wrapper w : outputParts) {
       AbstractMath part = w.getAm();

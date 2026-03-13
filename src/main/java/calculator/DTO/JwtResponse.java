@@ -2,14 +2,7 @@ package calculator.DTO;
 
 import java.io.Serial;
 import java.io.Serializable;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class JwtResponse implements Serializable {
+public record JwtResponse(String jwttoken) implements Serializable {
   @Serial private static final long serialVersionUID = 65565656555L;
-  private String jwttoken;
 }

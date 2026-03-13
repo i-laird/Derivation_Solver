@@ -33,7 +33,7 @@ public final class CalculatorController {
   @ResponseStatus(HttpStatus.OK)
   public DerivativeResponse generateDerivative(@Valid @RequestBody DerivativeRequest request) {
     return calculatorServiceImpl.evaluateDerivative(
-        request.getExpression(), ImmutableList.copyOf(request.getPoints()));
+        request.expression(), ImmutableList.copyOf(request.points()));
   }
 
   /**
@@ -46,6 +46,6 @@ public final class CalculatorController {
   @ResponseStatus(HttpStatus.OK)
   public double evaluateExpression(@Valid @RequestBody DerivativeRequest request) {
     return calculatorServiceImpl.evaluateExpression(
-        request.getExpression(), ImmutableList.copyOf(request.getPoints()));
+        request.expression(), ImmutableList.copyOf(request.points()));
   }
 }

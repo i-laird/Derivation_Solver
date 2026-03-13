@@ -28,7 +28,7 @@ public class DerivativeTester {
   @MethodSource("singleVariable")
   public void test1(String inputString, ImmutableList<Integer> evaluationPoints, double expected) {
     double result =
-        (calculatorServiceImpl.evaluateDerivative(inputString, evaluationPoints)).getResult();
+        (calculatorServiceImpl.evaluateDerivative(inputString, evaluationPoints)).result();
     assertEquals(expected, result);
   }
 
