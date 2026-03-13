@@ -1,6 +1,6 @@
 
 # stage 1
-FROM maven:3.9.9-amazoncorretto-25-debian-bookworm AS build
+FROM maven:3.9.9-eclipse-temurin-21 AS build
 
 LABEL maintainer = "Ian Laird"
 
@@ -13,7 +13,7 @@ COPY ./src ./src
 RUN mvn package -DskipTests
 
 # stage 2
-FROM eclipse-temurin:25-jre-alpine AS run
+FROM eclipse-temurin:21-jre-alpine AS run
 
 RUN apk add --no-cache curl
 
