@@ -5,9 +5,11 @@ import calculator.exception.UserAlreadyExistsException;
 import calculator.model.User;
 import java.util.Optional;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 @Service
+@Profile("dev")
 public class UserService {
   private final PasswordEncoder passwordEncoder;
   private final UserRepository userRepository;

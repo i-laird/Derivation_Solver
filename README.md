@@ -28,7 +28,7 @@ configure your machine.
 ### Install List
 
 + Maven
-+ Java 20 (Amazon Corretto)
++ Java 21 (Amazon Corretto)
 + Docker
 
 ## GitHub Actions
@@ -109,10 +109,13 @@ docker exec -it <container_id> bash
 mysql -h localhost -u root -p
 ```
 
-## Running Application
+## Running Locally
 
-There are two ways to run the application. The first way is using the spring maven plugin and the second is by spinning
-up a docker container.
+There are two ways to run the application locally. The first way is using the Spring Maven plugin and the second is by spinning
+up a Docker container. Both require a MySQL database running on port 3306 (see above).
+
+> **Note:** The production deployment on AWS App Runner currently runs without a database. The `/register` and `/authenticate`
+> endpoints are unavailable in production. Only the `/derivative` and `/expression` endpoints are active.
 
 ### Spring Maven Plugin
 
@@ -125,13 +128,63 @@ mvn spring-boot:run
 To build the Docker container
 
 ```shell
-docker build -t derivation_solver .
+docker build --platform linux/amd64 -t derivation-solver .
 ```
 
-To run the docker container
+To run the Docker container
 
 ```shell
-docker run -p 8080:8080 -d derivation_solver
+docker run -p 8080:8080 -d derivation-solver
+```
+
+## Deploying to AWS App Runner
+
+### Prerequisites
+- AWS CLI installed and configured (`aws configure`)
+- Docker installed and running
+- An ECR repository created for this project
+
+### Build and Push a New Image
+
+```shell
+# Authenticate Docker with ECR
+aws ecr get-login-password --region us-east-1 | \
+  docker login --username AWS --password-stdin \
+  <your-account-id>.dkr.ecr.us-east-1.amazonaws.com
+
+# Build for the correct platform (required on Apple Silicon)
+docker build --platform linux/amd64 -t derivation-solver .
+
+# Tag and push
+docker tag derivation-solver:latest \
+  <your-account-id>.dkr.ecr.us-east-1.amazonaws.com/derivation-solver:latest
+
+docker push \
+  <your-account-id>.dkr.ecr.us-east-1.amazonaws.com/derivation-solver:latest
+```
+
+App Runner will automatically redeploy once the new image is pushed.
+
+### Required Environment Variables
+
+The following environment variables must be set on the App Runner service:
+
+| Variable                 | Description                                       |
+|--------------------------|---------------------------------------------------|
+| `SPRING_PROFILES_ACTIVE` | Set to `prod`                                     |
+| `JWT_SECRET`             | Base64-encoded secret key for signing JWT tokens  |
+
+Generate a JWT secret with:
+```shell
+openssl rand -base64 32
+```
+
+### Manual Redeploy (if auto-deploy is disabled)
+
+```shell
+aws apprunner start-deployment \
+  --service-arn <your-service-arn> \
+  --region us-east-1
 ```
 
 ## PostMan

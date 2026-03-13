@@ -15,10 +15,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.RestController;
 
 /** Controller for user management. */
 @RestController
+@Profile("dev")
 public final class UserController {
 
   private final AuthenticationManager authenticationManager;
