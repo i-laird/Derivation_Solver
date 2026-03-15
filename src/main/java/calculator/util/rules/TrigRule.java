@@ -25,6 +25,10 @@ public abstract sealed class TrigRule extends Rule
 
   protected Term t;
 
+  public Term getTerm() {
+    return this.t;
+  }
+
   public TrigRule(LinkedList<Term> l) {
     this.t = l.get(0);
   }

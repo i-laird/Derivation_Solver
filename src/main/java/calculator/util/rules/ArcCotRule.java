@@ -19,7 +19,7 @@ public final class ArcCotRule extends TrigRule {
 
   @Override
   public Term getDerivPart() {
-    return makeArcTanRule(this.t).getDerivPart().flipSign();
+    return createArcTanRule(this.t).getDerivPart().flipSign();
   }
 
   @Override
