@@ -4,6 +4,7 @@ package calculator.service.impl;
 import calculator.DTO.DerivativeResponse;
 import calculator.service.CalculatorService;
 import calculator.util.StringToStream;
+import calculator.util.SymbolicSimplifier;
 import calculator.util.ast.AbstractSyntaxTree;
 import calculator.util.terms.Term;
 import com.google.common.collect.ImmutableList;
@@ -22,7 +23,7 @@ public class CalculatorServiceImpl implements CalculatorService {
       String expression, ImmutableList<Integer> evalPoints) {
     AbstractSyntaxTree abstractSyntaxTree =
         new AbstractSyntaxTree(StringToStream.convertStringToStream(expression));
-    Term derivative = abstractSyntaxTree.getDeriv();
+    Term derivative = SymbolicSimplifier.simplify(abstractSyntaxTree.getDeriv());
     return new DerivativeResponse(derivative.toString(), derivative.evaluate(evalPoints));
   }
 

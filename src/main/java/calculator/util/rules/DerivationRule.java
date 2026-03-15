@@ -29,4 +29,8 @@ public abstract sealed class DerivationRule extends Rule
   }
 
   public DerivationRule() {}
+
+  public LinkedList<Term> getTerms() {
+    return terms;
+  }
 }
