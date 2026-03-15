@@ -40,6 +40,10 @@ public abstract sealed class TrigRule extends Rule
 
   public abstract Term getDerivPart();
 
+  public Term getTerm() {
+    return t;
+  }
+
   @Override
   public String toString() {
     return functionName() + " ( " + t + " ) ";

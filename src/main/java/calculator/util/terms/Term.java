@@ -37,6 +37,15 @@ public class Term {
   }
 
   /**
+   * Returns whether the term is negated.
+   *
+   * @return true if negated
+   */
+  public boolean isNegative() {
+    return negative;
+  }
+
+  /**
    * Negates the expression
    *
    * @return negated expression
