@@ -39,14 +39,16 @@ class SymbolicSimplifierTest {
 
     @Test
     void simplify_powerZero_returnsOne() {
-        Term expr = makePowerRule(new Variable('x'), new Term(0));
+        // x^0 = 1: makePowerRule(pow=0, base=x)
+        Term expr = makePowerRule(new Term(0), new Variable('x'));
         Term simplified = SymbolicSimplifier.simplify(expr);
         assertEquals("1", simplified.toString());
     }
 
     @Test
     void simplify_powerOne_returnsBase() {
-        Term expr = makePowerRule(new Variable('x'), new Term(1));
+        // x^1 = x: makePowerRule(pow=1, base=x)
+        Term expr = makePowerRule(new Term(1), new Variable('x'));
         Term simplified = SymbolicSimplifier.simplify(expr);
         assertEquals("x", simplified.toString());
     }
@@ -113,14 +115,16 @@ class SymbolicSimplifierTest {
 
     @Test
     void simplify_powerOneBase_returnsOne() {
-        Term expr = makePowerRule(new Term(1), new Variable('x'));
+        // 1^x = 1: makePowerRule(pow=x, base=1)
+        Term expr = makePowerRule(new Variable('x'), new Term(1));
         Term simplified = SymbolicSimplifier.simplify(expr);
         assertEquals("1", simplified.toString());
     }
 
     @Test
     void simplify_powerZeroBase_returnsZero() {
-        Term expr = makePowerRule(new Term(0), new Variable('x'));
+        // 0^x = 0: makePowerRule(pow=x, base=0)
+        Term expr = makePowerRule(new Variable('x'), new Term(0));
         Term simplified = SymbolicSimplifier.simplify(expr);
         assertEquals("0", simplified.toString());
     }
@@ -155,10 +159,10 @@ class SymbolicSimplifierTest {
 
     @Test
     void simplify_nestedChainAndPower() {
-        // sin(x + 0) ^ 1
+        // sin(x + 0) ^ 1: makePowerRule(pow=1, base=sin)
         Term inner = makeAdditionRule(new Variable('x'), new Term(0));
         Term sin = makeSinRule(inner);
-        Term expr = makePowerRule(sin, new Term(1));
+        Term expr = makePowerRule(new Term(1), sin);
         
         Term simplified = SymbolicSimplifier.simplify(expr);
         assertEquals("sin ( x ) ", simplified.toString());
@@ -166,16 +170,16 @@ class SymbolicSimplifierTest {
 
     @Test
     void simplify_powerZeroBaseVariablePower() {
-        // 0 ^ x
-        Term expr = makePowerRule(new Term(0), new Variable('x'));
+        // 0 ^ x: makePowerRule(pow=x, base=0)
+        Term expr = makePowerRule(new Variable('x'), new Term(0));
         Term simplified = SymbolicSimplifier.simplify(expr);
         assertEquals("0", simplified.toString());
     }
 
     @Test
     void simplify_oneToPower_returnsOne() {
-        // 1 ^ x
-        Term expr = makePowerRule(new Term(1), new Variable('x'));
+        // 1 ^ x: makePowerRule(pow=x, base=1)
+        Term expr = makePowerRule(new Variable('x'), new Term(1));
         Term simplified = SymbolicSimplifier.simplify(expr);
         assertEquals("1", simplified.toString());
     }
