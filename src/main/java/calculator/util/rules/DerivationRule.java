@@ -24,6 +24,10 @@ public abstract sealed class DerivationRule extends Rule
   // the terms held in the rule
   protected LinkedList<Term> terms;
 
+  public LinkedList<Term> getTerms() {
+    return this.terms;
+  }
+
   public DerivationRule(LinkedList<Term> l) {
     this.terms = l;
   }

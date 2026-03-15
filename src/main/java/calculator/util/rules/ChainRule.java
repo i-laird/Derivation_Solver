@@ -7,15 +7,25 @@ import java.util.LinkedList;
 
 public final class ChainRule extends DerivationRule {
 
+  private static final int REQUIRED_TERM_COUNT = 2;
+
   ChainRule(LinkedList<Term> l) {
-    super(l);
+    super(validateTerms(l));
+  }
+
+  private static LinkedList<Term> validateTerms(LinkedList<Term> l) {
+    if (l == null || l.size() != REQUIRED_TERM_COUNT) {
+      throw new IllegalArgumentException(
+          "ChainRule requires exactly "
+              + REQUIRED_TERM_COUNT
+              + " terms (outside, inside); got "
+              + (l == null ? "null" : l.size()));
+    }
+    return l;
   }
 
   @Override
   public Term getDerivative() {
-    if (this.terms.size() != 2) {
-      return null;
-    }
     ProductRule toReturn =
         RuleFactory.makeProductRule(
             this.terms.get(0).getDerivative(), this.terms.get(1).getDerivative());
@@ -32,7 +42,6 @@ public final class ChainRule extends DerivationRule {
 
   @Override
   public String toString() {
-    return ""; // ChainRule is an intermediate wrapper; its terms handle their own string
-    // representation
+    return this.terms.get(0).toString();
   }
 }

@@ -46,15 +46,12 @@ public enum Operator implements AbstractMath {
 
   public Term getTermFromOp(Term one, Term two) {
     Term toReturn = null;
-    boolean specialCase = false;
     switch (this) {
       case NAT_LOG:
         toReturn = makeNaturalLogRule(two);
-        specialCase = true;
         break;
       case LOG:
         toReturn = makeLogRule(one, two);
-        specialCase = true;
         break;
       case SUBTRACT:
         one.flipSign();
@@ -89,16 +86,9 @@ public enum Operator implements AbstractMath {
         break;
       case EXPONENT:
         toReturn = makePowerRule(one, two);
-        specialCase = true;
         break;
       default:
         throw new IllegalStateException("Invalid DerivationSolver.Enums.Operator");
-    }
-    // see if the rule needs to be wrapped in a chain rule
-    // if it is just one variable inside there is no need for the chain rule because of the implied
-    // one
-    if (specialCase && one.getClass() != Variable.class) {
-      toReturn = makeChainRule(toReturn, two);
     }
     return toReturn;
   }

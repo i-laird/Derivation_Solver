@@ -19,7 +19,7 @@ public final class ArcCscRule extends TrigRule {
 
   @Override
   public Term getDerivPart() {
-    return makeArcSecRule(this.t).getDerivPart().flipSign();
+    return createArcSecRule(this.t).getDerivPart().flipSign();
   }
 
   @Override

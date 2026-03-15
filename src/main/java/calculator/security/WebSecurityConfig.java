@@ -73,7 +73,7 @@ public class WebSecurityConfig {
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(
             auth ->
-                auth.requestMatchers("/authenticate", "/derivative", "/register", "/actuator/health")
+                auth.requestMatchers("/authenticate", "/derivative", "/expression", "/register", "/actuator/health")
                     .permitAll()
                     .anyRequest()
                     .authenticated())

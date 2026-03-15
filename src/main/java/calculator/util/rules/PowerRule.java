@@ -31,22 +31,23 @@ public final class PowerRule extends DerivationRule {
   @Override
   public Term getDerivative() {
 
-    int pow = this.terms.get(POW_POS).getNum();
+    Term pow = this.terms.get(POW_POS);
     Term base = this.terms.get(BASE_POS);
 
     // if it is not zero we just do a simple multiplication
-    if (pow != 0) {
+    if (pow.getClass() == Term.class && pow.getNum() != 0) {
+      int p = pow.getNum();
       return makeProductRule(
-          this.negative ? new Term(pow * -1) : new Term(pow),
-          makePowerRule(new Term(pow - 1), base));
+          this.negative ? new Term(p * -1) : new Term(p),
+          makePowerRule(base, new Term(p - 1)));
     }
 
-    return new Term(1);
+    return new Term(0);
   }
 
   @Override
   public double getResult(ImmutableList<Integer> dims) {
-    return Math.pow(this.terms.get(1).evaluate(dims), this.terms.get(0).evaluate(dims));
+    return Math.pow(this.terms.get(BASE_POS).evaluate(dims), this.terms.get(POW_POS).evaluate(dims));
   }
 
   @Override

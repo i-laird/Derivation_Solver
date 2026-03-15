@@ -127,9 +127,6 @@ public enum Function implements AbstractMath {
       default:
         throw new IllegalStateException("Invalid DerivationSolver.Enums function");
     }
-    if (one.getClass() != Variable.class) {
-      toReturn = makeChainRule(toReturn, one);
-    }
     return toReturn;
   }
 }

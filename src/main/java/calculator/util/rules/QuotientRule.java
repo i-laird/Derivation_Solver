@@ -45,7 +45,7 @@ public final class QuotientRule extends DerivationRule {
                     this.terms.get(DENOM_POS).getDerivative(), this.terms.get(NUMERATOR_POS))
                 .flipSign());
 
-    Term denom = makePowerRule(new Term(2), this.terms.get(DENOM_POS));
+    Term denom = makePowerRule(this.terms.get(DENOM_POS), new Term(2));
 
     return makeFracRule(denom, numerator);
   }

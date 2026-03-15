@@ -4,6 +4,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import calculator.DTO.DerivativeRequest;
@@ -49,27 +51,66 @@ class CalculatorControllerTest {
   @MockitoBean private PasswordEncoder passwordEncoder;
 
   @Test
-  void should_return200_when_validDerivativeRequest() throws Exception {
-    DerivativeResponse mockResponse = new DerivativeResponse("x", 1.0);
+  void should_return200_and_derivative_response_body_when_validDerivativeRequest()
+      throws Exception {
+    DerivativeResponse mockResponse = new DerivativeResponse("2*x", 4.0);
     when(calculatorServiceImpl.evaluateDerivative(anyString(), any())).thenReturn(mockResponse);
 
-    DerivativeRequest request = new DerivativeRequest("x", List.of(1));
+    DerivativeRequest request = new DerivativeRequest("x^2", List.of(2));
     mockMvc
         .perform(
             post("/derivative")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-        .andExpect(status().isOk());
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.antiderivative").value("2*x"))
+        .andExpect(jsonPath("$.result").value(4.0));
   }
 
   @Test
-  void should_return400_when_blankExpression() throws Exception {
-    DerivativeRequest request = new DerivativeRequest("", List.of());
+  void should_return400_when_blankExpression_on_derivative() throws Exception {
+    DerivativeRequest request = new DerivativeRequest("", List.of(1));
     mockMvc
         .perform(
             post("/derivative")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  void should_return200_and_value_when_validExpressionRequest() throws Exception {
+    when(calculatorServiceImpl.evaluateExpression(anyString(), any())).thenReturn(7.0);
+
+    DerivativeRequest request = new DerivativeRequest("2*x + 1", List.of(3));
+    mockMvc
+        .perform(
+            post("/expression")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$").value(7.0));
+  }
+
+  @Test
+  void should_return400_when_blankExpression_on_expression() throws Exception {
+    DerivativeRequest request = new DerivativeRequest("", List.of(1));
+    mockMvc
+        .perform(
+            post("/expression")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  void should_return400_when_expression_null_on_derivative() throws Exception {
+    mockMvc
+        .perform(
+            post("/derivative")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"expression\": null, \"points\": [1]}"))
         .andExpect(status().isBadRequest());
   }
 }

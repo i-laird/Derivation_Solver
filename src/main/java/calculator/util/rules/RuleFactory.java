@@ -1,6 +1,7 @@
 package calculator.util.rules;
 
 import calculator.util.terms.Term;
+import calculator.util.terms.Variable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -22,16 +23,28 @@ public final class RuleFactory {
     return new ProductRule(t);
   }
 
-  public static NaturalLogRule makeNaturalLogRule(Term inside) {
-    return new NaturalLogRule(new LinkedList<>(Collections.singletonList(inside)));
+  public static Term makeNaturalLogRule(Term inside) {
+    Term toReturn = new NaturalLogRule(new LinkedList<>(Collections.singletonList(inside)));
+    if (inside.getClass() != Variable.class) {
+      toReturn = makeChainRule(toReturn, inside);
+    }
+    return toReturn;
   }
 
-  public static LogRule makeLogRule(Term base, Term inside) {
-    return new LogRule(new LinkedList<>(Arrays.asList(base, inside)));
+  public static Term makeLogRule(Term base, Term inside) {
+    Term toReturn = new LogRule(new LinkedList<>(Arrays.asList(base, inside)));
+    if (base.getClass() != Variable.class) {
+      toReturn = makeChainRule(toReturn, inside);
+    }
+    return toReturn;
   }
 
-  public static PowerRule makePowerRule(Term inside, Term power) {
-    return new PowerRule(new LinkedList<>(Arrays.asList(inside, power)));
+  public static Term makePowerRule(Term inside, Term power) {
+    Term toReturn = new PowerRule(new LinkedList<>(Arrays.asList(power, inside)));
+    if (inside.getClass() != Variable.class) {
+      toReturn = makeChainRule(toReturn, inside);
+    }
+    return toReturn;
   }
 
   public static Term makePowerFracRule(Term inside, Term topPow, Term bottomPow) {
@@ -55,75 +68,219 @@ public final class RuleFactory {
     return new AdditionRule(new LinkedList<>(t));
   }
 
-  public static SinRule makeSinRule(Term inside) {
+  public static SinRule createSinRule(Term inside) {
     return new SinRule(new LinkedList<>(Collections.singletonList(inside)));
   }
 
-  public static CosRule makeCosRule(Term inside) {
+  public static Term makeSinRule(Term inside) {
+    Term toReturn = createSinRule(inside);
+    if (inside.getClass() != Variable.class) {
+      toReturn = makeChainRule(toReturn, inside);
+    }
+    return toReturn;
+  }
+
+  public static CosRule createCosRule(Term inside) {
     return new CosRule(new LinkedList<>(Collections.singletonList(inside)));
   }
 
-  public static TanRule makeTanRule(Term inside) {
+  public static Term makeCosRule(Term inside) {
+    Term toReturn = createCosRule(inside);
+    if (inside.getClass() != Variable.class) {
+      toReturn = makeChainRule(toReturn, inside);
+    }
+    return toReturn;
+  }
+
+  public static TanRule createTanRule(Term inside) {
     return new TanRule(new LinkedList<>(Collections.singletonList(inside)));
   }
 
-  public static SecRule makeSecRule(Term inside) {
+  public static Term makeTanRule(Term inside) {
+    Term toReturn = createTanRule(inside);
+    if (inside.getClass() != Variable.class) {
+      toReturn = makeChainRule(toReturn, inside);
+    }
+    return toReturn;
+  }
+
+  public static SecRule createSecRule(Term inside) {
     return new SecRule(new LinkedList<>(Collections.singletonList(inside)));
   }
 
-  public static CscRule makeCscRule(Term inside) {
+  public static Term makeSecRule(Term inside) {
+    Term toReturn = createSecRule(inside);
+    if (inside.getClass() != Variable.class) {
+      toReturn = makeChainRule(toReturn, inside);
+    }
+    return toReturn;
+  }
+
+  public static CscRule createCscRule(Term inside) {
     return new CscRule(new LinkedList<>(Collections.singletonList(inside)));
   }
 
-  public static CotRule makeCotRule(Term inside) {
+  public static Term makeCscRule(Term inside) {
+    Term toReturn = createCscRule(inside);
+    if (inside.getClass() != Variable.class) {
+      toReturn = makeChainRule(toReturn, inside);
+    }
+    return toReturn;
+  }
+
+  public static CotRule createCotRule(Term inside) {
     return new CotRule(new LinkedList<>(Collections.singletonList(inside)));
   }
 
-  public static SinhRule makeSinhRule(Term inside) {
+  public static Term makeCotRule(Term inside) {
+    Term toReturn = createCotRule(inside);
+    if (inside.getClass() != Variable.class) {
+      toReturn = makeChainRule(toReturn, inside);
+    }
+    return toReturn;
+  }
+
+  public static SinhRule createSinhRule(Term inside) {
     return new SinhRule(new LinkedList<>(Collections.singletonList(inside)));
   }
 
-  public static CoshRule makeCoshRule(Term inside) {
+  public static Term makeSinhRule(Term inside) {
+    Term toReturn = createSinhRule(inside);
+    if (inside.getClass() != Variable.class) {
+      toReturn = makeChainRule(toReturn, inside);
+    }
+    return toReturn;
+  }
+
+  public static CoshRule createCoshRule(Term inside) {
     return new CoshRule(new LinkedList<>(Collections.singletonList(inside)));
   }
 
-  public static TanhRule makeTanhRule(Term inside) {
+  public static Term makeCoshRule(Term inside) {
+    Term toReturn = createCoshRule(inside);
+    if (inside.getClass() != Variable.class) {
+      toReturn = makeChainRule(toReturn, inside);
+    }
+    return toReturn;
+  }
+
+  public static TanhRule createTanhRule(Term inside) {
     return new TanhRule(new LinkedList<>(Collections.singletonList(inside)));
   }
 
-  public static SechRule makeSechRule(Term inside) {
+  public static Term makeTanhRule(Term inside) {
+    Term toReturn = createTanhRule(inside);
+    if (inside.getClass() != Variable.class) {
+      toReturn = makeChainRule(toReturn, inside);
+    }
+    return toReturn;
+  }
+
+  public static SechRule createSechRule(Term inside) {
     return new SechRule(new LinkedList<>(Collections.singletonList(inside)));
   }
 
-  public static CschRule makeCschRule(Term inside) {
+  public static Term makeSechRule(Term inside) {
+    Term toReturn = createSechRule(inside);
+    if (inside.getClass() != Variable.class) {
+      toReturn = makeChainRule(toReturn, inside);
+    }
+    return toReturn;
+  }
+
+  public static CschRule createCschRule(Term inside) {
     return new CschRule(new LinkedList<>(Collections.singletonList(inside)));
   }
 
-  public static CothRule makeCothRule(Term inside) {
+  public static Term makeCschRule(Term inside) {
+    Term toReturn = createCschRule(inside);
+    if (inside.getClass() != Variable.class) {
+      toReturn = makeChainRule(toReturn, inside);
+    }
+    return toReturn;
+  }
+
+  public static CothRule createCothRule(Term inside) {
     return new CothRule(new LinkedList<>(Collections.singletonList(inside)));
   }
 
-  public static ArcSinRule makeArcSinRule(Term inside) {
+  public static Term makeCothRule(Term inside) {
+    Term toReturn = createCothRule(inside);
+    if (inside.getClass() != Variable.class) {
+      toReturn = makeChainRule(toReturn, inside);
+    }
+    return toReturn;
+  }
+
+  public static ArcSinRule createArcSinRule(Term inside) {
     return new ArcSinRule(new LinkedList<>(Collections.singletonList(inside)));
   }
 
-  public static ArcCosRule makeArcCosRule(Term inside) {
+  public static Term makeArcSinRule(Term inside) {
+    Term toReturn = createArcSinRule(inside);
+    if (inside.getClass() != Variable.class) {
+      toReturn = makeChainRule(toReturn, inside);
+    }
+    return toReturn;
+  }
+
+  public static ArcCosRule createArcCosRule(Term inside) {
     return new ArcCosRule(new LinkedList<>(Collections.singletonList(inside)));
   }
 
-  public static ArcTanRule makeArcTanRule(Term inside) {
+  public static Term makeArcCosRule(Term inside) {
+    Term toReturn = createArcCosRule(inside);
+    if (inside.getClass() != Variable.class) {
+      toReturn = makeChainRule(toReturn, inside);
+    }
+    return toReturn;
+  }
+
+  public static ArcTanRule createArcTanRule(Term inside) {
     return new ArcTanRule(new LinkedList<>(Collections.singletonList(inside)));
   }
 
-  public static ArcCotRule makeArcCotRule(Term inside) {
+  public static Term makeArcTanRule(Term inside) {
+    Term toReturn = createArcTanRule(inside);
+    if (inside.getClass() != Variable.class) {
+      toReturn = makeChainRule(toReturn, inside);
+    }
+    return toReturn;
+  }
+
+  public static ArcCotRule createArcCotRule(Term inside) {
     return new ArcCotRule(new LinkedList<>(Collections.singletonList(inside)));
   }
 
-  public static ArcSecRule makeArcSecRule(Term inside) {
+  public static Term makeArcCotRule(Term inside) {
+    Term toReturn = createArcCotRule(inside);
+    if (inside.getClass() != Variable.class) {
+      toReturn = makeChainRule(toReturn, inside);
+    }
+    return toReturn;
+  }
+
+  public static ArcSecRule createArcSecRule(Term inside) {
     return new ArcSecRule(new LinkedList<>(Collections.singletonList(inside)));
   }
 
-  public static ArcCscRule makeArcCscRule(Term inside) {
+  public static Term makeArcSecRule(Term inside) {
+    Term toReturn = createArcSecRule(inside);
+    if (inside.getClass() != Variable.class) {
+      toReturn = makeChainRule(toReturn, inside);
+    }
+    return toReturn;
+  }
+
+  public static ArcCscRule createArcCscRule(Term inside) {
     return new ArcCscRule(new LinkedList<>(Collections.singletonList(inside)));
+  }
+
+  public static Term makeArcCscRule(Term inside) {
+    Term toReturn = createArcCscRule(inside);
+    if (inside.getClass() != Variable.class) {
+      toReturn = makeChainRule(toReturn, inside);
+    }
+    return toReturn;
   }
 }
