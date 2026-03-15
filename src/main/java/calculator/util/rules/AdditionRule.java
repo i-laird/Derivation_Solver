@@ -27,10 +27,14 @@ public final class AdditionRule extends DerivationRule {
    */
   @Override
   public Term getDerivative() {
-    return makeAdditionRule(
+    Term toReturn = makeAdditionRule(
         terms.stream()
-            .map(x -> x.getDerivative())
+            .map(Term::getDerivative)
             .collect(Collectors.toCollection(LinkedList::new)));
+    if (this.negative) {
+      toReturn.flipSign();
+    }
+    return toReturn;
   }
 
   /**

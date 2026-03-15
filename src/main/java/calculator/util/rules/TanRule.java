@@ -20,7 +20,7 @@ public final class TanRule extends TrigRule {
   @Override
   public Term getDerivPart() {
     // d/dx tan(x) = sec(x)^2
-    return makePowerRule(new Term(2), makeSecRule(this.t));
+    return makePowerRule(makeSecRule(this.t), new Term(2));
   }
 
   @Override

@@ -20,13 +20,13 @@ public final class ArcSecRule extends TrigRule {
   @Override
   public Term getDerivPart() {
     return makeFracRule(
+        new Term(1),
         makeProductRule(
             this.t,
             makePowerFracRule(
-                makeAdditionRule(makePowerRule(new Term(2), this.t), new Term(1).flipSign()),
+                makeAdditionRule(makePowerRule(this.t, new Term(2)), new Term(1).flipSign()),
                 new Term(1),
-                new Term(2))),
-        new Term(1));
+                new Term(2))));
   }
 
   @Override

@@ -21,9 +21,13 @@ public final class NaturalLogRule extends DerivationRule {
    */
   @Override
   public Term getDerivative() {
-
     Term argument = this.terms.get(ARGUMENT_INDEX);
-    return makeFracRule(argument, new Term(1));
+    // d/dx ln(x) = 1/x
+    Term toReturn = makeFracRule(new Term(1), argument);
+    if (this.negative) {
+      toReturn.flipSign();
+    }
+    return toReturn;
   }
 
   @Override

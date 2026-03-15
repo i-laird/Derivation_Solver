@@ -13,11 +13,11 @@ import java.util.LinkedList;
  */
 public final class PowerRule extends DerivationRule {
 
-  // POW is the first in the terms
-  public static final int POW_POS = 0;
+  // BASE is the first in the terms
+  public static final int BASE_POS = 0;
 
-  // BASE is the second in the terms
-  public static final int BASE_POS = 1;
+  // POW is the second in the terms
+  public static final int POW_POS = 1;
 
   PowerRule(LinkedList<Term> l) {
     super(l);
@@ -37,9 +37,13 @@ public final class PowerRule extends DerivationRule {
     // if it is not zero we just do a simple multiplication
     if (pow.getClass() == Term.class && pow.getNum() != 0) {
       int p = pow.getNum();
-      return makeProductRule(
-          this.negative ? new Term(p * -1) : new Term(p),
+      Term toReturn = makeProductRule(
+          new Term(p),
           makePowerRule(base, new Term(p - 1)));
+      if (this.negative) {
+        toReturn.flipSign();
+      }
+      return toReturn;
     }
 
     return new Term(0);

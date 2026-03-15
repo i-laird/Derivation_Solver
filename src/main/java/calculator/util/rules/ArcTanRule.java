@@ -20,7 +20,7 @@ public final class ArcTanRule extends TrigRule {
   @Override
   public Term getDerivPart() {
     return makeFracRule(
-        makeAdditionRule(new Term(1), makePowerRule(new Term(2), this.t)), new Term(1));
+        new Term(1), makeAdditionRule(new Term(1), makePowerRule(this.t, new Term(2))));
   }
 
   @Override

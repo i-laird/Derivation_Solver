@@ -19,7 +19,14 @@ public final class ArcCscRule extends TrigRule {
 
   @Override
   public Term getDerivPart() {
-    return createArcSecRule(this.t).getDerivPart().flipSign();
+    return makeFracRule(
+        new Term(-1),
+        makeProductRule(
+            this.t,
+            makePowerFracRule(
+                makeAdditionRule(makePowerRule(this.t, new Term(2)), new Term(1).flipSign()),
+                new Term(1),
+                new Term(2))));
   }
 
   @Override

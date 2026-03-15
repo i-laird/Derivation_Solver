@@ -20,7 +20,7 @@ public final class CotRule extends TrigRule {
   @Override
   public Term getDerivPart() {
     // d/dx cot(x) = -csc(x)^2
-    return makePowerRule(makeCscRule(this.t), new Term(2).flipSign());
+    return makePowerRule(makeCscRule(this.t), new Term(2)).flipSign();
   }
 
   @Override

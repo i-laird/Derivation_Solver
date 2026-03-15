@@ -24,7 +24,7 @@ public class Variable extends Term implements AbstractMath {
   }
 
   public double evaluate(ImmutableList<Integer> dims) {
-    return (this.negative ? dims.get(0) * -1 : dims.get(0));
+    return (this.negative ? dims.get(0) * -1.0 : dims.get(0).doubleValue());
   }
 
   @Override

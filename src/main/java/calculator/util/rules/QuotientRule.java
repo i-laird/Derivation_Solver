@@ -17,10 +17,10 @@ import java.util.LinkedList;
  */
 public final class QuotientRule extends DerivationRule {
 
-  public static final int NUMERATOR_POS = 1;
-  public static final int DENOM_POS = 0;
+  public static final int NUMERATOR_POS = 0;
+  public static final int DENOM_POS = 1;
 
-  // NUMERATOR is the second term and DENOMINATOR is the first
+  // NUMERATOR is the first term and DENOMINATOR is the second
 
   QuotientRule(LinkedList<Term> l) {
     super(l);
@@ -37,17 +37,24 @@ public final class QuotientRule extends DerivationRule {
       return null;
     }
 
-    Term numerator =
-        makeAdditionRule(
-            makeProductRule(
-                this.terms.get(NUMERATOR_POS).getDerivative(), this.terms.get(DENOM_POS)),
-            makeProductRule(
-                    this.terms.get(DENOM_POS).getDerivative(), this.terms.get(NUMERATOR_POS))
-                .flipSign());
+    Term f = this.terms.get(NUMERATOR_POS);
+    Term g = this.terms.get(DENOM_POS);
 
-    Term denom = makePowerRule(this.terms.get(DENOM_POS), new Term(2));
+    // (f'g - g'f) / g^2
+    Term fPrimeG = makeProductRule(f.getDerivative(), g);
+    Term gPrimeF = makeProductRule(g.getDerivative(), f);
+    
+    // We want f'g - g'f. AdditionRule will add fPrimeG and negatedGPrimeF.
+    Term negatedGPrimeF = gPrimeF.flipSign();
+    Term numerator = makeAdditionRule(fPrimeG, negatedGPrimeF);
 
-    return makeFracRule(denom, numerator);
+    Term denom = makePowerRule(g, new Term(2));
+
+    Term toReturn = makeFracRule(numerator, denom);
+    if (this.negative) {
+      toReturn.flipSign();
+    }
+    return toReturn;
   }
 
   @Override

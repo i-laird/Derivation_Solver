@@ -11,8 +11,8 @@ public final class RuleFactory {
 
   private RuleFactory() {}
 
-  public static QuotientRule makeFracRule(Term denominator, Term numerator) {
-    return new QuotientRule(new LinkedList<>(Arrays.asList(denominator, numerator)));
+  public static QuotientRule makeFracRule(Term numerator, Term denominator) {
+    return new QuotientRule(new LinkedList<>(Arrays.asList(numerator, denominator)));
   }
 
   public static ProductRule makeProductRule(Term left, Term right) {
@@ -33,16 +33,16 @@ public final class RuleFactory {
 
   public static Term makeLogRule(Term base, Term inside) {
     Term toReturn = new LogRule(new LinkedList<>(Arrays.asList(base, inside)));
-    if (base.getClass() != Variable.class) {
+    if (inside.getClass() != Variable.class) {
       toReturn = makeChainRule(toReturn, inside);
     }
     return toReturn;
   }
 
-  public static Term makePowerRule(Term inside, Term power) {
-    Term toReturn = new PowerRule(new LinkedList<>(Arrays.asList(power, inside)));
-    if (inside.getClass() != Variable.class) {
-      toReturn = makeChainRule(toReturn, inside);
+  public static Term makePowerRule(Term base, Term power) {
+    Term toReturn = new PowerRule(new LinkedList<>(Arrays.asList(base, power)));
+    if (base.getClass() != Variable.class) {
+      toReturn = makeChainRule(toReturn, base);
     }
     return toReturn;
   }

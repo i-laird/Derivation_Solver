@@ -19,12 +19,10 @@ public final class ArcSinRule extends TrigRule {
 
   @Override
   public Term getDerivPart() {
-    return makeFracRule(
-        makePowerFracRule(
-            makeAdditionRule(new Term(1), makePowerRule(new Term(2), this.t).flipSign()),
-            new Term(1),
-            new Term(2)),
-        new Term(1));
+    Term xSquared = makePowerRule(this.t, new Term(2));
+    Term oneMinusXSquared = makeAdditionRule(new Term(1), xSquared.flipSign());
+    Term sqrt = makePowerFracRule(oneMinusXSquared, new Term(1), new Term(2));
+    return makeFracRule(new Term(1), sqrt);
   }
 
   @Override

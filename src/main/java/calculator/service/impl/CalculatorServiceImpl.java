@@ -23,8 +23,9 @@ public class CalculatorServiceImpl implements CalculatorService {
       String expression, ImmutableList<Integer> evalPoints) {
     AbstractSyntaxTree abstractSyntaxTree =
         new AbstractSyntaxTree(StringToStream.convertStringToStream(expression));
-    Term derivative = SymbolicSimplifier.simplify(abstractSyntaxTree.getDeriv());
-    return new DerivativeResponse(derivative.toString(), derivative.evaluate(evalPoints));
+    Term derivative = abstractSyntaxTree.getDeriv();
+    Term simplifiedDerivative = SymbolicSimplifier.simplify(derivative);
+    return new DerivativeResponse(simplifiedDerivative.toString(), simplifiedDerivative.evaluate(evalPoints));
   }
 
   @Override

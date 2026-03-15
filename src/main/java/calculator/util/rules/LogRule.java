@@ -32,7 +32,11 @@ public final class LogRule extends DerivationRule {
 
     Term denominator = makeProductRule(argument, makeNaturalLogRule(this.terms.get(BASE_INDEX)));
 
-    return makeFracRule(denominator, new Term(1));
+    Term toReturn = makeFracRule(new Term(1), denominator);
+    if (this.negative) {
+      toReturn.flipSign();
+    }
+    return toReturn;
   }
 
   @Override

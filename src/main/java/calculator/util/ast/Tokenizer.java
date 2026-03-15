@@ -230,23 +230,21 @@ public class Tokenizer {
           if (stack.empty()) {
             break;
           }
-          try {
-            // shunting yard algorithm stuff
-            if ((stack.peek()).getAm().getClass() == Paren.class
-                || ((((Operator) (stack.peek()).getAm())).precedence < ((Operator) am).precedence)
-                || (((Operator) (stack.peek()).getAm()).precedence == ((Operator) am).precedence)
-                    && ((Operator) (stack.peek()).getAm()).associativity
-                        == Operator.Associativity.LEFT) {
-              break;
-            }
-            // account for natural log being weird
-            // TODO check to see if this works
-            if (am == Operator.NAT_LOG) {
-              outputParts.add(new Wrapper(new Num(1)));
-            }
-          } catch (ClassCastException e) {
-            log.error("Unexpected ClassCastException during operator processing", e);
+          // shunting yard algorithm stuff
+          AbstractMath topAm = stack.peek().getAm();
+          if (topAm.getClass() == Paren.class) {
+            break;
           }
+
+          Operator topOp = (Operator) topAm;
+          Operator currentOp = (Operator) am;
+
+          if (topOp.precedence < currentOp.precedence
+              || (topOp.precedence == currentOp.precedence
+                  && currentOp.associativity == Operator.Associativity.RIGHT)) {
+            break;
+          }
+
           outputParts.add(stack.pop());
         }
         stack.push(new Wrapper(am));
@@ -278,23 +276,24 @@ public class Tokenizer {
       Map<Wrapper, List<Integer>> functionToLastAppliedTerm,
       int numRightParenEncountered,
       Queue<Wrapper> outputParts) {
-    Wrapper toRemove = null;
+    List<Wrapper> toRemove = new LinkedList<>();
     // see if a unary operator ended at this point
     for (Map.Entry<Wrapper, List<Integer>> k : functionToLastAppliedTerm.entrySet()) {
       List<Integer> valueList = k.getValue();
-      for (int i = 0; i < valueList.size(); i++) {
-        Integer val = valueList.get(i);
+      ListIterator<Integer> listIterator = valueList.listIterator();
+      while (listIterator.hasNext()) {
+        Integer val = listIterator.next();
         if (val == numRightParenEncountered) {
           outputParts.add(k.getKey());
-          valueList.remove(i);
+          listIterator.remove();
           if (valueList.isEmpty()) {
-            toRemove = k.getKey();
+            toRemove.add(k.getKey());
           }
           break;
         }
       }
     }
-    functionToLastAppliedTerm.remove(toRemove);
+    toRemove.forEach(functionToLastAppliedTerm::remove);
   }
 
   /**

@@ -1,6 +1,7 @@
 package calculator.util.rules;
 
 import calculator.util.terms.Term;
+import com.google.common.collect.ImmutableList;
 import java.util.LinkedList;
 
 /**
@@ -30,6 +31,15 @@ public abstract sealed class DerivationRule extends Rule
 
   public DerivationRule(LinkedList<Term> l) {
     this.terms = l;
+  }
+
+  @Override
+  public double evaluate(ImmutableList<Integer> dims) {
+    double toReturn = this.getResult(dims);
+    if (this.negative) {
+      toReturn = toReturn * -1.0;
+    }
+    return toReturn;
   }
 
   public DerivationRule() {}

@@ -15,7 +15,7 @@ public abstract sealed class Rule extends Term permits DerivationRule, TrigRule 
   public double evaluate(ImmutableList<Integer> dims) {
     double toReturn = this.getResult(dims);
     if (this.negative) {
-      toReturn = toReturn * -1;
+      toReturn = toReturn * -1.0;
     }
     return toReturn;
   }

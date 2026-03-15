@@ -59,7 +59,7 @@ public final class ProductRule extends DerivationRule {
 
   @Override
   public double getResult(ImmutableList<Integer> dims) {
-    return this.terms.stream().map(x -> x.evaluate(dims)).reduce((x, y) -> x * y).get();
+    return this.terms.stream().map(x -> x.evaluate(dims)).reduce(1.0, (x, y) -> x * y);
   }
 
   @Override

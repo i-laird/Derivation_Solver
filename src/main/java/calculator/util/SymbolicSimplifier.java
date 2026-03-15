@@ -27,26 +27,35 @@ public class SymbolicSimplifier {
             return null;
         }
 
+        Term simplified;
         if (term instanceof AdditionRule) {
-            return simplifyAddition((AdditionRule) term);
+            simplified = simplifyAddition((AdditionRule) term);
         } else if (term instanceof ProductRule) {
-            return simplifyProduct((ProductRule) term);
+            simplified = simplifyProduct((ProductRule) term);
         } else if (term instanceof QuotientRule) {
-            return simplifyQuotient((QuotientRule) term);
+            simplified = simplifyQuotient((QuotientRule) term);
         } else if (term instanceof PowerRule) {
-            return simplifyPower((PowerRule) term);
+            simplified = simplifyPower((PowerRule) term);
         } else if (term instanceof ChainRule) {
-            return simplifyChain((ChainRule) term);
+            simplified = simplifyChain((ChainRule) term);
         } else if (term instanceof TrigRule) {
-            return simplifyTrig((TrigRule) term);
+            simplified = simplifyTrig((TrigRule) term);
         } else if (term instanceof NaturalLogRule) {
-            return simplifyNaturalLog((NaturalLogRule) term);
+            simplified = simplifyNaturalLog((NaturalLogRule) term);
         } else if (term instanceof LogRule) {
-            return simplifyLog((LogRule) term);
+            simplified = simplifyLog((LogRule) term);
+        } else {
+            // Base cases: Term (constant) or Variable
+            return term;
         }
 
-        // Base cases: Term (constant) or Variable
-        return term;
+        // If the simplified result is a different instance and it is a rule, 
+        // we might need to preserve the negative flag if the original had it.
+        // However, many simplifyXXX methods already handle negation or return new terms.
+        // Base Term and Variable handle their own signs.
+        // Let's ensure rules created by factories in simplifyXXX don't double-negate.
+        
+        return simplified;
     }
 
     /**
@@ -147,10 +156,10 @@ public class SymbolicSimplifier {
 
     private static Term simplifyQuotient(QuotientRule rule) {
         List<Term> terms = rule.getTerms();
-        Term originalDenominator = terms.get(QuotientRule.DENOM_POS);
         Term originalNumerator = terms.get(QuotientRule.NUMERATOR_POS);
-        Term simplifiedDenominator = simplify(originalDenominator);
+        Term originalDenominator = terms.get(QuotientRule.DENOM_POS);
         Term simplifiedNumerator = simplify(originalNumerator);
+        Term simplifiedDenominator = simplify(originalDenominator);
 
         // 0 / x = 0
         if (isConstant(simplifiedNumerator, 0)) {
@@ -174,7 +183,7 @@ public class SymbolicSimplifier {
             return rule;
         }
 
-        return makeFracRule(simplifiedDenominator, simplifiedNumerator);
+        return makeFracRule(simplifiedNumerator, simplifiedDenominator);
     }
 
     private static Term simplifyPower(PowerRule rule) {

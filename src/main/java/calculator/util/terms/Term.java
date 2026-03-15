@@ -53,7 +53,7 @@ public class Term {
    * @return the evaluated expression
    */
   public double evaluate(ImmutableList<Integer> dims) {
-    return this.getNum();
+    return (double) this.getNum();
   }
 
   /**

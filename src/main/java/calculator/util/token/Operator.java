@@ -48,38 +48,18 @@ public enum Operator implements AbstractMath {
     Term toReturn = null;
     switch (this) {
       case NAT_LOG:
-        toReturn = makeNaturalLogRule(two);
+        toReturn = makeNaturalLogRule(one);
         break;
       case LOG:
         toReturn = makeLogRule(one, two);
         break;
       case SUBTRACT:
-        one.flipSign();
+        two.flipSign();
       case ADD:
-        // see if an addition is being made to an existing addtion
-        if (one.getClass() == AdditionRule.class) {
-          toReturn = ((AdditionRule) one).addTerm(two);
-        } else if (two.getClass() == AdditionRule.class) {
-          toReturn = ((AdditionRule) two).addTerm(one);
-        }
-
-        // if not create a new addition
-        else {
-          toReturn = makeAdditionRule(one, two);
-        }
+        toReturn = makeAdditionRule(one, two);
         break;
       case MULTIPLY:
-        // see if an mult is being made to an existing mult
-        if (one.getClass() == ProductRule.class) {
-          toReturn = ((ProductRule) one).addTerm(two);
-        } else if (two.getClass() == ProductRule.class) {
-          toReturn = ((ProductRule) two).addTerm(one);
-        }
-
-        // if not create a new mult
-        else {
-          toReturn = makeProductRule(one, two);
-        }
+        toReturn = makeProductRule(one, two);
         break;
       case DIVIDE:
         toReturn = makeFracRule(one, two);

@@ -26,9 +26,16 @@ public final class ChainRule extends DerivationRule {
 
   @Override
   public Term getDerivative() {
-    ProductRule toReturn =
-        RuleFactory.makeProductRule(
-            this.terms.get(0).getDerivative(), this.terms.get(1).getDerivative());
+    Term outside = this.terms.get(0);
+    Term inside = this.terms.get(1);
+
+    // Chain Rule: d/dx f(g(x)) = f'(g(x)) * g'(x)
+    // outside.getDerivative() should return f'(g(x)) 
+    // inside.getDerivative() returns g'(x)
+    Term outsideDerivative = outside.getDerivative();
+    Term insideDerivative = inside.getDerivative();
+
+    Term toReturn = RuleFactory.makeProductRule(outsideDerivative, insideDerivative);
     if (this.negative) {
       toReturn.flipSign();
     }

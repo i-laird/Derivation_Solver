@@ -52,7 +52,7 @@ public class AbstractSyntaxTree {
         Term operand = parseTree.pop();
         parseTree.push(part.getTermFromOp(operand, null));
       } else {
-        Term operandOne = parseTree.pop(), operandTwo = parseTree.pop();
+        Term operandTwo = parseTree.pop(), operandOne = parseTree.pop();
         parseTree.push(part.getTermFromOp(operandOne, operandTwo));
       }
       if (w.getN() != null) {

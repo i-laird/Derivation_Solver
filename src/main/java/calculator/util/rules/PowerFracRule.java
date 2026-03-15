@@ -19,12 +19,16 @@ public final class PowerFracRule extends DerivationRule {
 
     // if it is not zero we just do a simple multiplication
     if (topPow != 0 && bottomPow != 0) {
-      return makeProductRule(
+      Term toReturn = makeProductRule(
           makeFracRule(new Term(topPow), new Term(bottomPow)),
           makePowerFracRule(base, new Term(topPow - bottomPow), this.terms.get(2)));
+      if (this.negative) {
+        toReturn.flipSign();
+      }
+      return toReturn;
     }
 
-    return new Term(1);
+    return new Term(0);
   }
 
   @Override
