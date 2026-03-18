@@ -3,8 +3,8 @@ package calculator.util.rules;
 import static calculator.util.rules.RuleFactory.*;
 
 import calculator.util.terms.Term;
-import com.google.common.collect.ImmutableList;
 import java.util.LinkedList;
+import java.util.Map;
 
 public final class ArcSinRule extends TrigRule {
 
@@ -28,7 +28,7 @@ public final class ArcSinRule extends TrigRule {
   }
 
   @Override
-  public double getResult(ImmutableList<Integer> dims) {
+  public double getResult(Map<Character, Integer> dims) {
     return Math.asin(this.t.evaluate(dims));
   }
 }

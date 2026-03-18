@@ -30,7 +30,7 @@ public abstract sealed class TrigRule extends Rule
   }
 
   @Override
-  public Term getDerivative() {
+  public Term getDerivative(char withRespectTo) {
     Term t = this.getDerivPart();
     if (this.negative) {
       t.flipSign();
