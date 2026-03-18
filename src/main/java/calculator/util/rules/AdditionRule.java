@@ -3,7 +3,7 @@ package calculator.util.rules;
 import static calculator.util.rules.RuleFactory.makeAdditionRule;
 
 import calculator.util.terms.Term;
-import com.google.common.collect.ImmutableList;
+import java.util.Map;
 import java.util.LinkedList;
 import java.util.stream.Collectors;
 
@@ -26,10 +26,10 @@ public final class AdditionRule extends DerivationRule {
    * @return
    */
   @Override
-  public Term getDerivative() {
+  public Term getDerivative(char withRespectTo) {
     return makeAdditionRule(
         terms.stream()
-            .map(x -> x.getDerivative())
+            .map(x -> x.getDerivative(withRespectTo))
             .collect(Collectors.toCollection(LinkedList::new)));
   }
 
@@ -50,7 +50,7 @@ public final class AdditionRule extends DerivationRule {
    * @param dims the variable values to use when evaulating
    * @return the result
    */
-  public double getResult(ImmutableList<Integer> dims) {
+  public double getResult(Map<Character, Integer> dims) {
     return this.terms.stream().map(x -> x.evaluate(dims)).reduce(0.0, Double::sum);
   }
 

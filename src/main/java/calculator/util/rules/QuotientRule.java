@@ -4,7 +4,7 @@ package calculator.util.rules;
 import static calculator.util.rules.RuleFactory.*;
 
 import calculator.util.terms.Term;
-import com.google.common.collect.ImmutableList;
+import java.util.Map;
 import java.util.LinkedList;
 
 /**
@@ -32,7 +32,7 @@ public final class QuotientRule extends DerivationRule {
    * @return
    */
   @Override
-  public Term getDerivative() {
+  public Term getDerivative(char withRespectTo) {
     if (this.terms.size() != 2) {
       return null;
     }
@@ -40,9 +40,9 @@ public final class QuotientRule extends DerivationRule {
     Term numerator =
         makeAdditionRule(
             makeProductRule(
-                this.terms.get(NUMERATOR_POS).getDerivative(), this.terms.get(DENOM_POS)),
+                this.terms.get(NUMERATOR_POS).getDerivative(withRespectTo), this.terms.get(DENOM_POS)),
             makeProductRule(
-                    this.terms.get(DENOM_POS).getDerivative(), this.terms.get(NUMERATOR_POS))
+                    this.terms.get(DENOM_POS).getDerivative(withRespectTo), this.terms.get(NUMERATOR_POS))
                 .flipSign());
 
     Term denom = makePowerRule(new Term(2), this.terms.get(DENOM_POS));
@@ -51,7 +51,7 @@ public final class QuotientRule extends DerivationRule {
   }
 
   @Override
-  public double getResult(ImmutableList<Integer> dims) {
+  public double getResult(Map<Character, Integer> dims) {
     double numeratorEvaluated = this.terms.get(NUMERATOR_POS).evaluate(dims);
     double denominatorEvaluated = this.terms.get(DENOM_POS).evaluate(dims);
     return numeratorEvaluated / denominatorEvaluated;
