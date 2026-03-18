@@ -124,7 +124,7 @@ public class SymbolicSimplifier {
             return new Term(1);
         }
         if (simplifiedTerms.size() == 1) {
-            return simplifiedTerms.get(0);
+            return applySign(rule, simplifiedTerms.get(0));
         }
 
         // Since the order of the rules does not matter, we can multiply together the constant terms.
@@ -137,7 +137,7 @@ public class SymbolicSimplifier {
                 nonConstantTerms.add(t);
             }
         }
-        
+
         if (nonConstantTerms.isEmpty()) {
             return new Term(constantProduct);
         }
@@ -146,7 +146,7 @@ public class SymbolicSimplifier {
         }
 
         if (nonConstantTerms.size() == 1) {
-            return nonConstantTerms.get(0);
+            return applySign(rule, nonConstantTerms.get(0));
         }
 
         return applySign(rule, makeProductRule(nonConstantTerms));

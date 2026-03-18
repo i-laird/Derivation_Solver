@@ -89,7 +89,7 @@ public enum Operator implements AbstractMath {
         break;
       case EXPONENT:
         toReturn = makePowerRule(one, two);
-        specialCase = true;
+        // PowerRule handles chain-rule differentiation internally, so no ChainRule wrapper needed
         break;
       default:
         throw new IllegalStateException("Invalid DerivationSolver.Enums.Operator");
