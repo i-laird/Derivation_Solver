@@ -3,7 +3,6 @@ package calculator.util.token;
 import static calculator.util.rules.RuleFactory.*;
 
 import calculator.util.terms.Term;
-import calculator.util.terms.Variable;
 
 public enum Function implements AbstractMath {
   SIN,
@@ -127,9 +126,7 @@ public enum Function implements AbstractMath {
       default:
         throw new IllegalStateException("Invalid DerivationSolver.Enums function");
     }
-    if (one.getClass() != Variable.class) {
-      toReturn = makeChainRule(toReturn, one);
-    }
+    toReturn = makeChainRule(toReturn, one);
     return toReturn;
   }
 }

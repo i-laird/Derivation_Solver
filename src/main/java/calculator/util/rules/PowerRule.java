@@ -3,8 +3,8 @@ package calculator.util.rules;
 import static calculator.util.rules.RuleFactory.*;
 
 import calculator.util.terms.Term;
-import com.google.common.collect.ImmutableList;
 import java.util.LinkedList;
+import java.util.Map;
 
 /**
  * POWER RULE
@@ -29,23 +29,24 @@ public final class PowerRule extends DerivationRule {
    * @return the antiderivative
    */
   @Override
-  public Term getDerivative() {
+  public Term getDerivative(char withRespectTo) {
 
     int pow = this.terms.get(POW_POS).getNum();
     Term base = this.terms.get(BASE_POS);
 
     // if it is not zero we just do a simple multiplication
     if (pow != 0) {
-      return makeProductRule(
+      Term outerDerivative = makeProductRule(
           this.negative ? new Term(pow * -1) : new Term(pow),
           makePowerRule(new Term(pow - 1), base));
+      return makeProductRule(outerDerivative, base.getDerivative(withRespectTo));
     }
 
-    return new Term(1);
+    return new Term(0);
   }
 
   @Override
-  public double getResult(ImmutableList<Integer> dims) {
+  public double getResult(Map<Character, Integer> dims) {
     return Math.pow(this.terms.get(1).evaluate(dims), this.terms.get(0).evaluate(dims));
   }
 
