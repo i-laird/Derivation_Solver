@@ -1,6 +1,6 @@
 package calculator.util.terms;
 
-import com.google.common.collect.ImmutableList;
+import java.util.Map;
 
 public class Term {
   protected boolean negative = false;
@@ -31,7 +31,7 @@ public class Term {
    *
    * @return the antiderivative of the {@link Term}.
    */
-  public Term getDerivative() {
+  public Term getDerivative(char withRespectTo) {
     // in this case it is simply a number
     return new Term(0);
   }
@@ -61,7 +61,7 @@ public class Term {
    * @param dims evaluation dims
    * @return the evaluated expression
    */
-  public double evaluate(ImmutableList<Integer> dims) {
+  public double evaluate(Map<Character, Integer> dims) {
     return this.getNum();
   }
 

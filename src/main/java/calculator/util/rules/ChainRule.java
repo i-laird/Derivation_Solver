@@ -2,8 +2,8 @@
 package calculator.util.rules;
 
 import calculator.util.terms.Term;
-import com.google.common.collect.ImmutableList;
 import java.util.LinkedList;
+import java.util.Map;
 
 public final class ChainRule extends DerivationRule {
 
@@ -12,13 +12,14 @@ public final class ChainRule extends DerivationRule {
   }
 
   @Override
-  public Term getDerivative() {
+  public Term getDerivative(char withRespectTo) {
     if (this.terms.size() != 2) {
       return null;
     }
     ProductRule toReturn =
         RuleFactory.makeProductRule(
-            this.terms.get(0).getDerivative(), this.terms.get(1).getDerivative());
+            this.terms.get(0).getDerivative(withRespectTo),
+            this.terms.get(1).getDerivative(withRespectTo));
     if (this.negative) {
       toReturn.flipSign();
     }
@@ -26,7 +27,7 @@ public final class ChainRule extends DerivationRule {
   }
 
   @Override
-  public double getResult(ImmutableList<Integer> dims) {
+  public double getResult(Map<Character, Integer> dims) {
     return this.terms.get(0).evaluate(dims);
   }
 

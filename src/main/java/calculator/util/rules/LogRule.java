@@ -3,8 +3,8 @@ package calculator.util.rules;
 import static calculator.util.rules.RuleFactory.*;
 
 import calculator.util.terms.Term;
-import com.google.common.collect.ImmutableList;
 import java.util.LinkedList;
+import java.util.Map;
 
 /**
  * Log Rule
@@ -26,17 +26,17 @@ public final class LogRule extends DerivationRule {
    * @return derivative
    */
   @Override
-  public Term getDerivative() {
+  public Term getDerivative(char withRespectTo) {
 
     Term argument = this.terms.get(ARGUMENT_INDEX);
 
     Term denominator = makeProductRule(argument, makeNaturalLogRule(this.terms.get(BASE_INDEX)));
 
-    return makeFracRule(denominator, new Term(1));
+    return makeProductRule(makeFracRule(denominator, new Term(1)), argument.getDerivative(withRespectTo));
   }
 
   @Override
-  public double getResult(ImmutableList<Integer> dims) {
+  public double getResult(Map<Character, Integer> dims) {
     return Math.log(this.terms.get(BASE_INDEX).evaluate(dims))
         / Math.log(this.terms.get(ARGUMENT_INDEX).evaluate(dims));
   }

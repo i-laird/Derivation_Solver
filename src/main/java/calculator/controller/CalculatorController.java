@@ -2,10 +2,11 @@ package calculator.controller;
 
 import calculator.DTO.DerivativeRequest;
 import calculator.DTO.DerivativeResponse;
+import calculator.exception.ParseError;
 import calculator.service.CalculatorService;
-import com.google.common.collect.ImmutableList;
 import jakarta.validation.Valid;
-import java.time.LocalTime;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,8 +33,18 @@ public final class CalculatorController {
   @PostMapping(value = "/derivative")
   @ResponseStatus(HttpStatus.OK)
   public DerivativeResponse generateDerivative(@Valid @RequestBody DerivativeRequest request) {
-    return calculatorServiceImpl.evaluateDerivative(
-        request.expression(), ImmutableList.copyOf(request.points()));
+    if (request.withRespectTo() == null || request.withRespectTo().length() != 1
+            || !Character.isLetter(request.withRespectTo().charAt(0))) {
+      throw new ParseError("withRespectTo must be a single letter variable name");
+    }
+    char wrt = request.withRespectTo().charAt(0);
+    Map<Character, Integer> evalPoints = request.points() == null
+        ? Map.of()
+        : request.points().entrySet().stream()
+            .collect(Collectors.toMap(
+                e -> e.getKey().charAt(0),
+                Map.Entry::getValue));
+    return calculatorServiceImpl.evaluateDerivative(request.expression(), wrt, evalPoints);
   }
 
   /**
@@ -45,7 +56,12 @@ public final class CalculatorController {
   @PostMapping(value = "/expression")
   @ResponseStatus(HttpStatus.OK)
   public double evaluateExpression(@Valid @RequestBody DerivativeRequest request) {
-    return calculatorServiceImpl.evaluateExpression(
-        request.expression(), ImmutableList.copyOf(request.points()));
+    Map<Character, Integer> evalPoints = request.points() == null
+        ? Map.of()
+        : request.points().entrySet().stream()
+            .collect(Collectors.toMap(
+                e -> e.getKey().charAt(0),
+                Map.Entry::getValue));
+    return calculatorServiceImpl.evaluateExpression(request.expression(), evalPoints);
   }
 }

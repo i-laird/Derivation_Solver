@@ -2,7 +2,7 @@
 package calculator.util.terms;
 
 import calculator.util.token.AbstractMath;
-import com.google.common.collect.ImmutableList;
+import java.util.Map;
 
 public class Variable extends Term implements AbstractMath {
 
@@ -14,17 +14,20 @@ public class Variable extends Term implements AbstractMath {
   }
 
   @Override
-  public Term getDerivative() {
-    // the derivative of x with respect to x is simply 1
-    return (!this.negative ? new Term(1) : new Term(-1));
+  public Term getDerivative(char withRespectTo) {
+    if (variableSymbol == withRespectTo) {
+      return (!this.negative ? new Term(1) : new Term(-1));
+    }
+    return new Term(0);
   }
 
   public Term getTermFromOp(Term one, Term two) {
     return this;
   }
 
-  public double evaluate(ImmutableList<Integer> dims) {
-    return (this.negative ? dims.get(0) * -1 : dims.get(0));
+  public double evaluate(Map<Character, Integer> dims) {
+    int value = dims.getOrDefault(variableSymbol, 0);
+    return this.negative ? value * -1.0 : value;
   }
 
   @Override

@@ -1,7 +1,7 @@
 package calculator.util.rules;
 
 import calculator.util.terms.Term;
-import com.google.common.collect.ImmutableList;
+import java.util.Map;
 
 public abstract sealed class Rule extends Term permits DerivationRule, TrigRule {
 
@@ -12,7 +12,7 @@ public abstract sealed class Rule extends Term permits DerivationRule, TrigRule 
    * @param dims values to use for the variables
    * @return the result
    */
-  public double evaluate(ImmutableList<Integer> dims) {
+  public double evaluate(Map<Character, Integer> dims) {
     double toReturn = this.getResult(dims);
     if (this.negative) {
       toReturn = toReturn * -1;
@@ -29,10 +29,10 @@ public abstract sealed class Rule extends Term permits DerivationRule, TrigRule 
    * @param dims values to use for the variables
    * @return evaluated expression for dims
    */
-  abstract double getResult(ImmutableList<Integer> dims);
+  abstract double getResult(Map<Character, Integer> dims);
 
   @Override
-  public abstract Term getDerivative();
+  public abstract Term getDerivative(char withRespectTo);
 
   @Override
   public abstract String toString();

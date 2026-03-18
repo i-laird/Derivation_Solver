@@ -16,7 +16,7 @@ import calculator.security.JwtTokenUtil;
 import calculator.security.WebSecurityConfig;
 import calculator.service.CalculatorService;
 import tools.jackson.databind.ObjectMapper;
-import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -54,9 +54,9 @@ class CalculatorControllerTest {
   void should_return200_and_derivative_response_body_when_validDerivativeRequest()
       throws Exception {
     DerivativeResponse mockResponse = new DerivativeResponse("2*x", 4.0);
-    when(calculatorServiceImpl.evaluateDerivative(anyString(), any())).thenReturn(mockResponse);
+    when(calculatorServiceImpl.evaluateDerivative(anyString(), any(char.class), any())).thenReturn(mockResponse);
 
-    DerivativeRequest request = new DerivativeRequest("x^2", List.of(2));
+    DerivativeRequest request = new DerivativeRequest("x^2", "x", Map.of("x", 2));
     mockMvc
         .perform(
             post("/derivative")
@@ -70,7 +70,7 @@ class CalculatorControllerTest {
 
   @Test
   void should_return400_when_blankExpression_on_derivative() throws Exception {
-    DerivativeRequest request = new DerivativeRequest("", List.of(1));
+    DerivativeRequest request = new DerivativeRequest("", "x", Map.of("x", 1));
     mockMvc
         .perform(
             post("/derivative")
@@ -83,7 +83,7 @@ class CalculatorControllerTest {
   void should_return200_and_value_when_validExpressionRequest() throws Exception {
     when(calculatorServiceImpl.evaluateExpression(anyString(), any())).thenReturn(7.0);
 
-    DerivativeRequest request = new DerivativeRequest("2*x + 1", List.of(3));
+    DerivativeRequest request = new DerivativeRequest("2*x + 1", "x", Map.of("x", 3));
     mockMvc
         .perform(
             post("/expression")
@@ -95,7 +95,7 @@ class CalculatorControllerTest {
 
   @Test
   void should_return400_when_blankExpression_on_expression() throws Exception {
-    DerivativeRequest request = new DerivativeRequest("", List.of(1));
+    DerivativeRequest request = new DerivativeRequest("", "x", Map.of("x", 1));
     mockMvc
         .perform(
             post("/expression")
@@ -110,7 +110,7 @@ class CalculatorControllerTest {
         .perform(
             post("/derivative")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"expression\": null, \"points\": [1]}"))
+                .content("{\"expression\": null, \"withRespectTo\": \"x\", \"points\": {\"x\": 1}}"))
         .andExpect(status().isBadRequest());
   }
 }
