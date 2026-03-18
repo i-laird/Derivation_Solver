@@ -1,9 +1,7 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import calculator.service.CalculatorService;
-import com.google.common.collect.ImmutableList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +24,7 @@ public class ExpressionTester {
   @ParameterizedTest(name = "{0}")
   @MethodSource("expression")
   public void test(String inputString, double expected) {
-    double result = calculatorServiceImpl.evaluateExpression(inputString, ImmutableList.of());
+    double result = calculatorServiceImpl.evaluateExpression(inputString, Map.of());
     assertEquals(expected, result);
   }
 
@@ -42,9 +40,5 @@ public class ExpressionTester {
         Arguments.of("(4+3)/(3-4)", -7.0),
         Arguments.of("-25+1", -24.0),
         Arguments.of("1 / 4", 0.25));
-  }
-
-  private static List<Integer> createSingleList(Integer xVal) {
-    return Collections.singletonList(xVal);
   }
 }

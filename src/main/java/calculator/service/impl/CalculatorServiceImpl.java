@@ -7,7 +7,7 @@ import calculator.util.StringToStream;
 import calculator.util.SymbolicSimplifier;
 import calculator.util.ast.AbstractSyntaxTree;
 import calculator.util.terms.Term;
-import com.google.common.collect.ImmutableList;
+import java.util.Map;
 import org.springframework.stereotype.Service;
 
 /**
@@ -20,15 +20,15 @@ import org.springframework.stereotype.Service;
 public class CalculatorServiceImpl implements CalculatorService {
   @Override
   public DerivativeResponse evaluateDerivative(
-      String expression, ImmutableList<Integer> evalPoints) {
+      String expression, char withRespectTo, Map<Character, Integer> evalPoints) {
     AbstractSyntaxTree abstractSyntaxTree =
         new AbstractSyntaxTree(StringToStream.convertStringToStream(expression));
-    Term derivative = SymbolicSimplifier.simplify(abstractSyntaxTree.getDeriv());
+    Term derivative = SymbolicSimplifier.simplify(abstractSyntaxTree.getDeriv(withRespectTo));
     return new DerivativeResponse(derivative.toString(), derivative.evaluate(evalPoints));
   }
 
   @Override
-  public double evaluateExpression(String expression, ImmutableList<Integer> evalPoints) {
+  public double evaluateExpression(String expression, Map<Character, Integer> evalPoints) {
     AbstractSyntaxTree abstractSyntaxTree =
         new AbstractSyntaxTree(StringToStream.convertStringToStream(expression));
     Term root = abstractSyntaxTree.getRoot();

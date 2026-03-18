@@ -67,10 +67,11 @@ public class AbstractSyntaxTree {
   }
 
   /**
+   * @param withRespectTo the variable to differentiate with respect to
    * @return the derivative of the expression located at root.
    */
-  public Term getDeriv() {
-    return this.root.getDerivative();
+  public Term getDeriv(char withRespectTo) {
+    return this.root.getDerivative(withRespectTo);
   }
 
   /**
