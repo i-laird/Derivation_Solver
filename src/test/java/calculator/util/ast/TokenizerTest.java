@@ -9,6 +9,7 @@ import calculator.util.StringToStream;
 import calculator.util.terms.Term;
 import java.io.ByteArrayInputStream;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -52,8 +53,8 @@ class TokenizerTest {
     AbstractSyntaxTree ast =
         new AbstractSyntaxTree(StringToStream.convertStringToStream(expression));
     Term root = ast.getRoot();
-    root.evaluate(com.google.common.collect.ImmutableList.of(1));
-    assertDoesNotThrow(() -> ast.getDeriv());
+    root.evaluate(Map.of('x', 1));
+    assertDoesNotThrow(() -> ast.getDeriv('x'));
   }
 
   @Test

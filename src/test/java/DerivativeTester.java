@@ -1,8 +1,7 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import calculator.service.CalculatorService;
-import com.google.common.collect.ImmutableList;
-import java.util.Collections;
+import java.util.Map;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,9 +25,9 @@ public class DerivativeTester {
   @DisplayName("Single Derivative Testing")
   @ParameterizedTest(name = "{0}")
   @MethodSource("singleVariable")
-  public void test1(String inputString, ImmutableList<Integer> evaluationPoints, double expected) {
+  public void test1(String inputString, Map<Character, Integer> evaluationPoints, double expected) {
     double result =
-        (calculatorServiceImpl.evaluateDerivative(inputString, evaluationPoints)).result();
+        (calculatorServiceImpl.evaluateDerivative(inputString, 'x', evaluationPoints)).result();
     assertEquals(expected, result);
   }
 
@@ -173,7 +172,7 @@ public class DerivativeTester {
         Arguments.of("arcsec x + x ^ 2", createSingleList(2), 1.0 / (2.0 * Math.sqrt(3.0)) + 4.0));
   }
 
-  private static ImmutableList<Integer> createSingleList(Integer xVal) {
-    return ImmutableList.copyOf(Collections.singletonList(xVal));
+  private static Map<Character, Integer> createSingleList(Integer xVal) {
+    return Map.of('x', xVal);
   }
 }
